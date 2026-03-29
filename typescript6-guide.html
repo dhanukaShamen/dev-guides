@@ -1,0 +1,3735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TypeScript 6.0 — Interactive Beginner's Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<style>
+:root {
+  --bg: #07090f;
+  --surf: #0c1018;
+  --surf2: #111620;
+  --surf3: #17202e;
+  --border: rgba(80,120,220,0.18);
+  --border2: rgba(80,120,220,0.10);
+  --text: #dce8ff;
+  --text2: #7a9ac8;
+  --text3: #3f5578;
+  --accent: #4d7fff;
+  --accent-dim: rgba(77,127,255,0.12);
+  --ts: #5b8dee;
+  --ts-bg: rgba(91,141,238,0.10);
+  --ts-border: rgba(91,141,238,0.30);
+  --tip: #34d399;
+  --tip-bg: rgba(52,211,153,0.08);
+  --tip-border: rgba(52,211,153,0.25);
+  --warn: #f59e0b;
+  --warn-bg: rgba(245,158,11,0.08);
+  --warn-border: rgba(245,158,11,0.25);
+  --new: #a78bfa;
+  --new-bg: rgba(167,139,250,0.09);
+  --new-border: rgba(167,139,250,0.28);
+  --red: #f87171;
+  --ok: #34d399;
+  --ok-bg: rgba(52,211,153,0.08);
+  --ok-border: rgba(52,211,153,0.25);
+  --sidebar-w: 278px;
+  --hdr: 58px;
+  --radius: 10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--text);line-height:1.65;overflow:hidden;height:100vh;}
+
+/* HEADER */
+.hdr{position:fixed;top:0;left:0;right:0;height:var(--hdr);background:rgba(7,9,15,0.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:200;}
+.hdr-left{display:flex;align-items:center;gap:10px;}
+.logo{font-size:15px;font-weight:800;letter-spacing:-0.5px;color:var(--text);}
+.logo span{color:var(--accent);}
+.pill{display:inline-flex;align-items:center;padding:2px 9px;border-radius:5px;font-size:11px;font-weight:600;font-family:'JetBrains Mono',monospace;letter-spacing:0.3px;}
+.pill-ts{background:var(--ts-bg);color:var(--ts);border:1px solid var(--ts-border);}
+.pill-new{background:var(--new-bg);color:var(--new);border:1px solid var(--new-border);}
+.pill-react{background:rgba(34,211,238,0.08);color:#22d3ee;border:1px solid rgba(34,211,238,0.25);}
+.hdr-search{display:flex;align-items:center;gap:8px;background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:6px 12px;width:260px;}
+.hdr-search svg{flex-shrink:0;color:var(--text3);}
+.hdr-search input{background:none;border:none;color:var(--text);font-family:'Geist',sans-serif;font-size:13px;width:100%;outline:none;}
+.hdr-search input::placeholder{color:var(--text3);}
+.hdr-right{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--text2);}
+.prog-bar{width:100px;height:3px;background:var(--surf3);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--new));border-radius:2px;transition:width .4s ease;}
+.home-link-btn{display:flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.10);border-radius:6px;color:#7a9ac8;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .15s;white-space:nowrap;}
+.home-link-btn:hover{background:rgba(255,255,255,0.08);color:#dce8ff;}
+.hdr-search-row{display:none;width:100%;padding:0 14px 10px;box-sizing:border-box;}
+
+/* LAYOUT */
+.layout{display:flex;margin-top:var(--hdr);height:calc(100vh - var(--hdr));}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);height:100%;overflow-y:auto;background:var(--surf);border-right:1px solid var(--border);padding:12px 0 40px;}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:2px;}
+.sg-label{padding:14px 18px 5px;font-size:9.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3);}
+.si{display:flex;align-items:center;gap:9px;padding:7px 18px;cursor:pointer;font-size:12.5px;color:var(--text2);border-left:2px solid transparent;transition:all .12s ease;user-select:none;}
+.si:hover{background:var(--surf2);color:var(--text);}
+.si.active{background:rgba(77,127,255,0.07);color:var(--accent);border-left-color:var(--accent);}
+.si .sn{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);}
+.si svg{flex-shrink:0;opacity:.7;}
+.si.active svg{opacity:1;}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:44px 56px 80px;}
+.content::-webkit-scrollbar{width:5px;}
+.content::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:3px;}
+
+/* SECTION */
+.sec{display:none;animation:fadeUp .28s ease;}
+.sec.vis{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.sec-crumb{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:10px;}
+.sec-crumb span{color:var(--text2);}
+.sec-title{font-size:30px;font-weight:800;letter-spacing:-0.8px;line-height:1.15;margin-bottom:14px;background:linear-gradient(130deg,var(--text) 40%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sec-sub{font-size:15px;color:var(--text2);line-height:1.7;max-width:660px;margin-bottom:28px;}
+.divider{border:none;border-top:1px solid var(--border2);margin:28px 0;}
+
+/* PROSE */
+.prose{font-size:14px;color:var(--text2);line-height:1.8;}
+.prose p{margin-bottom:14px;}
+.prose p:last-child{margin-bottom:0;}
+.prose strong{color:var(--text);font-weight:600;}
+.prose code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--surf3);border:1px solid var(--border);padding:1px 6px;border-radius:4px;color:var(--accent);}
+.prose ul{padding-left:0;list-style:none;}
+.prose ul li{padding:4px 0 4px 18px;position:relative;font-size:14px;color:var(--text2);}
+.prose ul li::before{content:'›';position:absolute;left:0;color:var(--accent);font-weight:700;}
+.prose h3{font-size:17px;font-weight:700;color:var(--text);margin:24px 0 10px;}
+.prose h4{font-size:14px;font-weight:700;color:var(--text);margin:18px 0 8px;}
+
+/* CODE BLOCK */
+.cb{background:#070a12;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin:20px 0;}
+.cb-hdr{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--surf2);border-bottom:1px solid var(--border);}
+.cb-fname{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text2);display:flex;align-items:center;gap:7px;}
+.cb-lang{font-size:10px;color:var(--text3);background:var(--surf3);padding:2px 7px;border-radius:4px;}
+.cb-copy{font-size:11px;color:var(--text3);background:none;border:1px solid var(--border);padding:2px 9px;border-radius:4px;cursor:pointer;font-family:'Geist',sans-serif;transition:all .15s;}
+.cb-copy:hover{color:var(--text);border-color:var(--text3);}
+.cb pre[class*="language-"]{margin:0;padding:18px 20px;background:transparent !important;font-family:'JetBrains Mono',monospace !important;font-size:13px !important;line-height:1.72;overflow-x:auto;}
+
+/* INFO BOXES */
+.box{border-radius:var(--radius);padding:18px 22px;margin:18px 0;border-left:3px solid;}
+.box-hdr{display:flex;align-items:center;gap:9px;font-weight:700;font-size:12px;margin-bottom:10px;letter-spacing:0.3px;font-family:'Geist',sans-serif;}
+.box-hdr svg{flex-shrink:0;}
+.box-body{font-size:13.5px;line-height:1.72;color:var(--text2);}
+.box-body code{font-family:'JetBrains Mono',monospace;font-size:12px;background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:3px;}
+.box-body p{margin-bottom:7px;} .box-body p:last-child{margin-bottom:0;}
+.box-body ul{list-style:none;padding:0;} .box-body ul li{padding:3px 0 3px 15px;position:relative;}
+.box-body ul li::before{content:'›';position:absolute;left:0;font-weight:700;}
+.box-ts{background:var(--ts-bg);border-color:var(--ts);} .box-ts .box-hdr{color:var(--ts);} .box-ts .box-body ul li::before{color:var(--ts);}
+.box-tip{background:var(--tip-bg);border-color:var(--tip);} .box-tip .box-hdr{color:var(--tip);} .box-tip .box-body ul li::before{color:var(--tip);}
+.box-warn{background:var(--warn-bg);border-color:var(--warn);} .box-warn .box-hdr{color:var(--warn);} .box-warn .box-body ul li::before{color:var(--warn);}
+.box-new{background:var(--new-bg);border-color:var(--new);} .box-new .box-hdr{color:var(--new);} .box-new .box-body ul li::before{color:var(--new);}
+.box-ok{background:var(--ok-bg);border-color:var(--ok);} .box-ok .box-hdr{color:var(--ok);} .box-ok .box-body ul li::before{color:var(--ok);}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:18px 0;}
+.card{background:var(--surf);border:1px solid var(--border);border-radius:var(--radius);padding:18px;}
+.card-t{font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.card-b{font-size:12.5px;color:var(--text2);line-height:1.6;}
+.card-b code{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--surf3);padding:1px 5px;border-radius:3px;color:var(--accent);}
+.card-icon{font-size:22px;margin-bottom:8px;}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;margin:18px 0;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surf2);color:var(--text);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:10px 14px;text-align:left;border-bottom:2px solid var(--border);}
+td{padding:10px 14px;border-bottom:1px solid var(--border2);color:var(--text2);vertical-align:top;}
+td code{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--surf2);padding:1px 5px;border-radius:3px;color:var(--accent);}
+tr:last-child td{border-bottom:none;}
+.badge{display:inline-flex;align-items:center;padding:1px 7px;border-radius:4px;font-size:10.5px;font-weight:600;font-family:'JetBrains Mono',monospace;}
+.badge-ts{background:var(--ts-bg);color:var(--ts);}
+.badge-new{background:var(--new-bg);color:var(--new);}
+.badge-warn{background:var(--warn-bg);color:var(--warn);}
+
+/* NAV BTNS */
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:44px;padding-top:28px;border-top:1px solid var(--border2);}
+.nav-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;background:var(--surf);border:1px solid var(--border);border-radius:8px;color:var(--text2);cursor:pointer;font-size:13px;font-family:'Geist',sans-serif;transition:all .18s;}
+.nav-btn:hover{background:var(--surf2);color:var(--text);border-color:var(--accent);}
+.nav-btn.next{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;}
+.nav-btn.next:hover{background:#6b93ff;}
+/* COMPARE */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;}
+.cmp-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:7px 10px;border-radius:6px 6px 0 0;}
+.lbl-bad{background:rgba(248,113,113,0.12);color:var(--red);border:1px solid rgba(248,113,113,0.2);border-bottom:none;}
+.lbl-good{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-border);border-bottom:none;}
+
+/* REACT NEXT CARD */
+.react-next-card{background:linear-gradient(135deg,rgba(34,211,238,0.07),rgba(167,139,250,0.05));border:1px solid rgba(34,211,238,0.25);border-radius:14px;padding:28px 32px;margin:28px 0;display:flex;align-items:center;gap:24px;}
+.react-next-icon{font-size:44px;flex-shrink:0;}
+.react-next-text h3{font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.react-next-text p{font-size:13.5px;color:var(--text2);line-height:1.7;margin-bottom:14px;}
+.react-next-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;background:#22d3ee;color:#000;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Geist',sans-serif;transition:all .15s;text-decoration:none;}
+.react-next-btn:hover{background:#34e4ff;}
+
+/* STEP LIST */
+.steps{counter-reset:step;margin:18px 0;}
+.step{display:flex;gap:16px;margin-bottom:20px;align-items:flex-start;}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(77,127,255,0.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--accent);flex-shrink:0;margin-top:2px;}
+.step-content{flex:1;}
+.step-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.step-desc{font-size:13px;color:var(--text2);line-height:1.7;}
+.step-desc code{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--surf3);padding:1px 5px;border-radius:3px;color:var(--accent);}
+
+/* CONCEPT PILL */
+.concept-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
+.concept-pill{padding:4px 12px;background:var(--surf2);border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text2);font-family:'JetBrains Mono',monospace;}
+
+/* HIGHLIGHT ROW */
+.hl-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surf2);border-radius:8px;margin:6px 0;font-size:13px;color:var(--text2);}
+.hl-row strong{color:var(--text);}
+.hl-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+
+/* FILETREE */
+.filetree{background:#070a12;border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:2;margin:18px 0;}
+.ft-dir{color:var(--text2);}
+.ft-ts{color:var(--ts);}
+.ft-json{color:var(--warn);}
+.ft-other{color:var(--text3);}
+.ft-i{display:inline-block;width:18px;}
+
+/* SEARCH DROPDOWN */
+.srch-drop{position:absolute;top:46px;left:50%;transform:translateX(-50%);width:320px;background:var(--surf);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,.65);z-index:300;display:none;overflow:hidden;}
+.srch-drop.vis{display:block;}
+.srch-item{padding:10px 15px;cursor:pointer;font-size:12.5px;color:var(--text2);border-bottom:1px solid var(--border2);transition:background .1s;}
+.srch-item:last-child{border-bottom:none;}
+.srch-item:hover,.srch-item.sel{background:var(--surf2);color:var(--text);}
+.srch-item .sg{font-size:9.5px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:2px;letter-spacing:.5px;}
+.srch-empty{padding:18px 15px;font-size:12.5px;color:var(--text3);text-align:center;}
+
+/* PRISM TOKEN OVERRIDES */
+.token.keyword{color:#c792ea;}.token.string{color:#c3e88d;}.token.comment{color:#546e7a;font-style:italic;}
+.token.number{color:#f78c6c;}.token.boolean{color:#f78c6c;}.token.function{color:#82aaff;}
+.token.class-name{color:#ffcb6b;}.token.operator{color:#89ddff;}.token.punctuation{color:#89ddff;}
+
+/* ── HAMBURGER BUTTON (mobile only) ── */
+.menu-btn {
+  display: none; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--surf); cursor: pointer; color: var(--text2);
+  transition: background .15s, color .15s; flex-shrink: 0;
+}
+.menu-btn:hover { background: var(--surf2); color: var(--text); }
+.menu-btn svg { pointer-events: none; }
+
+/* ── SIDEBAR OVERLAY (mobile backdrop) ── */
+.sidebar-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55);
+  backdrop-filter: blur(2px); z-index: 149;
+}
+.sidebar-overlay.vis { display: block; }
+
+@media(max-width:800px){
+  :root { --hdr: 100px; }
+  .hdr{flex-wrap:wrap;align-items:center;height:auto;min-height:58px;padding:0 14px 0;}
+
+  /* hamburger visible */
+  .menu-btn { display: flex; }
+
+  /* hide extra pills, home link stays visible */
+  .react-link-btn { display: none; }
+  .nd-link-btn { display: none; }
+  .react-link-mobile { display: none; }
+  .hdr-search { display: none; }
+  .hdr-search-row .hdr-search { display: flex; }
+  /*#progTxt { display: none; }*/
+  .pill-ts { display: none; }
+  .pill-new { display: none; }
+  .hdr-left { flex:1; min-width: 0; flex-shrink: 1; padding:10px 0; }
+  .logo { white-space: nowrap; }
+  .hdr-right { padding:10px 0; gap:8px; }
+  .hdr-search-row { display: flex; }
+
+  /* sidebar: off-screen left, slides in */
+  .sidebar {
+    position: fixed; top: var(--hdr); left: 0; bottom: 0;
+    height: calc(100vh - var(--hdr));
+    z-index: 150; transform: translateX(-100%);
+    transition: transform .25s cubic-bezier(.4,0,.2,1);
+    box-shadow: 4px 0 24px rgba(0,0,0,.5);
+    overflow-y: auto;
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  /* content takes full width */
+  .content { padding: 28px 18px 80px; }
+
+  /* collapse grids to 1 col */
+  .g2, .g3, .cmp { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-left">
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="logo">Type<span>Script</span> 6.0</div>
+    <span class="pill pill-ts">TS 6.0</span>
+    <span class="pill pill-new">Beginner Guide</span>
+  </div>
+  <div style="position:relative;">
+    <div class="hdr-search">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search topics… (⌘K)" autocomplete="off">
+    </div>
+    <div id="searchResults" class="srch-drop"></div>
+  </div>
+  <div class="hdr-right">
+    <a class="home-link-btn" href="index.html" title="Back to All Guides">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      All Guides
+    </a>
+    <span id="progTxt" style="color:var(--text3)">0 / 0</span>
+    <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+  <!-- Mobile search row -->
+  <div class="hdr-search-row">
+    <div class="hdr-search" style="width:100%;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInputMobile" placeholder="Search topics…" autocomplete="off">
+    </div>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="layout">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar"></nav>
+  <!-- MAIN CONTENT -->
+  <main class="content" id="content"></main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script>
+// ─────────────────────────────────────────────────────────────
+// ICONS
+// ─────────────────────────────────────────────────────────────
+const ICONS = {
+  rocket:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>`,
+  cube:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>`,
+  zap:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+  code:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`,
+  layers:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
+  settings:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 1.41 14.14M4.93 4.93A10 10 0 0 0 3.52 19.07"/><path d="M20.66 16a10 10 0 0 1-12.73 3.46M3.34 8A10 10 0 0 1 16 4.54"/></svg>`,
+  type:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>`,
+  box:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
+  fn:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`,
+  list:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`,
+  enum:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>`,
+  iface:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>`,
+  cls:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>`,
+  gen:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 9H14V7.5"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8H3.5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M9.5 15H11v1.5"/></svg>`,
+  bug:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6z"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/></svg>`,
+  flag:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>`,
+  star:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  ts:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>`,
+  arr:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`,
+  warn:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+  check:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  info:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+  prev:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`,
+  next:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
+};
+
+// ─────────────────────────────────────────────────────────────
+// SECTIONS DATA
+// ─────────────────────────────────────────────────────────────
+const SECTIONS = [
+
+// ═══════════════════════════════════════
+// CHAPTER 1 — INTRODUCTION
+// ═══════════════════════════════════════
+{
+  id:'intro', group:'Chapter 1 — Introduction', icon:'rocket', title:'What Is TypeScript?',
+  sub:'TypeScript is JavaScript with superpowers — it adds a type system that catches bugs before you even run your code.',
+  content:`
+<div class="prose">
+  <p><strong>JavaScript</strong> is the language of the web. Every browser understands it. But JavaScript has one major weakness — it doesn't check the types of your values. You can accidentally pass a number where you expected a string, and the code will only fail when it runs.</p>
+  <p><strong>TypeScript</strong> fixes this. It is a <em>superset</em> of JavaScript, meaning every valid JavaScript program is also a valid TypeScript program. TypeScript adds <strong>optional type annotations</strong> on top of JavaScript. You tell TypeScript what type each variable should be, and it checks your work before you ever run the code.</p>
+  <p>TypeScript was created by Microsoft and released in 2012. It compiles down to plain JavaScript that any browser or runtime can execute. Think of TypeScript as a smart spell-checker for your code — it doesn't change what you write at runtime, but it warns you about mistakes at write-time.</p>
+</div>
+<div class="g2" style="margin-top:22px;">
+  <div class="card"><div class="card-icon">🟨</div><div class="card-t">JavaScript</div><div class="card-b">Dynamic, no types. Errors show up when code runs. Quick to write but harder to maintain at scale.</div></div>
+  <div class="card"><div class="card-icon">🟦</div><div class="card-t">TypeScript</div><div class="card-b">Static types. Errors show up as you type in your editor. Safer, easier to read & refactor.</div></div>
+</div>
+<div class="cmp">
+  <div>
+    <div class="cmp-lbl lbl-bad">❌ JavaScript — Bug at Runtime</div>
+    <div class="cb"><div class="cb-hdr"><span class="cb-fname">app.js</span><span class="cb-lang">js</span></div><pre class="language-typescript"><code>function greet(name) {
+  return "Hello, " + name.toUpperCase();
+}
+
+// This crashes at runtime — no warning!
+greet(42); // TypeError: name.toUpperCase is not a function</code></pre></div>
+  </div>
+  <div>
+    <div class="cmp-lbl lbl-good">✅ TypeScript — Caught While Typing</div>
+    <div class="cb"><div class="cb-hdr"><span class="cb-fname">app.ts</span><span class="cb-lang">typescript</span></div><pre class="language-typescript"><code>function greet(name: string) {
+  return "Hello, " + name.toUpperCase();
+}
+
+// Error shown IMMEDIATELY in your editor:
+// Argument of type 'number' is not assignable
+// to parameter of type 'string'.
+greet(42); // 🔴 Error!</code></pre></div>
+  </div>
+</div>`,
+  boxes:[
+    {type:'ts',title:'TypeScript 6.0 — Released March 2026',body:`<p>TypeScript 6.0 is the latest version, released March 23, 2026. It is a historic "bridge" release — the <strong>last version written in JavaScript</strong> before TypeScript 7.0 rewrites the compiler in Go for 10× faster builds. Key changes: <code>strict: true</code> is now the default, <code>target</code> defaults to <code>ES2025</code>, and legacy module systems like AMD are deprecated.</p>`},
+    {type:'tip',title:'💡 Good News for Beginners',body:`<p>You don't need to know everything about TypeScript right away. You can write TypeScript just like JavaScript at first, and gradually add types where you need them. TypeScript will never stop you from running your code.</p>`},
+  ]
+},
+
+{
+  id:'why-ts', group:'Chapter 1 — Introduction', icon:'zap', title:'Why Learn TypeScript?',
+  sub:'Real reasons why TypeScript has become the #1 language on GitHub and the standard for professional JavaScript development.',
+  content:`
+<div class="prose">
+  <p>In 2024–2025, TypeScript became the <strong>most popular language on GitHub</strong>. Almost every major React, Node.js, or frontend job listing requires TypeScript. Here's exactly why it matters:</p>
+</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Catch Bugs Before They Happen</div><div class="step-desc">TypeScript checks your code as you type. Typos, wrong arguments, missing properties — all caught instantly. Studies show TypeScript catches ~15% of bugs before runtime.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Incredible Editor Autocomplete</div><div class="step-desc">Because TypeScript knows the shape of every value, your editor can suggest exact properties and methods. Type <code>user.</code> and see every valid property. No more guessing.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Self-Documenting Code</div><div class="step-desc">Types act as documentation. When you see <code>function createUser(name: string, age: number): User</code>, you immediately know what the function expects and returns — no comments needed.</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Safe Refactoring</div><div class="step-desc">Rename a variable or change a function signature — TypeScript instantly highlights everywhere you need to update. Refactoring large codebases becomes safe and fast.</div></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">Industry Standard</div><div class="step-desc">React, Angular, Vue, Next.js, NestJS, Deno — they all use TypeScript by default. Learn TypeScript once, and you're ready for any modern framework.</div></div></div>
+</div>`,
+  boxes:[
+    {type:'new',title:'TypeScript is #1 on GitHub',body:`<p>TypeScript surpassed Python, JavaScript, and Java to become the most-used language on GitHub by repository count in 2025. It is used by Google, Microsoft, Meta, Airbnb, Slack, and virtually every major tech company.</p>`},
+    {type:'warn',title:'⚠️ Common Misconception',body:`<p>TypeScript does <strong>not</strong> make your code slower at runtime. Types are completely erased during compilation — your users get clean, standard JavaScript. TypeScript only adds safety at development time.</p>`},
+  ]
+},
+
+{
+  id:'how-ts-works', group:'Chapter 1 — Introduction', icon:'settings', title:'How TypeScript Works',
+  sub:'Understanding the TypeScript compilation pipeline — from .ts source to running JavaScript.',
+  content:`
+<div class="prose">
+  <p>TypeScript is a <strong>compiled language</strong>. You write <code>.ts</code> files, and the TypeScript compiler (<code>tsc</code>) checks your types and outputs plain <code>.js</code> files that any JavaScript runtime can execute.</p>
+</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">You Write TypeScript (.ts)</div><div class="step-desc">You create files with the <code>.ts</code> extension and add type annotations to your JavaScript code.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">TypeScript Checks Types</div><div class="step-desc">The <code>tsc</code> compiler reads your code, checks all types, and reports errors if anything doesn't match. This happens at <strong>compile time</strong>, not runtime.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">TypeScript Outputs JavaScript (.js)</div><div class="step-desc">If there are no type errors (or even if there are!), TypeScript produces plain <code>.js</code> files with all type annotations removed. This is called <strong>type erasure</strong>.</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">JavaScript Runs Normally</div><div class="step-desc">The output <code>.js</code> files run in Node.js, the browser, or any JavaScript environment — exactly as normal JavaScript.</div></div></div>
+</div>`,
+  code:`// hello.ts — TypeScript source
+function greet(name: string): string {
+  return "Hello, " + name + "!";
+}
+
+console.log(greet("TypeScript"));`,
+  codeFile:'hello.ts', codeLang:'typescript',
+  extraCodes:[{
+    code:`// hello.js — compiled output (types removed automatically!)
+function greet(name) {
+  return "Hello, " + name + "!";
+}
+
+console.log(greet("TypeScript"));
+// Output: Hello, TypeScript!`,
+    file:'hello.js', lang:'javascript'
+  }],
+  boxes:[
+    {type:'ts',title:'tsc vs ts-node',body:`<ul><li><code>tsc</code> — the official TypeScript compiler. Compiles <code>.ts</code> → <code>.js</code> files.</li><li><code>ts-node</code> — runs TypeScript directly without a separate compile step. Great for development.</li><li><code>Node.js 22.18+</code> — natively supports TypeScript via "type stripping" (no compiler needed in some cases).</li></ul>`},
+  ]
+},
+
+{
+  id:'prereqs', group:'Chapter 1 — Introduction', icon:'flag', title:'Prerequisites',
+  sub:'What you need to know before diving into TypeScript.',
+  content:`
+<div class="prose">
+  <p>TypeScript builds <em>on top of</em> JavaScript, so a basic understanding of JavaScript fundamentals is helpful. Here's exactly what you need:</p>
+</div>
+<div class="g2">
+  <div class="card"><div class="card-t">✅ You Should Know</div><div class="card-b"><ul style="list-style:none;padding:0;"><li style="padding:3px 0;color:var(--text2);">• Variables (<code>let</code>, <code>const</code>)</li><li style="padding:3px 0;color:var(--text2);">• Functions & arrow functions</li><li style="padding:3px 0;color:var(--text2);">• Arrays & objects</li><li style="padding:3px 0;color:var(--text2);">• If/else & loops</li><li style="padding:3px 0;color:var(--text2);">• Basic ES6+ syntax</li></ul></div></div>
+  <div class="card"><div class="card-t">🚫 You Don't Need</div><div class="card-b"><ul style="list-style:none;padding:0;"><li style="padding:3px 0;color:var(--text2);">• Prior TypeScript experience</li><li style="padding:3px 0;color:var(--text2);">• Advanced JS knowledge</li><li style="padding:3px 0;color:var(--text2);">• Frameworks (React, etc.)</li><li style="padding:3px 0;color:var(--text2);">• Backend experience</li><li style="padding:3px 0;color:var(--text2);">• Math or CS degree</li></ul></div></div>
+</div>`,
+  boxes:[
+    {type:'tip',title:'💡 Complete Beginner?',body:`<p>If you're brand new to programming, spend a few hours with basic JavaScript first. There are great free resources: <strong>freeCodeCamp</strong>, <strong>The Odin Project</strong>, or just the MDN JavaScript Guide. Then come back here — TypeScript will make much more sense.</p>`},
+  ]
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 2 — SETUP
+// ═══════════════════════════════════════
+{
+  id:'setup', group:'Chapter 2 — Setup', icon:'settings', title:'Setup',
+  sub:'Installing everything you need: Node.js, TypeScript 6.0, and a great code editor.',
+  content:`
+<div class="prose">
+  <p>To write TypeScript, you need three things on your computer: <strong>Node.js</strong> (JavaScript runtime), <strong>npm</strong> (package manager, comes with Node), and <strong>TypeScript</strong> itself. A good code editor makes everything much nicer.</p>
+</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Install Node.js</div><div class="step-desc">Download and install Node.js from <strong>nodejs.org</strong>. Choose the LTS (Long Term Support) version. This also installs <code>npm</code> automatically. Verify: open a terminal and run <code>node --version</code>.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Install TypeScript Globally</div><div class="step-desc">Run <code>npm install -g typescript</code> in your terminal. The <code>-g</code> flag means "global" — it makes the <code>tsc</code> command available everywhere. Verify: run <code>tsc --version</code>.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Install VS Code</div><div class="step-desc">Download <strong>Visual Studio Code</strong> from <strong>code.visualstudio.com</strong>. It has the best TypeScript support built in — instant error highlighting, autocomplete, and hover documentation.</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Install Helpful Extensions</div><div class="step-desc">In VS Code, install: <strong>Error Lens</strong> (shows errors inline), <strong>Prettier</strong> (code formatting), and <strong>GitLens</strong> (optional, for Git).</div></div></div>
+</div>`,
+  code:`# Step 1: Check Node.js and npm versions
+node --version   # Should be v18+ or v20+
+npm --version    # Should be 8+
+
+# Step 2: Install TypeScript 6 globally
+npm install -g typescript
+
+# Step 3: Verify TypeScript installation
+tsc --version
+# Output: Version 6.0.x
+
+# Step 4: Install ts-node for direct execution (optional but handy)
+npm install -g ts-node`,
+  codeFile:'terminal', codeLang:'bash',
+  boxes:[
+    {type:'ts',title:'TypeScript 6.0 Installation',body:`<p>Make sure you get TypeScript 6.0 specifically: <code>npm install -g typescript@6</code>. You can verify with <code>tsc --version</code>. Version 6 is the latest stable release as of March 2026.</p>`},
+    {type:'tip',title:'💡 No Global Install Needed',body:`<p>For projects, you'll typically install TypeScript <em>locally</em> per project: <code>npm install -D typescript</code>. This ensures everyone on your team uses the exact same version. The global install is just for playing around.</p>`},
+  ]
+},
+
+{
+  id:'first-app', group:'Chapter 2 — Setup', icon:'rocket', title:'Create Your First Application',
+  sub:'Write and understand your first TypeScript file from scratch.',
+  content:`
+<div class="prose">
+  <p>Let's write your very first TypeScript program. Create a folder on your computer, open it in VS Code, and create a file called <code>hello.ts</code>.</p>
+  <p>The <code>.ts</code> extension is what tells TypeScript (and your editor) that this is a TypeScript file. The code below is almost identical to JavaScript — the only addition is the <code>: string</code> type annotation.</p>
+</div>`,
+  code:`// hello.ts — Your first TypeScript file!
+
+// Type annotation: name must be a string
+function greet(name: string): string {
+  return "Hello, " + name + "! Welcome to TypeScript 6!";
+}
+
+// This works — "World" is a string ✅
+console.log(greet("World"));
+
+// Try changing this to a number and watch VS Code highlight the error:
+// greet(42); // 🔴 Argument of type 'number' is not assignable to type 'string'
+
+// Variables with types
+let message: string = "TypeScript is awesome!";
+let year: number = 2026;
+let isLearning: boolean = true;
+
+console.log(message);
+console.log(\`Year: \${year}, Still learning: \${isLearning}\`);`,
+  codeFile:'hello.ts', codeLang:'typescript',
+  boxes:[
+    {type:'tip',title:'💡 The Colon Syntax',body:`<p>In TypeScript, <code>: string</code> after a variable or parameter name is a <strong>type annotation</strong>. It tells TypeScript "this value must be a string." You'll learn more about all available types in Chapter 3.</p>`},
+    {type:'ts',title:'Your editor is your best friend',body:`<p>Open <code>hello.ts</code> in VS Code and hover your mouse over the function name or any variable. VS Code will show you the inferred types, documentation, and any errors — instantly. This is one of TypeScript's biggest benefits.</p>`},
+  ]
+},
+
+{
+  id:'running', group:'Chapter 2 — Setup', icon:'zap', title:'Running the Code',
+  sub:'Three ways to run TypeScript code — compile then run, run directly, or use a project bundler.',
+  content:`
+<div class="prose">
+  <p>TypeScript files (<code>.ts</code>) can't run directly in Node.js. You need to either compile them first, or use a tool that handles that for you. Here are your main options:</p>
+</div>
+<div class="g3">
+  <div class="card"><div class="card-t">Method 1: tsc + node</div><div class="card-b">Compile with <code>tsc</code>, then run the output with <code>node</code>. Best for production.</div></div>
+  <div class="card"><div class="card-t">Method 2: ts-node</div><div class="card-b">Run TypeScript directly without a separate compile step. Great for development & learning.</div></div>
+  <div class="card"><div class="card-t">Method 3: tsx</div><div class="card-b">Modern, fast TypeScript runner. Works with ESM. Recommended for Node.js projects today.</div></div>
+</div>`,
+  code:`# METHOD 1: Compile then run (the traditional way)
+tsc hello.ts          # Compiles → creates hello.js
+node hello.js         # Runs the compiled JavaScript
+
+# METHOD 2: ts-node (run TypeScript directly)
+npm install -g ts-node
+ts-node hello.ts      # Compiles and runs in one step
+
+# METHOD 3: tsx (modern, fast, recommended)
+npm install -g tsx
+tsx hello.ts          # Same as ts-node but faster
+
+# METHOD 4: Watch mode (auto-recompile on save)
+tsc hello.ts --watch  # Recompiles whenever you save the file
+
+# METHOD 5: Node.js 22.18+ native support (no tools needed!)
+node --experimental-strip-types hello.ts`,
+  codeFile:'terminal', codeLang:'bash',
+  boxes:[
+    {type:'new',title:'🆕 Node.js Native TypeScript Support',body:`<p>Node.js 22.18+ can run <code>.ts</code> files natively via "type stripping" — it simply removes the type annotations and runs the JavaScript. This works for simple scripts where you don't need type-checking. Use <code>node hello.ts</code> directly.</p>`},
+    {type:'warn',title:'tsc vs runtime errors',body:`<p>TypeScript type errors do <strong>not</strong> stop your code from compiling by default. <code>tsc</code> will still produce the JavaScript file even if there are type errors. Use <code>tsc --noEmitOnError</code> to prevent output when errors exist.</p>`},
+  ]
+},
+
+{
+  id:'config', group:'Chapter 2 — Setup', icon:'settings', title:'Configuration (tsconfig.json)',
+  sub:'tsconfig.json is the control center for your TypeScript project. Here\'s what every option means.',
+  content:`
+<div class="prose">
+  <p>The <code>tsconfig.json</code> file tells TypeScript how to compile your project. You create it by running <code>tsc --init</code> in your project folder. TypeScript 6.0 changes several important defaults — let's understand them.</p>
+</div>
+<div class="filetree">
+  <span class="ft-dir">my-project/</span><br>
+  <span class="ft-i">├─</span> <span class="ft-ts">hello.ts</span><br>
+  <span class="ft-i">├─</span> <span class="ft-json">tsconfig.json</span> <span class="ft-other" style="font-size:11px">← configuration file</span><br>
+  <span class="ft-i">└─</span> <span class="ft-other">node_modules/</span>
+</div>`,
+  code:`{
+  "compilerOptions": {
+    // ── OUTPUT ──────────────────────────────────
+    // Which JavaScript version to compile to
+    // TypeScript 6.0 default: "ES2025" (changed from ES3!)
+    "target": "ES2025",
+
+    // Module system. TypeScript 6 default: "esnext"
+    "module": "commonjs",
+
+    // Where to put compiled .js files
+    "outDir": "./dist",
+
+    // Where your .ts source files are
+    "rootDir": "./src",
+
+    // ── TYPE CHECKING ────────────────────────────
+    // TypeScript 6.0: strict is NOW true by default!
+    // Enables: noImplicitAny, strictNullChecks, etc.
+    "strict": true,
+
+    // Don't emit .js files on type errors
+    "noEmitOnError": true,
+
+    // ── MODULE RESOLUTION ────────────────────────
+    // How TypeScript finds imported files
+    "moduleResolution": "bundler",
+
+    // ── COMPATIBILITY ────────────────────────────
+    // Allows default imports from CommonJS modules
+    "esModuleInterop": true,
+
+    // Skip type checking of declaration files
+    "skipLibCheck": true,
+
+    // ── TYPE PACKAGES ────────────────────────────
+    // TypeScript 6: types defaults to [] (empty)
+    // You must now explicitly list needed @types packages
+    "types": ["node"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}`,
+  codeFile:'tsconfig.json', codeLang:'json',
+  boxes:[
+    {type:'new',title:'🆕 TypeScript 6.0 — Changed Defaults',body:`<ul><li><code>strict: true</code> is now the default (was false before)</li><li><code>target</code> now defaults to <code>ES2025</code> (was <code>ES3</code>!)</li><li><code>module</code> defaults to <code>esnext</code></li><li><code>types</code> now defaults to <code>[]</code> — you must explicitly list type packages</li><li><code>baseUrl</code> is deprecated — use <code>paths</code> directly instead</li><li>Legacy module systems (AMD, UMD, SystemJS) are deprecated</li></ul>`},
+    {type:'warn',title:'Breaking Change for Existing Projects',body:`<p>If you're upgrading an existing project to TypeScript 6.0, you must update your <code>tsconfig.json</code>! The new defaults will likely break builds. Add <code>"types": ["node"]</code> to get Node.js globals back, and update <code>paths</code> if you used <code>baseUrl</code>.</p>`},
+  ]
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 3 — TYPES
+// ═══════════════════════════════════════
+{
+  id:'builtin-types', group:'Chapter 3 — Types', icon:'type', title:'Built-In TypeScript Types',
+  sub:'TypeScript\'s primitive types — the fundamental building blocks of every program.',
+  content:`
+<div class="prose">
+  <p>TypeScript has several <strong>primitive types</strong> that map directly to JavaScript's built-in values. These are the most basic types you'll use everywhere.</p>
+</div>
+<div class="tbl-wrap"><table>
+  <tr><th>Type</th><th>Example Values</th><th>Description</th></tr>
+  <tr><td><code>string</code></td><td><code>"hello"</code>, <code>'world'</code>, <code>\`template\`</code></td><td>Text data — names, messages, URLs</td></tr>
+  <tr><td><code>number</code></td><td><code>42</code>, <code>3.14</code>, <code>-7</code>, <code>NaN</code></td><td>All numbers (integers and decimals)</td></tr>
+  <tr><td><code>boolean</code></td><td><code>true</code>, <code>false</code></td><td>Logical true/false values</td></tr>
+  <tr><td><code>null</code></td><td><code>null</code></td><td>Intentional absence of a value</td></tr>
+  <tr><td><code>undefined</code></td><td><code>undefined</code></td><td>Variable declared but not assigned</td></tr>
+  <tr><td><code>bigint</code></td><td><code>9007199254740991n</code></td><td>Very large integers (with <code>n</code> suffix)</td></tr>
+  <tr><td><code>symbol</code></td><td><code>Symbol("id")</code></td><td>Unique identifiers (advanced use)</td></tr>
+  <tr><td><code>object</code></td><td><code>{}</code>, <code>[]</code>, <code>new Date()</code></td><td>Any non-primitive value</td></tr>
+</table></div>`,
+  code:`// STRING — text data
+let firstName: string = "Alice";
+let greeting: string = \`Hello, \${firstName}!\`; // Template literals work too
+let language: string = 'TypeScript';
+
+// NUMBER — all numeric values (no separate integer type!)
+let age: number = 25;
+let price: number = 9.99;
+let temperature: number = -4;
+let big: number = 1_000_000; // Underscores for readability
+
+// BOOLEAN — only true or false
+let isLoggedIn: boolean = true;
+let hasPermission: boolean = false;
+
+// NULL — intentionally empty
+let selectedItem: null = null;
+
+// UNDEFINED — not yet assigned
+let pendingValue: undefined = undefined;
+
+// BIGINT — huge numbers (note the 'n' suffix)
+let maxSafeInt: bigint = 9007199254740991n;
+
+// SYMBOL — unique identifier
+let id: symbol = Symbol("user-id");`,
+  codeFile:'types.ts', codeLang:'typescript',
+  boxes:[
+    {type:'ts',title:'One number type — unlike other languages',body:`<p>JavaScript (and TypeScript) has only <strong>one number type</strong> for all numbers. There is no <code>int</code>, <code>float</code>, <code>double</code>, or <code>long</code>. Everything is just <code>number</code>. Use <code>bigint</code> only if you need integers larger than 2⁵³-1.</p>`},
+  ]
+},
+
+{
+  id:'annotations', group:'Chapter 3 — Types', icon:'type', title:'Type Annotations',
+  sub:'How to explicitly tell TypeScript what type a variable, parameter, or return value should be.',
+  content:`
+<div class="prose">
+  <p>A <strong>type annotation</strong> is when you explicitly write a type after a variable name using a colon. The syntax is: <code>variableName: type</code>. You can annotate variables, function parameters, and function return types.</p>
+  <p>Think of it like labeling a box — you're telling TypeScript "this box can only hold strings" so it warns you if you try to put a number in.</p>
+</div>`,
+  code:`// ── VARIABLE ANNOTATIONS ─────────────────────────────────
+let username: string = "alice";
+let score: number = 100;
+let isActive: boolean = true;
+
+// Once annotated, TypeScript enforces the type:
+username = "bob";    // ✅ OK
+username = 42;       // 🔴 Error: Type 'number' is not assignable to type 'string'
+
+// ── FUNCTION PARAMETER ANNOTATIONS ──────────────────────
+// Parameters: annotate after the name with ': type'
+// Return type: annotate after the closing parenthesis
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+function formatName(first: string, last: string): string {
+  return \`\${first} \${last}\`;
+}
+
+// Calling with wrong types = instant error:
+add(1, "2");  // 🔴 Error: 'string' is not assignable to 'number'
+add(1, 2);    // ✅ Returns: 3
+
+// ── WHEN TO ANNOTATE ─────────────────────────────────────
+// You DON'T always need to annotate — TypeScript can infer!
+let count = 0;        // TypeScript knows: number
+let name = "Alice";   // TypeScript knows: string
+// More on inference in the next section...`,
+  codeFile:'annotations.ts', codeLang:'typescript',
+  boxes:[
+    {type:'tip',title:'💡 You Don\'t Always Need Annotations',body:`<p>TypeScript can figure out most types automatically. Type annotations are most useful for <strong>function parameters</strong> and <strong>function return types</strong>, since TypeScript can't always guess what you intend. For local variables, TypeScript usually infers the type correctly.</p>`},
+  ]
+},
+
+{
+  id:'inference', group:'Chapter 3 — Types', icon:'type', title:'Dynamic Type Determination',
+  sub:'TypeScript is smart — it can figure out types automatically without you writing them.',
+  content:`
+<div class="prose">
+  <p><strong>Type inference</strong> is TypeScript's ability to automatically determine the type of a value without you explicitly writing it. When you assign a value to a variable, TypeScript looks at that value and <em>infers</em> what type it must be.</p>
+  <p>This is one of TypeScript's best features — you get full type safety without having to annotate everything manually.</p>
+</div>`,
+  code:`// ── TYPE INFERENCE ───────────────────────────────────────
+// TypeScript sees the value and infers the type automatically
+
+let count = 42;         // TypeScript infers: number
+let name = "Alice";     // TypeScript infers: string
+let active = true;      // TypeScript infers: boolean
+let items = [1, 2, 3];  // TypeScript infers: number[]
+
+// After inference, the type is locked — same as if you annotated it:
+count = 100;      // ✅ OK — still a number
+count = "hello";  // 🔴 Error — can't change to string!
+
+// ── INFERENCE IN FUNCTIONS ───────────────────────────────
+function multiply(a: number, b: number) {
+  return a * b;  // TypeScript infers return type: number
+}
+
+// Hover over 'result' in VS Code — it shows: number
+const result = multiply(3, 4);
+
+// ── INFERENCE IS CONTEXTUAL ──────────────────────────────
+const colors = ["red", "green", "blue"]; // string[]
+
+colors.forEach(color => {
+  // TypeScript knows 'color' is a string — inferred from the array!
+  console.log(color.toUpperCase()); // ✅ Works
+  console.log(color.toFixed(2));    // 🔴 Error — strings don't have toFixed
+});
+
+// ── WHEN TO ANNOTATE vs INFER ────────────────────────────
+// INFER: simple assignments where the value is clear
+let message = "hello"; // Don't bother annotating this
+
+// ANNOTATE: function parameters and return types
+function greet(name: string): string {
+  return "Hi " + name;
+}
+
+// ANNOTATE: when you want to declare before assigning
+let username: string;
+username = "Alice"; // assigned later`,
+  codeFile:'inference.ts', codeLang:'typescript',
+  boxes:[
+    {type:'ts',title:'Best Practice',body:`<p>As a rule of thumb: <strong>let TypeScript infer</strong> types for local variables. <strong>Explicitly annotate</strong> function parameters and return types. This gives you the best balance of safety and brevity.</p>`},
+  ]
+},
+
+{
+  id:'any-type', group:'Chapter 3 — Types', icon:'warn', title:'The Any Type',
+  sub:'The escape hatch from TypeScript\'s type system — powerful but dangerous.',
+  content:`
+<div class="prose">
+  <p>The <code>any</code> type is TypeScript's escape hatch. When a value is typed as <code>any</code>, TypeScript completely disables type checking for that value. You can assign anything to it, and call any method on it without errors.</p>
+  <p><strong>This defeats the entire purpose of TypeScript.</strong> Use <code>any</code> only when absolutely necessary — for example, when working with data from an external source where you genuinely don't know the type yet.</p>
+</div>`,
+  code:`// The 'any' type — use sparingly!
+
+// ❌ BAD: Using 'any' turns off type checking
+let value: any = "hello";
+value = 42;          // No error (any can be anything)
+value = true;        // No error
+value = { name: "Alice" }; // No error
+value.someMethod();  // No error — even if it doesn't exist!
+
+// ── WHEN any IS CREATED ──────────────────────────────────
+// 1. Explicit annotation
+let data: any = fetchSomeData();
+
+// 2. TypeScript 6.0 strict mode: JSON.parse still returns 'any'
+const parsed = JSON.parse('{"name":"Alice"}'); // type: any
+// Use 'unknown' instead for safer code (see below)
+
+// ── BETTER ALTERNATIVE: unknown ──────────────────────────
+// 'unknown' is like 'any' but SAFE — you must check the type
+// before using the value.
+let safeData: unknown = JSON.parse('{"name":"Alice"}');
+
+// safeData.name  // 🔴 Error — must check type first!
+
+if (typeof safeData === 'object' && safeData !== null) {
+  console.log(safeData); // ✅ TypeScript now knows it's an object
+}
+
+// ── noImplicitAny (TypeScript 6 strict mode default) ─────
+function processData(data) { // 🔴 Error in strict mode!
+  return data;
+}
+// With strict: true, unannotated params become errors, not 'any'
+// Fix it:
+function processDataSafe(data: unknown) { // ✅
+  return data;
+}`,
+  codeFile:'any-type.ts', codeLang:'typescript',
+  boxes:[
+    {type:'warn',title:'⚠️ The any Anti-Pattern',body:`<p>If you find yourself using <code>any</code> a lot, something is wrong. It means you're writing JavaScript inside TypeScript without the benefits. Instead of <code>any</code>, consider: <code>unknown</code> (safe any), union types, generics, or proper type annotations.</p>`},
+    {type:'new',title:'🆕 TypeScript 6 — noImplicitAny is ON by default',body:`<p>In TypeScript 6.0, <code>strict: true</code> is the default, which includes <code>noImplicitAny</code>. This means TypeScript will error if it has to implicitly assign <code>any</code> to a parameter. You must now always annotate function parameters — which is good practice!</p>`},
+  ]
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 4 — OBJECTS
+// ═══════════════════════════════════════
+{
+  id:'objects', group:'Chapter 4 — Objects', icon:'box', title:'Type Annotations With Objects',
+  sub:'How to describe the shape of JavaScript objects using TypeScript\'s object type syntax.',
+  content:`
+<div class="prose">
+  <p>An <strong>object</strong> in JavaScript is a collection of key-value pairs. TypeScript lets you describe the <em>shape</em> of an object — what properties it has and what types those properties are.</p>
+  <p>The syntax uses curly braces with property names and their types: <code>{ key: type; key: type }</code>. Semicolons separate properties (commas work too).</p>
+</div>`,
+  code:`// ── OBJECT TYPE ANNOTATIONS ──────────────────────────────
+// Describe the shape inline using { }
+
+let user: { name: string; age: number; isAdmin: boolean } = {
+  name: "Alice",
+  age: 30,
+  isAdmin: false
+};
+
+// TypeScript now enforces the shape:
+user.name = "Bob";   // ✅ OK
+user.name = 42;      // 🔴 Error: 'number' is not assignable to 'string'
+user.email = "...";  // 🔴 Error: Property 'email' does not exist
+
+// ── OPTIONAL PROPERTIES (?) ───────────────────────────────
+// Add ? to make a property optional (it can be missing)
+let product: {
+  name: string;
+  price: number;
+  description?: string; // Optional — may or may not exist
+} = {
+  name: "TypeScript 6 Guide",
+  price: 0  // description is not required
+};
+
+// ── READONLY PROPERTIES ───────────────────────────────────
+// Properties marked readonly cannot be changed after creation
+let config: {
+  readonly apiUrl: string;
+  readonly version: number;
+} = {
+  apiUrl: "https://api.example.com",
+  version: 6
+};
+
+config.apiUrl = "..."; // 🔴 Error: Cannot assign to 'apiUrl' (readonly)
+
+// ── NESTED OBJECTS ────────────────────────────────────────
+let employee: {
+  name: string;
+  address: {         // Nested object type
+    street: string;
+    city: string;
+    country: string;
+  };
+} = {
+  name: "Alice",
+  address: {
+    street: "123 Main St",
+    city: "Techville",
+    country: "US"
+  }
+};
+
+console.log(employee.address.city); // "Techville"`,
+  codeFile:'objects.ts', codeLang:'typescript',
+  boxes:[
+    {type:'tip',title:'💡 Inline vs Type Aliases',body:`<p>Typing objects inline works for simple cases. When an object type gets complex or is reused in multiple places, use a <strong>Type Alias</strong> or <strong>Interface</strong> to give it a name. You'll learn both in upcoming chapters.</p>`},
+    {type:'ts',title:'Structural Typing',body:`<p>TypeScript uses <strong>structural typing</strong> — it checks if an object has the right <em>shape</em>, not if it was created from the right class. If an object has all the required properties with the right types, TypeScript accepts it, regardless of where it came from.</p>`},
+  ]
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 5 — FUNCTIONS
+// ═══════════════════════════════════════
+{
+  id:'fn-annotations', group:'Chapter 5 — Functions', icon:'fn', title:'Type Annotations With Functions',
+  sub:'Typing function parameters and return values to make your functions safe and self-documenting.',
+  content:`
+<div class="prose">
+  <p>Functions are the heart of any program. In TypeScript, you annotate <strong>parameters</strong> (what goes in) and the <strong>return type</strong> (what comes out). This makes functions act as contracts — callers know exactly what to pass and what they'll get back.</p>
+</div>`,
+  code:`// ── BASIC FUNCTION TYPING ─────────────────────────────────
+// Syntax: function name(param: type, ...): returnType { }
+
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+function sayHello(name: string): string {
+  return \`Hello, \${name}!\`;
+}
+
+function printInfo(name: string, age: number): void {
+  console.log(\`\${name} is \${age} years old\`);
+  // void means "returns nothing"
+}
+
+// ── USING TYPED FUNCTIONS ─────────────────────────────────
+const sum = add(5, 3);        // ✅ Returns: 8 (number)
+const hi = sayHello("Alice"); // ✅ Returns: "Hello, Alice!" (string)
+
+add("5", 3);    // 🔴 Error: 'string' not assignable to 'number'
+add(5, 3, 1);   // 🔴 Error: Expected 2 arguments, got 3
+
+// ── MULTIPLE PARAMETERS ────────────────────────────────────
+function createEmail(
+  to: string,
+  subject: string,
+  body: string,
+  isHtml: boolean
+): string {
+  return \`To: \${to} | Subject: \${subject} | HTML: \${isHtml}\`;
+}
+
+// ── INFERRED RETURN TYPE ───────────────────────────────────
+// TypeScript can infer the return type — you don't always have to write it
+function multiply(a: number, b: number) {
+  return a * b; // TypeScript infers: number
+}
+
+// But annotating return types is good practice — it catches mistakes:
+function divide(a: number, b: number): number {
+  if (b === 0) return "Cannot divide by zero"; // 🔴 Error caught!
+  return a / b;
+}`,
+  codeFile:'functions.ts', codeLang:'typescript',
+  boxes:[
+    {type:'ts',title:'Always annotate parameters',body:`<p>Always add type annotations to function parameters. TypeScript 6's <code>noImplicitAny</code> (on by default) will error if you don't. Return types are optional if you're okay with TypeScript inferring them, but annotating them is a good habit that catches mistakes.</p>`},
+  ]
+},
+
+{
+  id:'optional-params', group:'Chapter 5 — Functions', icon:'fn', title:'Optional & Default Parameters',
+  sub:'Making function parameters optional or giving them default values.',
+  content:`
+<div class="prose">
+  <p>Not every function call needs every argument. TypeScript gives you two ways to handle this: <strong>optional parameters</strong> (callers can skip them) and <strong>default parameters</strong> (they get a value automatically if not provided).</p>
+</div>`,
+  code:`// ── OPTIONAL PARAMETERS (?) ──────────────────────────────
+// Add ? after the name to make it optional
+// Inside the function, TypeScript knows it might be undefined
+
+function greet(name: string, title?: string): string {
+  if (title) {
+    return \`Hello, \${title} \${name}!\`;
+  }
+  return \`Hello, \${name}!\`;
+}
+
+greet("Alice");           // ✅ "Hello, Alice!"
+greet("Alice", "Dr.");    // ✅ "Hello, Dr. Alice!"
+
+// ── DEFAULT PARAMETERS ────────────────────────────────────
+// Provide a default value — TypeScript infers the type from the default
+
+function createUser(name: string, role: string = "user"): string {
+  return \`\${name} has role: \${role}\`;
+}
+
+createUser("Alice");           // ✅ "Alice has role: user"
+createUser("Bob", "admin");    // ✅ "Bob has role: admin"
+
+// ── COMBINING OPTIONAL AND DEFAULT ────────────────────────
+function sendEmail(
+  to: string,
+  subject: string = "No Subject",
+  body?: string          // truly optional
+): void {
+  console.log(\`Sending to: \${to}\`);
+  console.log(\`Subject: \${subject}\`);
+  if (body) {
+    console.log(\`Body: \${body}\`);
+  }
+}
+
+sendEmail("alice@example.com");
+sendEmail("bob@example.com", "Meeting Tomorrow");
+sendEmail("carol@example.com", "Update", "See attached.");
+
+// ── IMPORTANT: Optional after required ────────────────────
+// Optional params MUST come AFTER required params!
+// function bad(name?: string, age: number) {} // 🔴 Error!
+function good(age: number, name?: string) {} // ✅ OK`,
+  codeFile:'optional-params.ts', codeLang:'typescript',
+},
+
+{
+  id:'rest-params', group:'Chapter 5 — Functions', icon:'fn', title:'Function Rest Parameters',
+  sub:'Accepting any number of arguments with the spread (...) syntax.',
+  content:`
+<div class="prose">
+  <p>A <strong>rest parameter</strong> lets a function accept any number of arguments. It collects all remaining arguments into an array. The syntax uses three dots (<code>...</code>) before the parameter name. TypeScript types it as an array.</p>
+</div>`,
+  code:`// ── REST PARAMETERS ──────────────────────────────────────
+// The '...' collects remaining args into an array
+// Type annotation: type[]
+
+function addAll(...numbers: number[]): number {
+  return numbers.reduce((sum, n) => sum + n, 0);
+}
+
+addAll(1);             // ✅ Returns: 1
+addAll(1, 2, 3);       // ✅ Returns: 6
+addAll(1, 2, 3, 4, 5); // ✅ Returns: 15
+
+// ── MIXED: Required + Rest ────────────────────────────────
+function logMessage(level: string, ...messages: string[]): void {
+  messages.forEach(msg => {
+    console.log(\`[\${level}] \${msg}\`);
+  });
+}
+
+logMessage("INFO", "App started");
+logMessage("ERROR", "Connection failed", "Retrying...", "Failed again");
+
+// ── REST WITH DIFFERENT TYPES ─────────────────────────────
+function joinStrings(separator: string, ...parts: string[]): string {
+  return parts.join(separator);
+}
+
+joinStrings(", ", "Apple", "Banana", "Cherry");
+// ✅ Returns: "Apple, Banana, Cherry"
+
+// Rest must always be the LAST parameter:
+// function bad(...items: string[], sep: string) {} // 🔴 Error!`,
+  codeFile:'rest-params.ts', codeLang:'typescript',
+},
+
+{
+  id:'arrow-fn', group:'Chapter 5 — Functions', icon:'fn', title:'Arrow Functions',
+  sub:'Typing the modern arrow function syntax — shorter, cleaner, and lexically scoped.',
+  content:`
+<div class="prose">
+  <p><strong>Arrow functions</strong> are a shorter way to write functions in JavaScript, introduced in ES6. TypeScript handles them exactly the same way as regular functions for typing. The key difference: they don't have their own <code>this</code> binding.</p>
+</div>`,
+  code:`// ── ARROW FUNCTION SYNTAX ─────────────────────────────────
+// Traditional function:
+function addTraditional(a: number, b: number): number {
+  return a + b;
+}
+
+// Arrow function — same thing, shorter:
+const addArrow = (a: number, b: number): number => {
+  return a + b;
+};
+
+// Even shorter with implicit return (one-liners):
+const addConcise = (a: number, b: number): number => a + b;
+
+// ── TYPED ARROW FUNCTIONS ─────────────────────────────────
+const multiply = (a: number, b: number): number => a * b;
+const greet = (name: string): string => \`Hello, \${name}!\`;
+const isEven = (n: number): boolean => n % 2 === 0;
+
+// ── ARROW FUNCTIONS AS CALLBACKS ──────────────────────────
+const numbers = [1, 2, 3, 4, 5];
+
+// TypeScript infers 'n' is number from the array type
+const doubled = numbers.map(n => n * 2);  // [2, 4, 6, 8, 10]
+const evens = numbers.filter(n => n % 2 === 0); // [2, 4]
+const sum = numbers.reduce((acc, n) => acc + n, 0); // 15
+
+// ── VARIABLE-TYPED ARROW FUNCTIONS ────────────────────────
+// You can also type the whole function as a variable:
+const calculate: (a: number, b: number) => number = (a, b) => a + b;
+
+// TypeScript will infer the parameter types from the variable type!
+const greetUser: (name: string) => string = (name) => \`Hi, \${name}!\`;`,
+  codeFile:'arrow-functions.ts', codeLang:'typescript',
+},
+
+{
+  id:'anon-fn', group:'Chapter 5 — Functions', icon:'fn', title:'Anonymous Functions',
+  sub:'Functions without names — used as callbacks, event handlers, and more.',
+  content:`
+<div class="prose">
+  <p>An <strong>anonymous function</strong> is a function without a name. They're commonly used as callbacks or assigned to variables. TypeScript types them the same way, and is often smart enough to infer parameter types from context.</p>
+</div>`,
+  code:`// ── ANONYMOUS FUNCTIONS ───────────────────────────────────
+// Assigned to a variable:
+const greet = function(name: string): string {
+  return \`Hello, \${name}!\`;
+};
+
+// ── CONTEXTUAL TYPING (inference from context) ────────────
+// When passing an anonymous function as a callback, TypeScript
+// infers types from the expected function signature
+
+const numbers = [1, 2, 3];
+
+numbers.forEach(function(num) {
+  // TypeScript knows 'num' is number — inferred from the array!
+  console.log(num.toFixed(2)); // ✅ Works
+});
+
+// With arrow function — same inference:
+numbers.forEach(num => {
+  console.log(num * 2); // ✅ num is inferred as number
+});
+
+// ── IMMEDIATELY INVOKED FUNCTION EXPRESSION (IIFE) ─────────
+// A function that runs immediately after being defined:
+const result = (function(a: number, b: number): number {
+  return a + b;
+})(5, 3);
+
+console.log(result); // 8
+
+// ── PASSING FUNCTIONS AS ARGUMENTS ────────────────────────
+// TypeScript can type function parameters too
+function applyOperation(
+  a: number,
+  b: number,
+  operation: (x: number, y: number) => number  // function type!
+): number {
+  return operation(a, b);
+}
+
+applyOperation(5, 3, (x, y) => x + y); // 8
+applyOperation(5, 3, (x, y) => x * y); // 15
+applyOperation(5, 3, (x, y) => x - y); // 2`,
+  codeFile:'anonymous-functions.ts', codeLang:'typescript',
+},
+
+{
+  id:'void-never', group:'Chapter 5 — Functions', icon:'fn', title:'Void & Never',
+  sub:'Two special return types for functions that don\'t return values or that never finish.',
+  content:`
+<div class="prose">
+  <p>TypeScript has two special return types for functions: <code>void</code> and <code>never</code>. They seem similar but mean very different things.</p>
+</div>
+<div class="g2">
+  <div class="card"><div class="card-t"><code>void</code></div><div class="card-b">The function <strong>returns nothing</strong> (or undefined). It <em>does</em> finish executing. Common for functions that just log or modify state.</div></div>
+  <div class="card"><div class="card-t"><code>never</code></div><div class="card-b">The function <strong>never returns</strong>. It either throws an error, runs an infinite loop, or crashes the program. TypeScript uses this for exhaustive checks.</div></div>
+</div>`,
+  code:`// ── VOID: Function returns nothing ────────────────────────
+function logMessage(message: string): void {
+  console.log(message);
+  // No return statement (or 'return;' with no value)
+}
+
+const result = logMessage("Hello");
+// result is: void (you can't use it for anything useful)
+
+// ── VOID in event handlers ────────────────────────────────
+function handleClick(event: Event): void {
+  event.preventDefault();
+  console.log("Button clicked!");
+}
+
+// ── NEVER: Function never returns ─────────────────────────
+// Scenario 1: Always throws an error
+function throwError(message: string): never {
+  throw new Error(message);
+  // Code after this never executes — TypeScript knows this!
+}
+
+// Scenario 2: Infinite loop
+function runForever(): never {
+  while (true) {
+    console.log("Running...");
+  }
+}
+
+// ── NEVER for exhaustive checks (advanced, but useful!) ───
+type Direction = "north" | "south" | "east" | "west";
+
+function move(direction: Direction): string {
+  switch (direction) {
+    case "north": return "Moving north";
+    case "south": return "Moving south";
+    case "east": return "Moving east";
+    case "west": return "Moving west";
+    default:
+      // If you add a new Direction but forget to handle it here,
+      // TypeScript will error on this line! (direction would be 'never')
+      const exhaustiveCheck: never = direction;
+      return exhaustiveCheck;
+  }
+}`,
+  codeFile:'void-never.ts', codeLang:'typescript',
+  boxes:[
+    {type:'ts',title:'void vs undefined',body:`<p><code>void</code> means "the function doesn't meaningfully return anything." <code>undefined</code> is the actual value returned. In practice, functions returning <code>void</code> do return <code>undefined</code> in JavaScript — but using <code>void</code> as the type signals intent more clearly.</p>`},
+  ]
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 6 — ADVANCED TYPES
+// ═══════════════════════════════════════
+{
+  id:'union-types', group:'Chapter 6 — Advanced Types', icon:'layers', title:'Union Types',
+  sub:'A variable that can be one of several types — expressed with the | (pipe) operator.',
+  content:`
+<div class="prose">
+  <p>A <strong>union type</strong> describes a value that can be one of several types. You write it by separating types with a vertical bar <code>|</code>. Think of it as "or" — this value is a string <em>or</em> a number.</p>
+  <p>Union types are incredibly useful for real-world scenarios: a function argument that accepts strings or numbers, a value that could be null, an API response that varies, etc.</p>
+</div>`,
+  code:`// ── BASIC UNION TYPES ─────────────────────────────────────
+// Use | between types
+let id: string | number;
+id = "user-123";  // ✅ string works
+id = 42;          // ✅ number works
+id = true;        // 🔴 Error: 'boolean' not in the union
+
+// ── UNION IN FUNCTIONS ─────────────────────────────────────
+function formatId(id: string | number): string {
+  // Inside the function, id could be either type.
+  // You need to check which one it is — called "narrowing":
+  if (typeof id === "string") {
+    return id.toUpperCase(); // TypeScript knows: string
+  } else {
+    return id.toString();    // TypeScript knows: number
+  }
+}
+
+formatId("abc123"); // ✅ "ABC123"
+formatId(456);      // ✅ "456"
+
+// ── TYPE NARROWING ─────────────────────────────────────────
+// TypeScript gets smarter inside conditional blocks
+function processInput(input: string | number | boolean) {
+  if (typeof input === "string") {
+    console.log("String:", input.toUpperCase());
+  } else if (typeof input === "number") {
+    console.log("Number:", input.toFixed(2));
+  } else {
+    console.log("Boolean:", input ? "yes" : "no");
+  }
+}
+
+// ── ARRAYS OF UNIONS ──────────────────────────────────────
+let mixed: (string | number)[] = ["Alice", 25, "Bob", 30];
+
+// ── NULL/UNDEFINED in unions (common pattern) ─────────────
+let userName: string | null = null;  // No user yet
+userName = "Alice";                   // User logged in
+userName = null;                      // User logged out`,
+  codeFile:'union-types.ts', codeLang:'typescript',
+},
+
+{
+  id:'literal-types', group:'Chapter 6 — Advanced Types', icon:'layers', title:'Literal Types',
+  sub:'Restricting a variable to specific exact values — not just any string or number.',
+  content:`
+<div class="prose">
+  <p><strong>Literal types</strong> let you specify that a value must be an <em>exact</em> specific value, not just any string or number. Think of it as "not just any string, but specifically one of these strings."</p>
+  <p>They're most powerful when combined with union types to create a set of allowed values — similar to an enum, but simpler.</p>
+</div>`,
+  code:`// ── STRING LITERAL TYPES ──────────────────────────────────
+// This variable can ONLY be one of these exact strings:
+let direction: "north" | "south" | "east" | "west";
+
+direction = "north"; // ✅
+direction = "east";  // ✅
+direction = "up";    // 🔴 Error: not in the union!
+
+// ── NUMBER LITERAL TYPES ──────────────────────────────────
+let diceRoll: 1 | 2 | 3 | 4 | 5 | 6;
+diceRoll = 3;  // ✅
+diceRoll = 7;  // 🔴 Error: not a valid dice value
+
+// ── LITERAL TYPES IN FUNCTIONS ─────────────────────────────
+function setAlignment(align: "left" | "center" | "right"): void {
+  console.log(\`Text aligned: \${align}\`);
+}
+
+setAlignment("left");     // ✅
+setAlignment("center");   // ✅
+setAlignment("justify");  // 🔴 Error!
+
+// ── LITERAL TYPES IN OBJECTS ──────────────────────────────
+type Status = "pending" | "active" | "cancelled" | "completed";
+
+let order: { id: number; status: Status } = {
+  id: 1,
+  status: "pending"  // Must be one of the Status values
+};
+
+order.status = "active";     // ✅
+order.status = "delivered";  // 🔴 Error: not in Status
+
+// ── BOOLEAN LITERALS ──────────────────────────────────────
+let alwaysTrue: true = true;   // Only 'true' is allowed
+let isOff: false = false;      // Only 'false' is allowed`,
+  codeFile:'literal-types.ts', codeLang:'typescript',
+},
+
+{
+  id:'nullable', group:'Chapter 6 — Advanced Types', icon:'layers', title:'Nullable Types',
+  sub:'Handling null and undefined safely with TypeScript\'s strict null checking.',
+  content:`
+<div class="prose">
+  <p>In JavaScript, <code>null</code> and <code>undefined</code> are the most common sources of runtime errors (the dreaded "Cannot read property of null"). TypeScript 6's <code>strictNullChecks</code> (on by default) forces you to handle these cases explicitly.</p>
+</div>`,
+  code:`// ── strictNullChecks (ON by default in TS 6) ─────────────
+// Without strictNullChecks, null/undefined can be assigned to anything.
+// With strictNullChecks (default), you must handle them explicitly.
+
+// ── NULLABLE with union types ─────────────────────────────
+let username: string | null = null;  // Can be string OR null
+
+// You must check before using it:
+if (username !== null) {
+  console.log(username.toUpperCase()); // ✅ Safe — we checked!
+}
+
+// ── OPTIONAL CHAINING (?.) ────────────────────────────────
+// Safely access properties that might be null/undefined
+type User = {
+  name: string;
+  address?: {    // address is optional
+    city: string;
+  };
+};
+
+const user: User = { name: "Alice" };
+
+// Without optional chaining — crashes if address is undefined:
+// console.log(user.address.city);  // 🔴 Runtime Error!
+
+// With optional chaining — returns undefined instead of crashing:
+console.log(user.address?.city);  // ✅ undefined (no crash)
+
+// ── NULLISH COALESCING (??) ────────────────────────────────
+// Returns the right side only if left is null or undefined
+let displayName: string | null = null;
+let name = displayName ?? "Anonymous";  // "Anonymous"
+
+let score: number | undefined = undefined;
+let finalScore = score ?? 0;  // 0
+
+// ── NON-NULL ASSERTION (!) ────────────────────────────────
+// Tell TypeScript "I know this isn't null — trust me!"
+// Use sparingly — you're bypassing type safety!
+function getElement(id: string): HTMLElement {
+  return document.getElementById(id)!; // ! asserts not null
+}`,
+  codeFile:'nullable.ts', codeLang:'typescript',
+  boxes:[
+    {type:'warn',title:'⚠️ Avoid Non-Null Assertion overuse',body:`<p>The <code>!</code> non-null assertion operator disables TypeScript's null checking for that expression. If the value turns out to be null at runtime, you'll get the same crash TypeScript was trying to prevent. Use it only when you're 100% certain.</p>`},
+  ]
+},
+
+{
+  id:'type-alias', group:'Chapter 6 — Advanced Types', icon:'layers', title:'Type Aliases',
+  sub:'Giving a name to any type — objects, unions, functions, and more.',
+  content:`
+<div class="prose">
+  <p>A <strong>type alias</strong> creates a new name for any type. It makes complex types reusable and your code more readable. Use the <code>type</code> keyword followed by the name you want.</p>
+  <p>Type aliases can name anything: object shapes, union types, function signatures, primitives, tuples — any TypeScript type.</p>
+</div>`,
+  code:`// ── BASIC TYPE ALIAS ──────────────────────────────────────
+// Instead of repeating this everywhere:
+// { name: string; age: number; email: string }
+// Give it a name:
+type User = {
+  name: string;
+  age: number;
+  email: string;
+};
+
+// Now use 'User' as a type:
+const alice: User = { name: "Alice", age: 30, email: "alice@example.com" };
+const bob: User = { name: "Bob", age: 25, email: "bob@example.com" };
+
+function greetUser(user: User): string {
+  return \`Hello, \${user.name}!\`;
+}
+
+// ── TYPE ALIAS FOR UNIONS ──────────────────────────────────
+type ID = string | number;
+type Status = "pending" | "active" | "cancelled";
+type Theme = "light" | "dark" | "system";
+
+let userId: ID = "user-123";
+userId = 42;  // ✅ Still valid
+
+let theme: Theme = "dark";
+
+// ── TYPE ALIAS FOR FUNCTIONS ──────────────────────────────
+// Give a function signature a name:
+type MathOperation = (a: number, b: number) => number;
+
+const add: MathOperation = (a, b) => a + b;
+const subtract: MathOperation = (a, b) => a - b;
+const multiply: MathOperation = (a, b) => a * b;
+
+// ── COMPLEX NESTED TYPES ──────────────────────────────────
+type Address = {
+  street: string;
+  city: string;
+  country: string;
+};
+
+type Employee = {
+  id: ID;
+  name: string;
+  role: Status;
+  address: Address;  // Reusing another type alias!
+};
+
+// ── TYPE ALIAS vs INTERFACE ───────────────────────────────
+// Both can describe object shapes.
+// Key difference: type aliases can describe ANY type (unions, primitives, functions).
+// Interfaces are specifically for object shapes and can be extended/reopened.
+// More on interfaces in Chapter 10!`,
+  codeFile:'type-alias.ts', codeLang:'typescript',
+},
+
+{
+  id:'intersection', group:'Chapter 6 — Advanced Types', icon:'layers', title:'Intersection Types',
+  sub:'Combining multiple types into one using the & operator.',
+  content:`
+<div class="prose">
+  <p>An <strong>intersection type</strong> combines multiple types into one. A value of an intersection type must satisfy <em>all</em> of the combined types simultaneously. Use the <code>&amp;</code> (ampersand) operator.</p>
+  <p>Think of union (<code>|</code>) as "OR" and intersection (<code>&amp;</code>) as "AND".</p>
+</div>`,
+  code:`// ── INTERSECTION TYPES ────────────────────────────────────
+type HasName = { name: string };
+type HasAge = { age: number };
+type HasEmail = { email: string };
+
+// An intersection — must have ALL properties from ALL types
+type Person = HasName & HasAge;
+
+const person: Person = {
+  name: "Alice",   // Required by HasName
+  age: 30,         // Required by HasAge
+  // email is NOT required — it's not in the intersection
+};
+
+// ── THREE-WAY INTERSECTION ────────────────────────────────
+type FullProfile = HasName & HasAge & HasEmail;
+
+const profile: FullProfile = {
+  name: "Bob",
+  age: 25,
+  email: "bob@example.com"
+  // Missing any one of these = TypeScript error!
+};
+
+// ── PRACTICAL USE: Mixins / Role Combinations ─────────────
+type Timestamps = {
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type User = {
+  id: number;
+  username: string;
+};
+
+// A user record that also has timestamps (common DB pattern)
+type UserRecord = User & Timestamps;
+
+const userRecord: UserRecord = {
+  id: 1,
+  username: "alice",
+  createdAt: new Date(),
+  updatedAt: new Date()
+};
+
+// ── INTERSECTION with FUNCTION TYPES ──────────────────────
+type Serializable = { serialize(): string };
+type Loggable = { log(): void };
+
+type LoggableEntity = Serializable & Loggable;
+
+// Any LoggableEntity must have BOTH methods:
+const entity: LoggableEntity = {
+  serialize: () => JSON.stringify({ id: 1 }),
+  log: () => console.log("Entity logged")
+};`,
+  codeFile:'intersection.ts', codeLang:'typescript',
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 7 — ARRAYS
+// ═══════════════════════════════════════
+{
+  id:'arrays', group:'Chapter 7 — Arrays', icon:'arr', title:'Type Annotations With Arrays',
+  sub:'Typing arrays to ensure every element has the right type.',
+  content:`
+<div class="prose">
+  <p>TypeScript arrays are typed so every element must be the same type. There are two syntaxes for array types: <code>type[]</code> and <code>Array&lt;type&gt;</code>. Both are equivalent — use whichever feels more readable.</p>
+</div>`,
+  code:`// ── ARRAY TYPE SYNTAX ─────────────────────────────────────
+// Two equivalent ways to type arrays:
+let numbers: number[] = [1, 2, 3, 4, 5];
+let names: Array<string> = ["Alice", "Bob", "Carol"];
+
+// Shorthand is more common:
+let prices: number[] = [9.99, 14.99, 4.99];
+let flags: boolean[] = [true, false, true];
+
+// ── INFERENCE ─────────────────────────────────────────────
+// TypeScript infers array types automatically:
+const fruits = ["apple", "banana", "cherry"]; // inferred: string[]
+const scores = [85, 90, 78, 95];              // inferred: number[]
+
+// ── TYPE ENFORCEMENT ──────────────────────────────────────
+let tags: string[] = ["typescript", "programming"];
+tags.push("javascript");   // ✅ OK
+tags.push(42);             // 🔴 Error: 'number' not assignable to 'string'
+
+// ── ARRAY METHODS ARE TYPED ──────────────────────────────
+const ages: number[] = [25, 30, 22, 28];
+
+const sorted = ages.sort((a, b) => a - b);  // still number[]
+const doubled = ages.map(age => age * 2);   // number[]
+const adults = ages.filter(age => age >= 25); // number[]
+const total = ages.reduce((sum, age) => sum + age, 0); // number
+
+// ── UNION ARRAYS ──────────────────────────────────────────
+let mixed: (string | number)[] = ["Alice", 25, "Bob", 30];
+// Each element can be string OR number
+
+// ── READONLY ARRAYS ───────────────────────────────────────
+const colors: readonly string[] = ["red", "green", "blue"];
+// colors.push("yellow"); // 🔴 Error: Cannot modify readonly array
+
+// ── TYPED EMPTY ARRAY ─────────────────────────────────────
+let items: string[] = [];   // Must annotate — empty can't be inferred
+items.push("item1");        // ✅`,
+  codeFile:'arrays.ts', codeLang:'typescript',
+},
+
+{
+  id:'multidim-arrays', group:'Chapter 7 — Arrays', icon:'arr', title:'Multidimensional Arrays',
+  sub:'Typing arrays of arrays — grids, matrices, and nested data structures.',
+  content:`
+<div class="prose">
+  <p>A <strong>multidimensional array</strong> is an array where each element is also an array. TypeScript types these by adding more square brackets or nesting the <code>Array&lt;&gt;</code> syntax.</p>
+</div>`,
+  code:`// ── 2D ARRAYS (array of arrays) ───────────────────────────
+// Type: number[][] means "array of arrays of numbers"
+let matrix: number[][] = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9]
+];
+
+// Access:
+console.log(matrix[0][1]); // 2 — first row, second column
+console.log(matrix[2][0]); // 7 — third row, first column
+
+// ── STRING 2D ARRAY ───────────────────────────────────────
+let grid: string[][] = [
+  ["X", "O", "X"],
+  ["O", "X", "O"],
+  ["X", "X", "O"]
+];
+
+// ── 3D ARRAY ──────────────────────────────────────────────
+// Three levels of nesting:
+let cube: number[][][] = [
+  [[1, 2], [3, 4]],
+  [[5, 6], [7, 8]]
+];
+
+// ── ARRAY OF OBJECTS ──────────────────────────────────────
+// This is extremely common in real apps:
+type User = { name: string; age: number };
+
+let users: User[] = [
+  { name: "Alice", age: 30 },
+  { name: "Bob", age: 25 },
+  { name: "Carol", age: 35 }
+];
+
+// Type safety applies to every element:
+users.push({ name: "Dave", age: 28 });  // ✅
+// users.push({ name: "Eve" });          // 🔴 Missing 'age'
+
+// Mapping over an array of objects:
+const names: string[] = users.map(user => user.name);
+// TypeScript knows: 'user' is User, 'name' is string`,
+  codeFile:'multidim-arrays.ts', codeLang:'typescript',
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 8 — TUPLES
+// ═══════════════════════════════════════
+{
+  id:'tuple', group:'Chapter 8 — Tuples', icon:'list', title:'Tuples',
+  sub:'Fixed-length arrays where each position has a specific type.',
+  content:`
+<div class="prose">
+  <p>A <strong>tuple</strong> is a special kind of array where you know exactly how many elements there are and what type each position contains. Unlike a regular array where all elements are the same type, tuples can have different types at each index.</p>
+  <p>Tuples are great for representing pairs, triples, or any small collection of related values where position matters.</p>
+</div>`,
+  code:`// ── TUPLE SYNTAX ──────────────────────────────────────────
+// Declare a tuple type with [type, type, ...]
+let point: [number, number] = [10, 20]; // x, y coordinates
+
+// Access by index:
+console.log(point[0]); // 10 (number)
+console.log(point[1]); // 20 (number)
+
+// ── MIXED-TYPE TUPLES ──────────────────────────────────────
+// Each position has its own type!
+let person: [string, number] = ["Alice", 30]; // name, age
+
+// TypeScript knows what type each index is:
+let name: string = person[0]; // "Alice" — string ✅
+let age: number = person[1];  // 30 — number ✅
+
+// ── WRONG TYPES = ERROR ───────────────────────────────────
+let coordinate: [number, number] = [10, "20"]; // 🔴 Error!
+let record: [string, number] = [42, "Alice"];  // 🔴 Error!
+
+// ── OPTIONAL TUPLE ELEMENTS ───────────────────────────────
+let optRecord: [string, number, boolean?] = ["Alice", 30];
+// The boolean at index 2 is optional
+
+// ── DESTRUCTURING TUPLES ──────────────────────────────────
+const [x, y] = point;   // x = 10, y = 20
+const [firstName, userAge] = person; // firstName = "Alice", userAge = 30
+
+// ── REAL-WORLD EXAMPLES ───────────────────────────────────
+// RGB color (red, green, blue):
+let red: [number, number, number] = [255, 0, 0];
+
+// useState in React returns a tuple! (simplified):
+type UseState<T> = [T, (newValue: T) => void];
+let counter: UseState<number> = [0, (n) => { console.log(n); }];
+
+// Key-value pair:
+let entry: [string, number] = ["score", 100];
+
+// ── NAMED TUPLE ELEMENTS (TypeScript 4+) ──────────────────
+// Add names for better readability:
+let namedPoint: [x: number, y: number] = [10, 20];
+let rgb: [red: number, green: number, blue: number] = [255, 128, 0];`,
+  codeFile:'tuples.ts', codeLang:'typescript',
+  boxes:[
+    {type:'ts',title:'Tuple vs Array',body:`<p><strong>Array</strong>: variable length, all elements same type. <strong>Tuple</strong>: fixed length, each index can have a different type. Use tuples when the number of elements and their order has semantic meaning (like [lat, lng] for coordinates).</p>`},
+  ]
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 9 — ENUMS
+// ═══════════════════════════════════════
+{
+  id:'enums', group:'Chapter 9 — Enums', icon:'enum', title:'Enums',
+  sub:'Named sets of related constants — make your code more readable and less error-prone.',
+  content:`
+<div class="prose">
+  <p>An <strong>enum</strong> (short for enumeration) is a way to define a set of named constants. Instead of using magic strings or numbers, you give meaningful names to related values.</p>
+  <p>Enums exist at runtime — unlike type aliases and interfaces, they generate actual JavaScript code. This is important to understand.</p>
+</div>`,
+  code:`// ── NUMERIC ENUM (default) ────────────────────────────────
+// Values auto-assign starting at 0 unless specified
+enum Direction {
+  North,   // 0
+  South,   // 1
+  East,    // 2
+  West     // 3
+}
+
+let myDirection: Direction = Direction.North;
+console.log(myDirection);           // 0
+console.log(Direction.South);       // 1
+console.log(Direction[1]);          // "South" (reverse lookup!)
+
+// ── CUSTOM NUMERIC ENUM ───────────────────────────────────
+enum StatusCode {
+  OK = 200,
+  NotFound = 404,
+  ServerError = 500,
+  Redirect = 301
+}
+
+function handleResponse(code: StatusCode): string {
+  if (code === StatusCode.OK) return "Success!";
+  if (code === StatusCode.NotFound) return "Not found.";
+  return "Unknown status.";
+}
+
+// ── STRING ENUM ───────────────────────────────────────────
+// No reverse lookup, but more readable and debuggable:
+enum UserRole {
+  Admin = "ADMIN",
+  Editor = "EDITOR",
+  Viewer = "VIEWER"
+}
+
+let role: UserRole = UserRole.Admin;
+console.log(role); // "ADMIN" — readable!
+
+// ── USING ENUMS ───────────────────────────────────────────
+enum Season { Spring, Summer, Autumn, Winter }
+
+function getActivity(season: Season): string {
+  switch (season) {
+    case Season.Spring: return "Gardening";
+    case Season.Summer: return "Swimming";
+    case Season.Autumn: return "Hiking";
+    case Season.Winter: return "Skiing";
+  }
+}
+
+getActivity(Season.Summer); // "Swimming"
+getActivity(2);             // ✅ Also works — Autumn is 2
+
+// ── CONST ENUM (no runtime code!) ────────────────────────
+// Faster — inlines values at compile time, no JS object generated
+const enum Color { Red = "RED", Green = "GREEN", Blue = "BLUE" }
+let paint: Color = Color.Red; // Compiled to: let paint = "RED";`,
+  codeFile:'enums.ts', codeLang:'typescript',
+  boxes:[
+    {type:'warn',title:'⚠️ Enums generate JavaScript',body:`<p>Unlike types and interfaces (which are erased at compile time), enums produce real JavaScript code. For string literal unions like <code>"admin" | "editor" | "viewer"</code>, consider using a <strong>type alias</strong> instead — it has zero runtime cost and is often simpler.</p>`},
+    {type:'ts',title:'String Enums in TypeScript 6',body:`<p>String enums are generally preferred over numeric enums because the values are meaningful at runtime. With TypeScript 6's strict mode, numeric enum assignments are also stricter — you can't assign a raw number to a numeric enum type without explicit casting.</p>`},
+  ]
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 10 — INTERFACES
+// ═══════════════════════════════════════
+{
+  id:'interface', group:'Chapter 10 — Interfaces', icon:'iface', title:'Interface',
+  sub:'The primary TypeScript tool for describing the shape of an object.',
+  content:`
+<div class="prose">
+  <p>An <strong>interface</strong> defines the shape (structure) of an object — what properties it has and what types they are. It's TypeScript's most commonly used tool for describing objects.</p>
+  <p>Interfaces are similar to type aliases for objects, but have special features: they can be extended, merged, and used to describe class contracts.</p>
+</div>`,
+  code:`// ── BASIC INTERFACE ───────────────────────────────────────
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  isActive: boolean;
+}
+
+// Any object matching this shape is a valid User:
+const user: User = {
+  id: 1,
+  name: "Alice",
+  email: "alice@example.com",
+  isActive: true
+};
+
+// ── OPTIONAL PROPERTIES ───────────────────────────────────
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  description?: string;  // Optional
+  tags?: string[];       // Optional array
+}
+
+const laptop: Product = {
+  id: 101,
+  name: "TypeScript Laptop",
+  price: 999.99
+  // description and tags are optional — OK to omit!
+};
+
+// ── READONLY PROPERTIES ───────────────────────────────────
+interface Config {
+  readonly apiUrl: string;
+  readonly version: number;
+  timeout: number;  // Can be changed
+}
+
+const config: Config = {
+  apiUrl: "https://api.example.com",
+  version: 6,
+  timeout: 3000
+};
+
+config.timeout = 5000;     // ✅ OK
+// config.apiUrl = "...";  // 🔴 Error: readonly!
+
+// ── INTERFACE EXTENDING ANOTHER ───────────────────────────
+interface Animal {
+  name: string;
+  age: number;
+}
+
+interface Pet extends Animal {  // Inherits name and age
+  owner: string;
+  breed: string;
+}
+
+const dog: Pet = {
+  name: "Max",
+  age: 3,
+  owner: "Alice",
+  breed: "Labrador"
+};`,
+  codeFile:'interface.ts', codeLang:'typescript',
+},
+
+{
+  id:'interface-methods', group:'Chapter 10 — Interfaces', icon:'iface', title:'Interface Methods & Parameters',
+  sub:'Describing methods (functions) that objects must implement.',
+  content:`
+<div class="prose">
+  <p>Interfaces can also describe <strong>methods</strong> — functions that belong to an object. There are two syntaxes for method signatures in interfaces, and both work the same way.</p>
+</div>`,
+  code:`// ── INTERFACE WITH METHODS ────────────────────────────────
+interface Calculator {
+  // Method signature syntax 1: short method syntax
+  add(a: number, b: number): number;
+  subtract(a: number, b: number): number;
+
+  // Method signature syntax 2: property with function type
+  multiply: (a: number, b: number) => number;
+
+  // Optional method:
+  divide?: (a: number, b: number) => number;
+}
+
+// Implementing the interface:
+const myCalc: Calculator = {
+  add: (a, b) => a + b,
+  subtract: (a, b) => a - b,
+  multiply: (a, b) => a * b,
+  // divide is optional — we can omit it
+};
+
+console.log(myCalc.add(5, 3));       // 8
+console.log(myCalc.subtract(10, 4)); // 6
+console.log(myCalc.multiply(3, 4));  // 12
+
+// ── CALL SIGNATURES ───────────────────────────────────────
+// Describe objects that are themselves callable (like functions):
+interface Greeter {
+  (name: string): string;  // Call signature
+  language: string;        // Also has a property
+}
+
+// ── PRACTICAL EXAMPLE ─────────────────────────────────────
+interface Repository<T> {
+  findById(id: number): T | undefined;
+  findAll(): T[];
+  save(item: T): void;
+  delete(id: number): boolean;
+}
+
+type User = { id: number; name: string };
+
+// A class that matches the Repository interface for Users:
+class UserRepository implements Repository<User> {
+  private users: User[] = [];
+
+  findById(id: number) {
+    return this.users.find(u => u.id === id);
+  }
+
+  findAll() { return [...this.users]; }
+
+  save(user: User) { this.users.push(user); }
+
+  delete(id: number): boolean {
+    const idx = this.users.findIndex(u => u.id === id);
+    if (idx === -1) return false;
+    this.users.splice(idx, 1);
+    return true;
+  }
+}`,
+  codeFile:'interface-methods.ts', codeLang:'typescript',
+},
+
+{
+  id:'reopen-interface', group:'Chapter 10 — Interfaces', icon:'iface', title:'Reopening Interfaces',
+  sub:'One of interface\'s unique powers — you can add to an existing interface after defining it.',
+  content:`
+<div class="prose">
+  <p>TypeScript interfaces have a unique feature called <strong>declaration merging</strong> — you can define an interface with the same name multiple times, and TypeScript merges them into one. This is called "reopening" an interface.</p>
+  <p>This is extremely useful for extending third-party library types or adding properties to built-in types.</p>
+</div>`,
+  code:`// ── INTERFACE MERGING ─────────────────────────────────────
+// Define the same interface in two places — TypeScript merges them!
+interface User {
+  name: string;
+  age: number;
+}
+
+// Reopen the same interface — this ADDS to the existing definition:
+interface User {
+  email: string;
+  role: string;
+}
+
+// The result is a User with ALL four properties:
+const user: User = {
+  name: "Alice",
+  age: 30,
+  email: "alice@example.com",
+  role: "admin"
+  // Must provide all properties from both declarations
+};
+
+// ── USE CASE: Extending Library Types ─────────────────────
+// Suppose a library defines:
+interface Request {
+  url: string;
+  method: string;
+}
+
+// In YOUR code, you add custom properties:
+interface Request {
+  userId?: number;  // Added by your code
+  timestamp?: Date;
+}
+
+// Now Request has: url, method, userId, timestamp
+
+// ── USE CASE: Window Extensions ───────────────────────────
+// Add custom properties to the global Window object:
+interface Window {
+  myAnalytics: {
+    track(event: string): void;
+  };
+}
+
+// Now window.myAnalytics.track("pageview") is typed!
+
+// ── INTERFACE EXTENSION (extends) ─────────────────────────
+// Alternative: create a new interface that extends another
+interface BaseEntity {
+  id: number;
+  createdAt: Date;
+}
+
+interface UserEntity extends BaseEntity {
+  name: string;
+  email: string;
+}
+
+// UserEntity has: id, createdAt, name, email`,
+  codeFile:'reopen-interface.ts', codeLang:'typescript',
+  boxes:[
+    {type:'ts',title:'Declaration Merging is interfaces-only',body:`<p>Only <code>interface</code> supports declaration merging. <code>type</code> aliases cannot be redeclared. This is one of the key reasons to use <code>interface</code> for object shapes — especially in libraries and shared code where others might want to extend your types.</p>`},
+  ]
+},
+
+{
+  id:'builtin-interface', group:'Chapter 10 — Interfaces', icon:'iface', title:'Built-in Interfaces',
+  sub:'TypeScript ships with thousands of pre-defined interfaces for the browser DOM and JavaScript standard library.',
+  content:`
+<div class="prose">
+  <p>TypeScript includes built-in type definitions for all JavaScript and browser APIs. These are defined as interfaces in TypeScript's <strong>lib</strong> files. You don't need to install anything — they're included automatically when you use the <code>dom</code> lib.</p>
+</div>`,
+  code:`// ── DOM INTERFACES ────────────────────────────────────────
+// TypeScript knows the types of all DOM elements and events
+
+const button = document.querySelector("button");
+// button is: HTMLButtonElement | null
+
+const input = document.getElementById("name") as HTMLInputElement;
+// Typed as HTMLInputElement — has .value, .placeholder, etc.
+
+// Event types are also fully typed:
+button?.addEventListener("click", (event: MouseEvent) => {
+  console.log(event.clientX, event.clientY); // coordinates
+  event.preventDefault();
+});
+
+input.addEventListener("input", (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  console.log(target.value); // typed as string
+});
+
+// ── HTMLImageElement EXAMPLE ───────────────────────────────
+const img = document.createElement("img") as HTMLImageElement;
+img.src = "photo.jpg";   // string ✅
+img.alt = "A photo";     // string ✅
+img.width = 800;         // number ✅
+img.height = 600;        // number ✅
+
+// Methods are typed too:
+img.decode(); // Returns Promise<void>
+
+// ── JAVASCRIPT STANDARD LIBRARY ───────────────────────────
+// Array, Map, Set, Promise are all fully typed:
+const map = new Map<string, number>(); // Map<string, number>
+map.set("score", 100);    // ✅
+map.set("name", "Alice"); // 🔴 Error: 'string' not assignable to 'number'
+
+const set = new Set<string>(["a", "b", "c"]); // Set<string>
+set.add("d"); // ✅
+
+// Promise:
+async function fetchUser(id: number): Promise<User> {
+  const response = await fetch(\`/api/users/\${id}\`);
+  return response.json();
+}`,
+  codeFile:'builtin-interfaces.ts', codeLang:'typescript',
+},
+
+{
+  id:'interface-vs-type', group:'Chapter 10 — Interfaces', icon:'iface', title:'Interface vs Type Aliases',
+  sub:'When to use interface and when to use type — a clear comparison.',
+  content:`<div class="prose"><p>Both <code>interface</code> and <code>type</code> can describe object shapes. Knowing when to use each makes your code cleaner.</p></div>
+<div class="tbl-wrap"><table>
+  <tr><th>Feature</th><th>interface</th><th>type alias</th></tr>
+  <tr><td>Describe objects</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+  <tr><td>Describe unions</td><td>❌ No</td><td>✅ Yes (<code>string | number</code>)</td></tr>
+  <tr><td>Describe primitives</td><td>❌ No</td><td>✅ Yes (<code>type ID = string</code>)</td></tr>
+  <tr><td>Describe tuples</td><td>⚠️ Technically yes</td><td>✅ Better fit</td></tr>
+  <tr><td>Declaration merging</td><td>✅ Yes</td><td>❌ No</td></tr>
+  <tr><td>Class implements</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+  <tr><td>extends / inheritance</td><td>✅ extends keyword</td><td>✅ & intersection</td></tr>
+  <tr><td>Extending libraries</td><td>✅ Preferred</td><td>❌ Can't merge</td></tr>
+</table></div>`,
+  code:`// ── WHEN TO USE interface ─────────────────────────────────
+// 1. For object shapes (especially public APIs / libraries)
+interface Point { x: number; y: number; }
+
+// 2. When you need declaration merging:
+interface Config { timeout: number; }
+interface Config { retries: number; } // Merged ✅
+
+// 3. When using implements in classes:
+interface Serializable { serialize(): string; }
+class Data implements Serializable {
+  serialize() { return JSON.stringify(this); }
+}
+
+// ── WHEN TO USE type ──────────────────────────────────────
+// 1. Union types:
+type ID = string | number;
+type Status = "active" | "inactive" | "pending";
+
+// 2. Intersection for combining:
+type AdminUser = User & { permissions: string[] };
+
+// 3. Utility types and complex compositions:
+type ReadonlyUser = Readonly<User>;
+type PartialConfig = Partial<Config>;
+type UserKeys = keyof User;
+
+// ── THE COMMUNITY CONVENTION ──────────────────────────────
+// Most TypeScript style guides say:
+// - Use 'interface' for object shapes by default
+// - Use 'type' for anything else (unions, aliases, complex types)
+// Both work. Be consistent within a codebase.`,
+  codeFile:'interface-vs-type.ts', codeLang:'typescript',
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 11 — CLASSES
+// ═══════════════════════════════════════
+{
+  id:'class-annotations', group:'Chapter 11 — Classes', icon:'cls', title:'Class Type Annotations',
+  sub:'Using TypeScript with JavaScript classes — typing properties, constructors, and methods.',
+  content:`
+<div class="prose">
+  <p>TypeScript extends JavaScript classes with type annotations. You can type class <strong>properties</strong>, <strong>constructor parameters</strong>, and <strong>method signatures</strong>. TypeScript also requires you to declare properties before using them.</p>
+</div>`,
+  code:`// ── BASIC TYPED CLASS ─────────────────────────────────────
+class Person {
+  // Property declarations (required in TypeScript!)
+  name: string;
+  age: number;
+
+  // Constructor — parameters are typed just like functions
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+
+  // Methods with typed parameters and return types
+  greet(): string {
+    return \`Hello! I'm \${this.name}, \${this.age} years old.\`;
+  }
+
+  birthday(): void {
+    this.age++;
+    console.log(\`Happy birthday, \${this.name}! Now \${this.age}.\`);
+  }
+}
+
+const alice = new Person("Alice", 30);
+console.log(alice.greet()); // "Hello! I'm Alice, 30 years old."
+alice.birthday();           // "Happy birthday, Alice! Now 31."
+
+alice.name = "Alicia";      // ✅ Modifiable
+alice.age = "thirty";       // 🔴 Error: string → number
+
+// ── SHORTHAND PROPERTY DECLARATION ────────────────────────
+// TypeScript shortcut: declare AND initialize in constructor params:
+class Point {
+  constructor(
+    public x: number,   // Declares AND initializes this.x
+    public y: number    // Declares AND initializes this.y
+  ) {}
+  // No need for this.x = x inside the body!
+
+  toString(): string {
+    return \`(\${this.x}, \${this.y})\`;
+  }
+}
+
+const p = new Point(3, 4);
+console.log(p.toString()); // "(3, 4)"
+console.log(p.x);          // 3`,
+  codeFile:'class-annotations.ts', codeLang:'typescript',
+},
+
+{
+  id:'access-modifiers', group:'Chapter 11 — Classes', icon:'cls', title:'Class Access Modifiers',
+  sub:'public, private, and protected — controlling who can access class members.',
+  content:`
+<div class="prose">
+  <p>TypeScript adds <strong>access modifiers</strong> to class properties and methods. They control which code can read or modify each member.</p>
+</div>
+<div class="g3">
+  <div class="card"><div class="card-t"><code>public</code></div><div class="card-b">Default. Accessible from anywhere — inside the class, subclasses, and external code.</div></div>
+  <div class="card"><div class="card-t"><code>private</code></div><div class="card-b">Only accessible inside the class itself. Not from subclasses or external code.</div></div>
+  <div class="card"><div class="card-t"><code>protected</code></div><div class="card-b">Accessible inside the class AND in subclasses, but not from external code.</div></div>
+</div>`,
+  code:`class BankAccount {
+  public owner: string;          // Anyone can read/write
+  private balance: number;       // Only this class can access
+  protected accountType: string; // This class + subclasses
+
+  constructor(owner: string, initialBalance: number) {
+    this.owner = owner;
+    this.balance = initialBalance;
+    this.accountType = "checking";
+  }
+
+  // Public method — anyone can call this:
+  public deposit(amount: number): void {
+    if (amount <= 0) throw new Error("Amount must be positive");
+    this.balance += amount; // ✅ Private accessed inside class
+  }
+
+  // Public method to read private data (controlled access):
+  public getBalance(): number {
+    return this.balance;
+  }
+
+  private formatBalance(): string {
+    return \`$\${this.balance.toFixed(2)}\`;
+  }
+}
+
+const account = new BankAccount("Alice", 1000);
+account.owner = "Alice Updated"; // ✅ public
+account.deposit(500);            // ✅ public method
+account.getBalance();            // ✅ 1500
+// account.balance = 9999;       // 🔴 Error: private!
+// account.formatBalance();      // 🔴 Error: private!
+
+// ── PRIVATE IN CONSTRUCTOR SHORTHAND ─────────────────────
+class User {
+  constructor(
+    public name: string,
+    private password: string,  // private shorthand
+    protected id: number
+  ) {}
+
+  authenticate(input: string): boolean {
+    return input === this.password; // ✅ accessed inside class
+  }
+}
+
+const user = new User("Alice", "secret123", 1);
+user.name;        // ✅ "Alice"
+// user.password; // 🔴 Error: private`,
+  codeFile:'access-modifiers.ts', codeLang:'typescript',
+},
+
+{
+  id:'accessors', group:'Chapter 11 — Classes', icon:'cls', title:'Class Accessors (get/set)',
+  sub:'Getters and setters — computed properties with custom logic.',
+  content:`
+<div class="prose">
+  <p><strong>Accessors</strong> are special methods that look like properties when used. A <strong>getter</strong> (<code>get</code>) runs code when you read a property. A <strong>setter</strong> (<code>set</code>) runs code when you write to a property. They let you add validation and computed values while keeping a clean syntax.</p>
+</div>`,
+  code:`class Temperature {
+  private _celsius: number;
+
+  constructor(celsius: number) {
+    this._celsius = celsius;
+  }
+
+  // GETTER — called when you READ .celsius
+  get celsius(): number {
+    return this._celsius;
+  }
+
+  // SETTER — called when you WRITE to .celsius
+  set celsius(value: number) {
+    if (value < -273.15) {
+      throw new Error("Temperature below absolute zero!");
+    }
+    this._celsius = value;
+  }
+
+  // Computed getter (no setter — read only!)
+  get fahrenheit(): number {
+    return this._celsius * 9/5 + 32;
+  }
+
+  get kelvin(): number {
+    return this._celsius + 273.15;
+  }
+}
+
+const temp = new Temperature(100);
+
+// Using getters — looks like a property!
+console.log(temp.celsius);     // 100
+console.log(temp.fahrenheit);  // 212
+console.log(temp.kelvin);      // 373.15
+
+// Using setters — looks like property assignment!
+temp.celsius = 0;
+console.log(temp.fahrenheit); // 32
+
+// Validation in setter:
+temp.celsius = -300; // 🔴 Throws: "Temperature below absolute zero!"
+
+// ── PRACTICAL: Validated Name ─────────────────────────────
+class Person {
+  private _name: string = "";
+
+  get name(): string { return this._name; }
+
+  set name(value: string) {
+    if (value.trim().length === 0) throw new Error("Name cannot be empty");
+    this._name = value.trim();
+  }
+}`,
+  codeFile:'accessors.ts', codeLang:'typescript',
+},
+
+{
+  id:'static', group:'Chapter 11 — Classes', icon:'cls', title:'Class Static Members',
+  sub:'Properties and methods that belong to the class itself, not to instances.',
+  content:`
+<div class="prose">
+  <p><strong>Static members</strong> belong to the class itself, not to individual instances. You access them via the class name, not through an object. They're perfect for utility methods, factory methods, or shared state across all instances.</p>
+</div>`,
+  code:`class MathUtils {
+  // Static properties — shared, not per-instance
+  static readonly PI: number = 3.14159265358979;
+
+  // Static method — no 'this.someInstanceProp' here
+  static square(n: number): number { return n * n; }
+  static cube(n: number): number { return n * n * n; }
+  static clamp(value: number, min: number, max: number): number {
+    return Math.max(min, Math.min(max, value));
+  }
+}
+
+// Access via class name — NO instance needed!
+console.log(MathUtils.PI);         // 3.14159...
+console.log(MathUtils.square(4));  // 16
+console.log(MathUtils.cube(3));    // 27
+console.log(MathUtils.clamp(15, 0, 10)); // 10
+
+// ── STATIC COUNTER PATTERN ────────────────────────────────
+class User {
+  static count: number = 0; // Tracks total users created
+
+  id: number;
+  name: string;
+
+  constructor(name: string) {
+    User.count++;       // Increment the shared counter
+    this.id = User.count;
+    this.name = name;
+  }
+
+  static getCount(): number {
+    return User.count;
+  }
+}
+
+const u1 = new User("Alice");
+const u2 = new User("Bob");
+const u3 = new User("Carol");
+
+console.log(User.getCount()); // 3 — class-level, not instance!
+console.log(u1.id); // 1
+console.log(u2.id); // 2`,
+  codeFile:'static.ts', codeLang:'typescript',
+},
+
+{
+  id:'implements', group:'Chapter 11 — Classes', icon:'cls', title:'Class Implementing Interface',
+  sub:'Enforcing a contract — classes must provide everything an interface demands.',
+  content:`
+<div class="prose">
+  <p>A class can <strong>implement</strong> an interface using the <code>implements</code> keyword. This is a promise: "I guarantee this class will have all the properties and methods the interface requires." TypeScript enforces this at compile time.</p>
+</div>`,
+  code:`// ── INTERFACE AS A CONTRACT ───────────────────────────────
+interface Printable {
+  print(): void;
+}
+
+interface Serializable {
+  serialize(): string;
+  deserialize(data: string): void;
+}
+
+// Class MUST provide everything the interface requires
+class Document implements Printable, Serializable {
+  content: string;
+
+  constructor(content: string) {
+    this.content = content;
+  }
+
+  print(): void {
+    console.log("Printing:", this.content);
+  }
+
+  serialize(): string {
+    return JSON.stringify({ content: this.content });
+  }
+
+  deserialize(data: string): void {
+    const parsed = JSON.parse(data);
+    this.content = parsed.content;
+  }
+}
+
+const doc = new Document("Hello, TypeScript!");
+doc.print();
+// "Printing: Hello, TypeScript!"
+
+const json = doc.serialize();
+// '{"content":"Hello, TypeScript!"}'
+
+// ── INTERFACE + CLASS HIERARCHY ──────────────────────────
+interface Shape {
+  area(): number;
+  perimeter(): number;
+  color: string;
+}
+
+class Circle implements Shape {
+  color: string;
+  constructor(private radius: number, color: string) {
+    this.color = color;
+  }
+  area(): number { return Math.PI * this.radius ** 2; }
+  perimeter(): number { return 2 * Math.PI * this.radius; }
+}
+
+class Rectangle implements Shape {
+  color: string;
+  constructor(private w: number, private h: number, color: string) {
+    this.color = color;
+  }
+  area(): number { return this.w * this.h; }
+  perimeter(): number { return 2 * (this.w + this.h); }
+}`,
+  codeFile:'implements.ts', codeLang:'typescript',
+},
+
+{
+  id:'abstract', group:'Chapter 11 — Classes', icon:'cls', title:'Abstract Classes',
+  sub:'Base classes with methods that must be implemented by subclasses.',
+  content:`
+<div class="prose">
+  <p>An <strong>abstract class</strong> is a class that cannot be instantiated directly — you can only create instances of its subclasses. It can contain <strong>abstract methods</strong> that have no implementation and must be provided by each subclass, as well as regular methods that are shared by all subclasses.</p>
+  <p>Use abstract classes when you want to share code between related classes while also enforcing that each subclass implements specific methods.</p>
+</div>`,
+  code:`// ── ABSTRACT CLASS ────────────────────────────────────────
+abstract class Shape {
+  // Regular property — shared by all subclasses
+  color: string;
+
+  constructor(color: string) {
+    this.color = color;
+  }
+
+  // Regular method — shared implementation
+  describe(): string {
+    return \`A \${this.color} shape with area \${this.area().toFixed(2)}\`;
+  }
+
+  // Abstract method — no implementation here!
+  // Every subclass MUST implement this:
+  abstract area(): number;
+  abstract perimeter(): number;
+}
+
+// new Shape("red"); // 🔴 Error: Cannot create instance of abstract class
+
+// Concrete subclasses MUST implement abstract methods:
+class Circle extends Shape {
+  constructor(private radius: number, color: string) {
+    super(color); // Call parent constructor
+  }
+
+  // MUST implement area:
+  area(): number { return Math.PI * this.radius ** 2; }
+  perimeter(): number { return 2 * Math.PI * this.radius; }
+}
+
+class Rectangle extends Shape {
+  constructor(private w: number, private h: number, color: string) {
+    super(color);
+  }
+
+  area(): number { return this.w * this.h; }
+  perimeter(): number { return 2 * (this.w + this.h); }
+}
+
+const c = new Circle(5, "blue");
+console.log(c.describe()); // "A blue shape with area 78.54"
+
+const r = new Rectangle(4, 6, "red");
+console.log(r.describe()); // "A red shape with area 24.00"`,
+  codeFile:'abstract.ts', codeLang:'typescript',
+},
+
+{
+  id:'polymorphism', group:'Chapter 11 — Classes', icon:'cls', title:'Polymorphism & Method Override',
+  sub:'Subclasses can provide their own implementation of a parent class method.',
+  content:`
+<div class="prose">
+  <p><strong>Polymorphism</strong> means "many forms." In TypeScript (and OOP generally), it means that objects of different types can be treated as the same type through a shared interface. A method can behave differently depending on the actual type of the object.</p>
+  <p><strong>Method overriding</strong> is how polymorphism works in classes — a subclass provides its own version of a method defined in the parent class.</p>
+</div>`,
+  code:`// ── POLYMORPHISM EXAMPLE ──────────────────────────────────
+class Animal {
+  name: string;
+  constructor(name: string) { this.name = name; }
+
+  // Base implementation:
+  speak(): string {
+    return \`\${this.name} makes a sound.\`;
+  }
+}
+
+class Dog extends Animal {
+  // Override the speak method:
+  override speak(): string {  // 'override' keyword (TypeScript 4.3+)
+    return \`\${this.name} says: Woof!
+\`;
+  }
+
+  fetch(): void {
+    console.log(\`\${this.name} fetches the ball!\`);
+  }
+}
+
+class Cat extends Animal {
+  override speak(): string {
+    return \`\${this.name} says: Meow!
+\`;
+  }
+}
+
+class Duck extends Animal {
+  override speak(): string {
+    return \`\${this.name} says: Quack!
+\`;
+  }
+}
+
+// ── POLYMORPHIC USAGE ──────────────────────────────────────
+// All are treated as Animal — different behavior!
+const animals: Animal[] = [
+  new Dog("Rex"),
+  new Cat("Whiskers"),
+  new Duck("Donald"),
+  new Animal("Generic")
+];
+
+animals.forEach(animal => {
+  console.log(animal.speak()); // Each responds differently!
+});
+// Rex says: Woof!
+// Whiskers says: Meow!
+// Donald says: Quack!
+// Generic makes a sound.`,
+  codeFile:'polymorphism.ts', codeLang:'typescript',
+  boxes:[
+    {type:'ts',title:'The override keyword',body:`<p>TypeScript 4.3+ adds the <code>override</code> keyword. Use it when you override a parent class method. It makes your intent explicit and TypeScript will error if the parent class doesn't actually have that method (preventing typos like <code>spek()</code> instead of <code>speak()</code>).</p>`},
+  ]
+},
+
+{
+  id:'class-vs-interface', group:'Chapter 11 — Classes', icon:'cls', title:'Class vs Interface',
+  sub:'Understanding when to use a class vs an interface for your data structures.',
+  content:`<div class="prose"><p>Classes and interfaces can both describe the shape of objects. But they have very different purposes.</p></div>
+<div class="tbl-wrap"><table>
+  <tr><th>Feature</th><th>Interface</th><th>Class</th></tr>
+  <tr><td>Generates JavaScript</td><td>❌ Erased at compile time</td><td>✅ Creates real JS code</td></tr>
+  <tr><td>Can instantiate</td><td>❌ No (no constructor)</td><td>✅ new MyClass()</td></tr>
+  <tr><td>Can have methods with logic</td><td>❌ Just signatures</td><td>✅ Full implementations</td></tr>
+  <tr><td>Access modifiers</td><td>❌ No</td><td>✅ public/private/protected</td></tr>
+  <tr><td>Inheritance</td><td>extends other interfaces</td><td>extends one class</td></tr>
+  <tr><td>Can implement</td><td>—</td><td>implements interfaces</td></tr>
+  <tr><td>Declaration merging</td><td>✅ Yes</td><td>❌ No</td></tr>
+</table></div>`,
+  code:`// ── USE INTERFACE when: ───────────────────────────────────
+// 1. Describing data shapes (pure structure, no behavior)
+interface Address {
+  street: string;
+  city: string;
+  country: string;
+}
+
+// 2. Defining contracts for other things to implement
+interface Logger {
+  log(message: string): void;
+  warn(message: string): void;
+  error(message: string): void;
+}
+
+// 3. Extending third-party types
+
+// ── USE CLASS when: ───────────────────────────────────────
+// 1. You need actual instances (with new)
+class EmailService implements Logger {
+  private logs: string[] = [];
+
+  log(message: string): void { this.logs.push(\`[LOG] \${message}\`); }
+  warn(message: string): void { this.logs.push(\`[WARN] \${message}\`); }
+  error(message: string): void { this.logs.push(\`[ERROR] \${message}\`); }
+
+  getLogs(): string[] { return this.logs; }
+}
+
+const logger = new EmailService();
+logger.log("App started");
+logger.warn("Low memory");
+
+// 2. When you need private state + methods
+class Counter {
+  private count = 0;
+  increment(): void { this.count++; }
+  getCount(): number { return this.count; }
+}
+
+// 3. When you need inheritance and shared behavior
+class AdminLogger extends EmailService {
+  sendAlert(message: string): void {
+    this.error(\`ADMIN ALERT: \${message}\`);
+    // Could also email someone, etc.
+  }
+}`,
+  codeFile:'class-vs-interface.ts', codeLang:'typescript',
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 12 — GENERICS
+// ═══════════════════════════════════════
+{
+  id:'generics', group:'Chapter 12 — Generics', icon:'gen', title:'Generics',
+  sub:'Write code once that works with many types — the most powerful TypeScript feature.',
+  content:`
+<div class="prose">
+  <p><strong>Generics</strong> are TypeScript's way of writing flexible, reusable code that works with multiple types while still being type-safe. Instead of writing the same function for strings, then again for numbers, you write it once with a <strong>type parameter</strong>.</p>
+  <p>The syntax uses angle brackets <code>&lt;T&gt;</code>. Think of <code>T</code> as a placeholder that gets replaced with an actual type when the function or class is used.</p>
+</div>`,
+  code:`// ── THE PROBLEM without generics ──────────────────────────
+// We'd need separate functions for each type:
+function getFirstNumber(arr: number[]): number { return arr[0]; }
+function getFirstString(arr: string[]): string { return arr[0]; }
+// This gets tedious fast...
+
+// ── GENERIC SOLUTION ──────────────────────────────────────
+// <T> is the type parameter — a placeholder for any type
+function getFirst<T>(arr: T[]): T {
+  return arr[0];
+}
+
+// TypeScript infers T from the argument:
+const num = getFirst([1, 2, 3]);         // T = number, returns number
+const str = getFirst(["a", "b", "c"]);  // T = string, returns string
+const bool = getFirst([true, false]);   // T = boolean, returns boolean
+
+// You can also explicitly pass the type:
+const explicit = getFirst<string>(["hello", "world"]);
+
+// ── GENERIC FUNCTIONS ─────────────────────────────────────
+// Swap two values — works for any type!
+function swap<T>(a: T, b: T): [T, T] {
+  return [b, a];
+}
+
+const [b, a] = swap(1, 2);           // [2, 1] — numbers
+const [y, x] = swap("cat", "dog");   // ["dog", "cat"] — strings
+
+// Wrap any value in an object:
+function wrap<T>(value: T): { value: T } {
+  return { value };
+}
+
+wrap(42);      // { value: 42 }  — type: { value: number }
+wrap("hello"); // { value: "hello" } — type: { value: string }
+
+// ── GENERIC CONSTRAINTS ───────────────────────────────────
+// Use 'extends' to require T has certain properties:
+function getLength<T extends { length: number }>(item: T): number {
+  return item.length; // ✅ Safe — we know T has .length
+}
+
+getLength("hello");      // 5 — strings have .length
+getLength([1, 2, 3]);    // 3 — arrays have .length
+getLength(42);           // 🔴 Error — numbers don't have .length`,
+  codeFile:'generics.ts', codeLang:'typescript',
+},
+
+{
+  id:'generics-multiple', group:'Chapter 12 — Generics', icon:'gen', title:'Multiple Type Parameters',
+  sub:'Using two or more type placeholders in a single generic function.',
+  content:`
+<div class="prose">
+  <p>A generic can have multiple type parameters — just separate them with commas inside the angle brackets: <code>&lt;T, U&gt;</code>. Each letter acts as an independent placeholder for a different type.</p>
+</div>`,
+  code:`// ── TWO TYPE PARAMETERS ───────────────────────────────────
+// T and U are independent type parameters
+function pair<T, U>(first: T, second: U): [T, U] {
+  return [first, second];
+}
+
+pair(1, "hello");      // [1, "hello"] — [number, string]
+pair("name", true);    // ["name", true] — [string, boolean]
+pair(42, { x: 1 });   // [42, { x: 1 }] — [number, { x: number }]
+
+// ── MAPPING / TRANSFORMING ────────────────────────────────
+// Map from one type to another:
+function mapValue<T, U>(
+  value: T,
+  transform: (val: T) => U
+): U {
+  return transform(value);
+}
+
+mapValue(42, n => n.toString());  // "42" — string
+mapValue("hello", s => s.length); // 5 — number
+mapValue({ x: 1 }, obj => obj.x); // 1 — number
+
+// ── KEY-VALUE PAIR ────────────────────────────────────────
+function createEntry<K, V>(key: K, value: V): { key: K; value: V } {
+  return { key, value };
+}
+
+createEntry("name", "Alice");  // { key: string, value: string }
+createEntry(1, { score: 100 }); // { key: number, value: { score: number } }
+
+// ── MERGE OBJECTS ─────────────────────────────────────────
+function merge<T extends object, U extends object>(a: T, b: U): T & U {
+  return { ...a, ...b };
+}
+
+const merged = merge(
+  { name: "Alice", age: 30 },
+  { email: "alice@example.com", role: "admin" }
+);
+
+// merged has: name, age, email, role — all correctly typed!
+console.log(merged.name);  // "Alice"
+console.log(merged.email); // "alice@example.com"`,
+  codeFile:'generics-multiple.ts', codeLang:'typescript',
+},
+
+{
+  id:'generic-classes', group:'Chapter 12 — Generics', icon:'gen', title:'Generic Classes',
+  sub:'Classes that work with any type — like a typed storage container.',
+  content:`
+<div class="prose">
+  <p>Classes can also be generic. A generic class is like a template — when you instantiate it, you specify what type it works with, and TypeScript enforces that type throughout all the class's methods.</p>
+</div>`,
+  code:`// ── GENERIC CLASS ─────────────────────────────────────────
+// A box that holds any type of value
+class Box<T> {
+  private value: T;
+
+  constructor(initialValue: T) {
+    this.value = initialValue;
+  }
+
+  getValue(): T { return this.value; }
+  setValue(newValue: T): void { this.value = newValue; }
+  isEmpty(): boolean { return this.value === null || this.value === undefined; }
+}
+
+// Create typed boxes:
+const numberBox = new Box<number>(42);
+numberBox.getValue();        // 42 — typed as number
+numberBox.setValue(100);     // ✅
+numberBox.setValue("hello"); // 🔴 Error: string → number
+
+const stringBox = new Box<string>("Hello");
+stringBox.getValue();         // "Hello" — typed as string
+
+// TypeScript can infer the type:
+const boolBox = new Box(true); // Box<boolean>
+
+// ── GENERIC STACK ──────────────────────────────────────────
+class Stack<T> {
+  private items: T[] = [];
+
+  push(item: T): void {
+    this.items.push(item);
+  }
+
+  pop(): T | undefined {
+    return this.items.pop();
+  }
+
+  peek(): T | undefined {
+    return this.items[this.items.length - 1];
+  }
+
+  get size(): number {
+    return this.items.length;
+  }
+}
+
+const numStack = new Stack<number>();
+numStack.push(1);
+numStack.push(2);
+numStack.push(3);
+numStack.pop();   // 3 — typed as number
+numStack.peek();  // 2 — typed as number
+
+const strStack = new Stack<string>();
+strStack.push("TypeScript");
+strStack.push("is");
+strStack.push("awesome");
+// strStack.push(42); // 🔴 Error: number → string`,
+  codeFile:'generic-classes.ts', codeLang:'typescript',
+},
+
+{
+  id:'generic-interfaces', group:'Chapter 12 — Generics', icon:'gen', title:'Generics & Interfaces',
+  sub:'Combining generics with interfaces to create flexible, reusable contracts.',
+  content:`<div class="prose"><p>Interfaces can also be generic. This is extremely common for defining flexible API contracts, repository patterns, response types, and more.</p></div>`,
+  code:`// ── GENERIC INTERFACE ─────────────────────────────────────
+interface ApiResponse<T> {
+  data: T;
+  success: boolean;
+  message: string;
+  timestamp: Date;
+}
+
+// Type the data differently for each endpoint:
+type User = { id: number; name: string; email: string };
+type Product = { id: number; name: string; price: number };
+
+const userResponse: ApiResponse<User> = {
+  data: { id: 1, name: "Alice", email: "alice@example.com" },
+  success: true,
+  message: "User fetched successfully",
+  timestamp: new Date()
+};
+
+const productResponse: ApiResponse<Product[]> = {
+  data: [
+    { id: 101, name: "Laptop", price: 999 },
+    { id: 102, name: "Mouse", price: 29 }
+  ],
+  success: true,
+  message: "Products fetched",
+  timestamp: new Date()
+};
+
+// ── GENERIC REPOSITORY INTERFACE ──────────────────────────
+interface Repository<T, ID> {
+  findById(id: ID): T | undefined;
+  findAll(): T[];
+  save(entity: T): T;
+  delete(id: ID): boolean;
+  count(): number;
+}
+
+// Implement for a specific type:
+class InMemoryUserRepo implements Repository<User, number> {
+  private db: Map<number, User> = new Map();
+
+  findById(id: number) { return this.db.get(id); }
+  findAll() { return Array.from(this.db.values()); }
+  save(user: User) { this.db.set(user.id, user); return user; }
+  delete(id: number) { return this.db.delete(id); }
+  count() { return this.db.size; }
+}`,
+  codeFile:'generic-interfaces.ts', codeLang:'typescript',
+},
+
+{
+  id:'type-assertions', group:'Chapter 12 — Generics', icon:'gen', title:'Type Assertions vs. Type Casting',
+  sub:'Telling TypeScript "I know better than you" about a type — and why that is different from runtime casting.',
+  content:`
+<div class="prose">
+  <p>Sometimes TypeScript infers a type that's too broad, and you know the exact type a value is. <strong>Type assertions</strong> let you override TypeScript's inferred type. There are two syntaxes: the <code>as</code> keyword (preferred) and angle-bracket syntax.</p>
+  <p>Assertions don't change the value at runtime — they only tell TypeScript which type to use for type checking purposes. This is the critical distinction between an assertion and a <strong>cast</strong>.</p>
+</div>`,
+  boxes: [
+    { type:'ts', title:'Assertion vs. Cast — The Core Difference', body:`<p><strong>Type assertion</strong> (<code>as</code>) is a compile-time instruction to TypeScript only. It produces <strong>zero runtime code</strong> — the JavaScript output is identical. You are telling the type checker "trust me, I know this is an <code>HTMLInputElement</code>," but nothing in the browser changes.<br><br><strong>Type casting</strong> (common in languages like Java or C#) <em>converts</em> a value from one type to another at runtime — e.g., converting an integer to a float. TypeScript has no equivalent of this. <code>as number</code> does not call <code>Number()</code> or <code>parseInt()</code>. If you need to actually convert a value, you must do it explicitly: <code>Number(str)</code>, <code>Boolean(value)</code>, <code>String(n)</code>.</p>` },
+    { type:'warn', title:'Watch Out — Assertions Can Lie', body:`<p>Because assertions are erased at runtime, TypeScript cannot verify that your assertion is correct. <code>const n = "hello" as unknown as number</code> compiles fine but <code>n</code> is still the string <code>"hello"</code> at runtime. The double-assertion (<code>as unknown as T</code>) is the most dangerous form — it bypasses all type safety checks. Use it only as a last resort and add a comment explaining why it is safe.</p>` },
+    { type:'ts', title:'Safer Alternatives to Assertions', body:`<p>Before reaching for <code>as</code>, consider these safer patterns:<br><code>instanceof</code> check: <code>if (el instanceof HTMLInputElement) el.value</code> — TypeScript <em>narrows</em> the type inside the block based on a real runtime check.<br><code>typeof</code> guard: <code>if (typeof x === 'string') x.toUpperCase()</code> — same idea for primitives.<br><strong>Type predicates</strong>: write a <code>function isPost(x: unknown): x is Post</code> that validates the shape of incoming JSON before asserting its type. This keeps you safe even when the API is untrustworthy.</p>` },
+  ],
+  code:`// ── TYPE ASSERTION with 'as' ─────────────────────────────
+// querySelector returns Element | null — we know it's specifically an input:
+const input = document.querySelector("#username") as HTMLInputElement;
+input.value = "Alice"; // ✅ HTMLInputElement has .value
+
+// JSON.parse returns 'any' — we know the shape:
+type Config = { debug: boolean; version: number };
+const config = JSON.parse('{"debug": true, "version": 6}') as Config;
+console.log(config.debug);   // ✅ boolean
+console.log(config.version); // ✅ number
+
+// ── ANGLE-BRACKET SYNTAX (doesn't work in .tsx files) ─────
+const canvas = <HTMLCanvasElement>document.getElementById("myCanvas");
+// Use 'as' syntax instead in React/TSX files!
+
+// ── DOUBLE ASSERTION (escape hatch — use carefully!) ──────
+// Sometimes TypeScript won't let you assert directly.
+// Asserting to 'unknown' first unlocks any further assertion:
+const str = "hello" as unknown as number; // ⚠️ Forced!
+// This bypasses ALL type safety — use only as a last resort.
+
+// ── CONST ASSERTION ───────────────────────────────────────
+// 'as const' makes values deeply readonly and literal:
+const colors = ["red", "green", "blue"] as const;
+// colors is now: readonly ["red", "green", "blue"]
+// NOT string[] — the exact literal values!
+
+const config2 = {
+  host: "localhost",
+  port: 3000,
+  debug: true
+} as const;
+// config2.port is 3000 (literal), not number
+// config2 is completely readonly
+
+// ── WHEN TO USE TYPE ASSERTIONS ───────────────────────────
+// ✅ When accessing DOM elements (you know the exact element type)
+// ✅ When working with JSON data (you know the structure)
+// ✅ When TypeScript's type is too broad but you're certain
+// ❌ Don't use to bypass real type errors — fix them instead!`,
+  codeFile:'type-assertions.ts', codeLang:'typescript',
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 13 — DEBUGGING
+// ═══════════════════════════════════════
+{
+  id:'debugging', group:'Chapter 13 — Debugging', icon:'bug', title:'Debugging TypeScript',
+  sub:'Source maps, VS Code debugger, and practical strategies for finding and fixing TypeScript bugs.',
+  content:`
+<div class="prose">
+  <p>Debugging TypeScript has two parts: fixing <strong>type errors</strong> (caught by the compiler before running) and debugging <strong>runtime bugs</strong> (in the running code). TypeScript makes both easier.</p>
+</div>`,
+  code:`// tsconfig.json — Enable source maps for proper debugging:
+{
+  "compilerOptions": {
+    "sourceMap": true,     // Generate .map files (link JS to TS)
+    "inlineSources": true, // Embed source in map (better in some setups)
+    "outDir": "./dist"
+  }
+}`,
+  codeFile:'tsconfig.json', codeLang:'json',
+  extraCodes:[{
+    code:`// launch.json — VS Code debugger configuration:
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug TypeScript",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["--require", "ts-node/register"],
+      "args": ["\${workspaceFolder}/src/index.ts"],
+      "cwd": "\${workspaceFolder}",
+      "sourceMaps": true,
+      "outFiles": ["\${workspaceFolder}/dist/**/*.js"]
+    }
+  ]
+}`,
+    file:'.vscode/launch.json', lang:'json'
+  },{
+    code:`// ── PRACTICAL DEBUGGING TIPS ─────────────────────────────
+
+// 1. UNDERSTAND TypeScript errors — they tell you EXACTLY what's wrong
+//    Error: "Argument of type 'string' is not assignable to
+//            parameter of type 'number'"
+//    = You passed a string where a number was expected. Fix the call site!
+
+// 2. HOVER in VS Code — see inferred types without annotations
+function getData() {
+  return { name: "Alice", age: 30 }; // Hover: { name: string; age: number }
+}
+
+// 3. console.log with type information:
+function debugValue<T>(label: string, value: T): T {
+  console.log(\`[DEBUG] \${label}:\`, value, \`(type: \${typeof value})\`);
+  return value;
+}
+
+const result = debugValue("user count", 42);
+// [DEBUG] user count: 42 (type: number)
+
+// 4. TYPE NARROWING for safe runtime checks:
+function processInput(input: string | number | null) {
+  if (input === null) {
+    console.log("No input provided");
+    return;
+  }
+  if (typeof input === "string") {
+    console.log("String input:", input.toUpperCase());
+  } else {
+    console.log("Number input:", input.toFixed(2));
+  }
+}
+
+// 5. ASSERT function — validate assumptions at runtime:
+function assert(condition: boolean, message: string): asserts condition {
+  if (!condition) {
+    throw new Error(\`Assertion failed: \${message}\`);
+  }
+}
+
+const user = { name: "Alice", age: 30 };
+assert(user.age > 0, "Age must be positive");
+console.log(user.name); // TypeScript knows user is defined here`,
+    file:'debugging-tips.ts', lang:'typescript'
+  }],
+  boxes:[
+    {type:'tip',title:'💡 Read TypeScript Errors Carefully',body:`<p>TypeScript errors look intimidating at first, but they always tell you exactly what went wrong. The pattern is: <code>"Type 'X' is not assignable to type 'Y'"</code>. Read it as: "You gave me X but I expected Y." Look at the underlined code and fix the type mismatch.</p>`},
+    {type:'ts',title:'TypeScript 6 — Better Error Messages',body:`<p>TypeScript 6.0 continues improving error messages to be more human-readable and actionable. Error messages now include more context about <em>why</em> a type doesn't match, not just <em>what</em> doesn't match.</p>`},
+  ]
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 14 — OUTRO
+// ═══════════════════════════════════════
+{
+  id:'outro', group:'Chapter 14 — Outro & What\'s Next', icon:'star', title:'Outro & What\'s Next',
+  sub:'You\'ve learned TypeScript 6.0! Here\'s what to do next and how to go further.',
+  content:`
+<div class="prose">
+  <p>🎉 <strong>Congratulations!</strong> You've covered all the essential TypeScript concepts. You now understand types, functions, objects, interfaces, classes, generics, and more. This is a solid foundation for writing professional TypeScript code.</p>
+  <p>Here's a quick summary of everything you've learned:</p>
+</div>
+<div class="g3">
+  <div class="card"><div class="card-icon">🏗️</div><div class="card-t">Foundation</div><div class="card-b">Built-in types, annotations, inference, <code>any</code>, <code>unknown</code>, configuration</div></div>
+  <div class="card"><div class="card-icon">🔧</div><div class="card-t">Data Structures</div><div class="card-b">Objects, arrays, tuples, enums — all with type safety</div></div>
+  <div class="card"><div class="card-icon">⚙️</div><div class="card-t">Functions</div><div class="card-b">Parameters, returns, optionals, defaults, rest, void, never</div></div>
+  <div class="card"><div class="card-icon">🧩</div><div class="card-t">Advanced Types</div><div class="card-b">Unions, literals, nullable, type aliases, intersections</div></div>
+  <div class="card"><div class="card-icon">📐</div><div class="card-t">OOP</div><div class="card-b">Interfaces, classes, access modifiers, abstract, implements</div></div>
+  <div class="card"><div class="card-icon">🔮</div><div class="card-t">Generics</div><div class="card-b">Reusable code with type parameters, constraints, assertions</div></div>
+</div>
+
+<div class="react-next-card">
+  <div class="react-next-icon">⚛️</div>
+  <div class="react-next-text">
+    <h3>Ready for React 19?</h3>
+    <p>Now that you understand TypeScript, you're perfectly equipped to learn React 19. The React guide uses all the TypeScript concepts you just learned — interfaces for props, generics for hooks, union types for state, and more. It's the natural next step!</p>
+    <a class="react-next-btn" href="react19-ts6-guide-complete.html">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      Open React 19 + TypeScript 6 Guide
+    </a>
+  </div>
+</div>`,
+  boxes:[
+    {type:'new',title:'🆕 What\'s Coming — TypeScript 7.0',body:`<p>TypeScript 7.0 (targeting mid-2026) will be rewritten in <strong>Go</strong> — promising 10× faster builds. <code>strict: true</code> and <code>ES2025</code> defaults from 6.0 will carry forward. If you've adopted TypeScript 6.0's patterns, upgrading to 7.0 should be smooth. Try it now: <code>npm install @typescript/native-preview</code>.</p>`},
+    {type:'ts',title:'Keep Practicing!',body:`<ul><li>Build a small project with TypeScript (a to-do app, a calculator, a quiz)</li><li>Explore the official TypeScript handbook at <code>typescriptlang.org</code></li><li>Try the TypeScript Playground at <code>www.typescriptlang.org/play</code></li><li>Read error messages carefully — they are your best teacher</li><li>Gradually enable stricter checks in your tsconfig</li></ul>`},
+    {type:'tip',title:'💡 TypeScript Utility Types (Advanced)',body:`<p>TypeScript has powerful built-in utility types: <code>Partial&lt;T&gt;</code>, <code>Required&lt;T&gt;</code>, <code>Readonly&lt;T&gt;</code>, <code>Pick&lt;T, K&gt;</code>, <code>Omit&lt;T, K&gt;</code>, <code>Record&lt;K, V&gt;</code>, <code>Exclude&lt;T, U&gt;</code>, <code>Extract&lt;T, U&gt;</code>, <code>NonNullable&lt;T&gt;</code>, <code>ReturnType&lt;T&gt;</code>. These are covered in full in the next chapter!</p>`},
+  ]
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 14 — ASYNC TYPESCRIPT
+// ═══════════════════════════════════════
+{
+  id:'async-typescript', group:'Chapter 14 — Async TypeScript', icon:'code', title:'Async TypeScript',
+  sub:'Typing Promises, async functions, and the patterns you need for data fetching and async workflows.',
+  content:`
+<div class="prose">
+  <p>TypeScript adds type safety on top of JavaScript's asynchronous patterns. The key type is <strong>Promise&lt;T&gt;</strong> — a Promise that will resolve to a value of type <code>T</code>. When you <code>await</code> a <code>Promise&lt;T&gt;</code>, TypeScript automatically unwraps it and gives you a <code>T</code>.</p>
+  <p>Understanding how to type async functions is essential for working with APIs, file systems, databases, and any operation that takes time.</p>
+</div>`,
+  code:`// ── PROMISE<T> — the core async type ──────────────────────
+// A function that returns a Promise resolving to a number:
+function delay(ms: number): Promise<number> {
+  return new Promise(resolve => setTimeout(() => resolve(ms), ms));
+}
+
+const result: number = await delay(1000);
+// TypeScript knows result is a number — Promise<number> is unwrapped
+
+
+// ── async FUNCTIONS always return Promise<T> ───────────────
+// Even if you return a plain value, it's wrapped in a Promise:
+async function getUsername(): Promise<string> {
+  return "Alice";  // TypeScript wraps this as Promise<string>
+}
+
+// Return type is inferred — you can omit it:
+async function getUserAge() {  // inferred: Promise<number>
+  return 30;
+}
+
+
+// ── TYPING API RESPONSES ──────────────────────────────────
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+// The fetch + json() pattern with proper types:
+async function fetchUser(id: number): Promise<User> {
+  const response = await fetch(\`/api/users/\${id}\`);
+
+  if (!response.ok) {
+    throw new Error(\`HTTP error: \${response.status}\`);
+  }
+
+  // response.json() returns Promise<any> — cast it to your type:
+  const user: User = await response.json();
+  return user;
+}
+
+// Usage — TypeScript knows user is a User:
+const user = await fetchUser(1);
+console.log(user.name);   // ✅ TypeScript knows .name is a string
+console.log(user.age);    // ❌ Error: 'age' does not exist on type 'User'
+
+
+// ── Promise<T | null> — for "might not find it" ───────────
+async function findUser(id: number): Promise<User | null> {
+  try {
+    return await fetchUser(id);
+  } catch {
+    return null;  // caller must handle null
+  }
+}
+
+const maybeUser = await findUser(99);
+if (maybeUser) {
+  console.log(maybeUser.name);  // TypeScript narrows to User inside the if
+}
+
+
+// ── MULTIPLE CONCURRENT REQUESTS — Promise.all ────────────
+// Fetch multiple things at the same time:
+async function fetchDashboard(userId: number) {
+  // TypeScript infers the tuple type automatically:
+  const [user, posts, notifications] = await Promise.all([
+    fetchUser(userId),                          // Promise<User>
+    fetch(\`/api/posts?userId=\${userId}\`).then(r => r.json() as Promise<Post[]>),
+    fetch(\`/api/notifications\`).then(r => r.json() as Promise<number>),
+  ]);
+  // user: User, posts: Post[], notifications: number — all correctly typed
+  return { user, posts, notifications };
+}
+
+
+// ── async/await vs .then() — same thing, different syntax ─
+// These two are equivalent:
+
+// With .then() — chaining style:
+fetch('/api/users')
+  .then(res => res.json())
+  .then((users: User[]) => console.log(users))
+  .catch(err => console.error(err));
+
+// With async/await — cleaner for complex logic:
+async function loadUsers() {
+  try {
+    const res = await fetch('/api/users');
+    const users: User[] = await res.json();
+    console.log(users);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+
+// ── TYPING setTimeout / setInterval ──────────────────────
+// In a browser environment, these return number:
+const timerId: number = setTimeout(() => {}, 1000);
+clearTimeout(timerId);
+
+// In Node.js, they return NodeJS.Timeout — use ReturnType<> to be safe:
+const nodeTimer: ReturnType<typeof setTimeout> = setTimeout(() => {}, 1000);`,
+  codeFile:'async-typescript.ts', codeLang:'typescript',
+  boxes:[
+    {type:'warn',title:'⚠️ response.json() returns Promise<any>',body:`<p><code>response.json()</code> has the return type <code>Promise&lt;any&gt;</code> — TypeScript won't complain about anything you do with it. Always annotate the result: <code>const data: User = await response.json()</code> or cast it: <code>response.json() as Promise&lt;User&gt;</code>. Without this, you lose all type safety on your API response.</p>`},
+    {type:'ts',title:'async functions and void',body:`<p>Event handlers that are async return <code>Promise&lt;void&gt;</code>. This is fine for most cases, but be careful — if you pass an async function somewhere that expects <code>() => void</code>, TypeScript may accept it but the caller won't know to await it. Always handle errors inside async event handlers with try/catch, since the caller won't catch rejected Promises.</p>`},
+    {type:'tip',title:'💡 Top-level await',body:`<p>In modern TypeScript (with <code>"module": "ESNext"</code> and <code>"moduleDetection": "force"</code> in your tsconfig), you can use <code>await</code> at the top level of a module file — no wrapping <code>async</code> function needed. This is great for scripts and module initialisation code.</p>`},
+  ]
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 15 — ERROR HANDLING
+// ═══════════════════════════════════════
+{
+  id:'error-handling-ts', group:'Chapter 15 — Error Handling', icon:'bug', title:'Error Handling in TypeScript',
+  sub:'try/catch/finally, the unknown catch type, and patterns for writing safe, robust code.',
+  content:`
+<div class="prose">
+  <p>TypeScript 4.0 changed the type of caught errors from <code>any</code> to <code>unknown</code>. This is stricter and safer — it forces you to check what the error actually is before using it. Understanding this is essential for writing robust TypeScript.</p>
+  <p>Good error handling in TypeScript means: always narrowing the caught error, creating meaningful error messages, and knowing when to re-throw vs. recover.</p>
+</div>`,
+  code:`// ── THE BASICS — try / catch / finally ────────────────────
+try {
+  // Code that might throw:
+  const data = JSON.parse(invalidJson);
+
+} catch (err) {
+  // TypeScript 4.0+: err is 'unknown', NOT 'Error'
+  // You must narrow it before using it:
+
+  if (err instanceof Error) {
+    console.log(err.message);   // ✅ safe — we know it's an Error
+    console.log(err.stack);     // ✅ also available on Error
+  } else {
+    console.log(String(err));   // fallback for non-Error throws
+  }
+
+} finally {
+  // Always runs — success OR failure
+  // Use for cleanup: close a file, hide a spinner, release a lock
+  console.log("Done");
+}
+
+
+// ── THE 'unknown' CATCH TYPE — why it matters ─────────────
+// In JavaScript, ANYTHING can be thrown — not just Error objects:
+throw "oops";           // string thrown
+throw 42;               // number thrown
+throw { code: 500 };    // plain object thrown
+
+// TypeScript's 'unknown' type forces you to check before using:
+try {
+  riskyOperation();
+} catch (err) {
+  // ❌ This fails — cannot use 'unknown' directly:
+  console.log(err.message);   // Error: 'err' is of type 'unknown'
+
+  // ✅ Narrow first:
+  if (err instanceof Error) {
+    console.log(err.message);  // Now TypeScript knows it's an Error
+  }
+}
+
+
+// ── REUSABLE ERROR MESSAGE HELPER ────────────────────────
+// Put this in a utils.ts file and import it everywhere:
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  return "An unexpected error occurred";
+}
+
+// Usage — always gives you a safe string:
+try {
+  await fetchData();
+} catch (err) {
+  const message = getErrorMessage(err);
+  showToast(message);  // user-friendly, never crashes
+}
+
+
+// ── CUSTOM ERROR CLASSES ──────────────────────────────────
+// Extend Error to create domain-specific error types:
+class ApiError extends Error {
+  constructor(
+    public readonly status: number,
+    message: string
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
+class ValidationError extends Error {
+  constructor(
+    public readonly field: string,
+    message: string
+  ) {
+    super(message);
+    this.name = "ValidationError";
+  }
+}
+
+// Throw your custom errors:
+async function fetchUser(id: number) {
+  const res = await fetch(\`/api/users/\${id}\`);
+  if (res.status === 404) throw new ApiError(404, "User not found");
+  if (!res.ok) throw new ApiError(res.status, "Request failed");
+  return res.json();
+}
+
+// Catch and distinguish between error types:
+try {
+  const user = await fetchUser(99);
+} catch (err) {
+  if (err instanceof ApiError) {
+    console.log(\`API error \${err.status}: \${err.message}\`);
+    // err.status is typed as number — full type safety
+  } else if (err instanceof ValidationError) {
+    console.log(\`Validation failed on field: \${err.field}\`);
+  } else {
+    console.log("Unknown error:", getErrorMessage(err));
+  }
+}
+
+
+// ── WHEN TO RE-THROW vs. RECOVER ─────────────────────────
+async function loadConfig(): Promise<Config> {
+  try {
+    const res = await fetch('/api/config');
+    return await res.json();
+
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 404) {
+      // We can recover — return a default config:
+      return defaultConfig;
+    }
+    // Can't recover from other errors — re-throw so the caller handles it:
+    throw err;
+  }
+}
+
+
+// ── RESULT PATTERN — avoid try/catch at call sites ────────
+// An alternative style: return { data, error } instead of throwing
+type Result<T> =
+  | { success: true;  data: T }
+  | { success: false; error: string }
+
+async function safeParseJson(text: string): Promise<Result<unknown>> {
+  try {
+    return { success: true, data: JSON.parse(text) };
+  } catch (err) {
+    return { success: false, error: getErrorMessage(err) };
+  }
+}
+
+// Caller doesn't need try/catch — just checks result.success:
+const result = await safeParseJson(rawText);
+if (result.success) {
+  console.log(result.data);
+} else {
+  console.log("Parse failed:", result.error);
+}`,
+  codeFile:'error-handling.ts', codeLang:'typescript',
+  boxes:[
+    {type:'ts',title:'useUnknownInCatchVariables',body:`<p>In TypeScript 6 with <code>strict: true</code>, caught variables are typed as <code>unknown</code> by default. This is controlled by the <code>useUnknownInCatchVariables</code> option (enabled automatically under strict). In older code you may see <code>catch (err: any)</code> — that's the old workaround. Prefer proper narrowing with <code>instanceof</code> instead.</p>`},
+    {type:'warn',title:'⚠️ Never use catch (err: Error)',body:`<p>You cannot annotate a catch binding with a type other than <code>any</code> or <code>unknown</code> — TypeScript will error if you write <code>catch (err: Error)</code>. Use <code>instanceof</code> narrowing inside the catch block instead: <code>if (err instanceof Error) { ... }</code>.</p>`},
+    {type:'tip',title:'💡 Log errors, show messages',body:`<p>A good rule of thumb: <strong>log</strong> the full technical error (with stack trace) to the console or monitoring service, but <strong>display</strong> only a clean, human-readable message to the user. <code>console.error(err)</code> for developers, <code>getErrorMessage(err)</code> for users.</p>`},
+  ]
+},
+
+// ═══════════════════════════════════════
+// CHAPTER 16 — UTILITY TYPES
+// ═══════════════════════════════════════
+{
+  id:'utility-types', group:'Chapter 16 — Utility Types', icon:'ts', title:'Utility Types',
+  sub:'TypeScript\'s built-in type transformers — powerful tools for working with existing types without rewriting them.',
+  content:`
+<div class="prose">
+  <p><strong>Utility types</strong> are built into TypeScript. They take an existing type and transform it — making all fields optional, picking just some fields, removing fields, making everything read-only, and more. They prevent code duplication in your type definitions.</p>
+  <p>You don't need to install anything. They are always available in any TypeScript project.</p>
+</div>`,
+  code:`// We'll use this interface throughout all examples:
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  age: number;
+  role: "admin" | "editor" | "viewer";
+}
+
+
+// ── Partial<T> — make all fields optional ────────────────
+// Useful for update payloads — you only send the fields that changed
+type UserUpdate = Partial<User>;
+// Equivalent to: { id?: number; name?: string; email?: string; ... }
+
+function updateUser(id: number, changes: Partial<User>): void {
+  // changes can have any combination of User's fields
+}
+updateUser(1, { name: "Alice" });        // ✅ only name
+updateUser(1, { name: "Bob", age: 25 }); // ✅ name + age
+
+
+// ── Required<T> — make all fields required ────────────────
+// The opposite of Partial — removes all ? marks
+interface Config {
+  host?: string;
+  port?: number;
+  debug?: boolean;
+}
+
+type StrictConfig = Required<Config>;
+// { host: string; port: number; debug: boolean } — all required
+
+
+// ── Readonly<T> — prevent mutation ───────────────────────
+type ReadonlyUser = Readonly<User>;
+// All fields become readonly — good for data you should never mutate
+
+const user: ReadonlyUser = { id: 1, name: "Alice", email: "a@b.com", age: 30, role: "viewer" };
+user.name = "Bob";  // ❌ Error: Cannot assign to 'name' — it's read-only
+
+
+// ── Pick<T, K> — select only some fields ─────────────────
+// Create a type with only the fields you need:
+type UserPreview = Pick<User, "id" | "name">;
+// { id: number; name: string }  — just these two fields
+
+type UserContact = Pick<User, "name" | "email">;
+// { name: string; email: string }
+
+// Great for API responses that don't return every field:
+function getPreview(user: User): UserPreview {
+  return { id: user.id, name: user.name };
+}
+
+
+// ── Omit<T, K> — remove specific fields ──────────────────
+// The opposite of Pick — everything EXCEPT the listed fields:
+type UserWithoutId = Omit<User, "id">;
+// { name: string; email: string; age: number; role: "admin"|"editor"|"viewer" }
+
+// Common use: a "create" type that excludes the auto-generated id
+type CreateUserDto = Omit<User, "id">;
+
+function createUser(data: CreateUserDto): User {
+  return { ...data, id: Math.random() };
+}
+
+createUser({ name: "Alice", email: "a@b.com", age: 25, role: "editor" }); // ✅
+createUser({ id: 1, name: "Alice", ... });  // ❌ Error: id should not be here
+
+
+// ── Record<K, V> — typed key-value map ────────────────────
+// Creates a type where keys are K and values are V:
+type RolePermissions = Record<"admin" | "editor" | "viewer", string[]>;
+
+const permissions: RolePermissions = {
+  admin:  ["read", "write", "delete"],
+  editor: ["read", "write"],
+  viewer: ["read"],
+};
+
+// Another common use — map of id to object:
+type UserMap = Record<number, User>;
+const usersById: UserMap = {
+  1: { id: 1, name: "Alice", email: "a@b.com", age: 30, role: "admin" },
+  2: { id: 2, name: "Bob",   email: "b@b.com", age: 25, role: "viewer" },
+};
+
+
+// ── ReturnType<T> — extract a function's return type ──────
+function getUser() {
+  return { id: 1, name: "Alice", role: "admin" as const };
+}
+
+type FetchedUser = ReturnType<typeof getUser>;
+// { id: number; name: string; role: "admin" }
+// Useful when you can't import the type but can import the function
+
+
+// ── NonNullable<T> — remove null and undefined ────────────
+type MaybeString = string | null | undefined;
+type DefinitelyString = NonNullable<MaybeString>;
+// string — null and undefined removed
+
+
+// ── Combining utility types ───────────────────────────────
+// Real-world pattern: a "patch" payload that excludes id and role
+type UserPatch = Partial<Omit<User, "id" | "role">>;
+// { name?: string; email?: string; age?: number }
+
+// Read-only version of a picked subset:
+type ImmutablePreview = Readonly<Pick<User, "id" | "name">>;
+// { readonly id: number; readonly name: string }`,
+  codeFile:'utility-types.ts', codeLang:'typescript',
+  boxes:[
+    {type:'ts',title:'Partial vs Optional fields',body:`<p><code>Partial&lt;T&gt;</code> makes every field optional. It's different from defining optional fields with <code>?</code> — <code>Partial</code> is a transformation applied to an existing type, which means you don't have to rewrite the interface. Use <code>Partial&lt;User&gt;</code> for update/patch payloads where only some fields change.</p>`},
+    {type:'tip',title:'💡 Pick vs Omit — which to use?',body:`<p>Use <code>Pick</code> when you want <strong>only a few fields</strong> from a large type (it's shorter to list what you want). Use <code>Omit</code> when you want <strong>almost everything</strong> except a couple of fields (it's shorter to list what you don't want). Both produce the same kind of result — just choose whichever needs fewer field names listed.</p>`},
+    {type:'warn',title:'More utility types to explore',body:`<p>There are more built-in utility types beyond this page: <code>Exclude&lt;T, U&gt;</code> and <code>Extract&lt;T, U&gt;</code> work on union types (not object fields). <code>Parameters&lt;T&gt;</code> extracts a function's parameter types. <code>Awaited&lt;T&gt;</code> unwraps a Promise type. All are in the official TypeScript docs under "Utility Types."</p>`},
+  ]
+},
+
+]; // END SECTIONS
+
+// ═══════════════════════════════════════════════════════════════
+// RENDERING ENGINE  (matches React 19 guide architecture)
+// ═══════════════════════════════════════════════════════════════
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function buildBox(b) {
+  const iconMap = { ts:'ts', tip:'check', warn:'warn', new:'star', ok:'check' };
+  const titleMap = { ts:'TypeScript', tip:'Tip', warn:'Watch Out', new:'New in TS 6.0', ok:'Best Practice' };
+  return `<div class="box box-${b.type}">
+    <div class="box-hdr">${ICONS[iconMap[b.type]||'info']} ${b.title || titleMap[b.type] || ''}</div>
+    <div class="box-body">${b.body}</div>
+  </div>`;
+}
+
+function buildCode(code, file, lang, extraCodes) {
+  const langMap = { typescript:'typescript', ts:'typescript', bash:'bash', json:'json', javascript:'javascript', js:'javascript' };
+  const l = langMap[lang] || 'typescript';
+  let html = `<div class="cb">
+    <div class="cb-hdr">
+      <div class="cb-fname">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        ${file||'code'} <span class="cb-lang">${lang||'typescript'}</span>
+      </div>
+      <button class="cb-copy" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre class="language-${l}"><code class="language-${l}">${escHtml(code)}</code></pre>
+  </div>`;
+  if (extraCodes) {
+    extraCodes.forEach(ec => {
+      const el = langMap[ec.lang] || 'typescript';
+      html += `<div class="cb">
+        <div class="cb-hdr">
+          <div class="cb-fname">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            ${ec.file} <span class="cb-lang">${ec.lang}</span>
+          </div>
+          <button class="cb-copy" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre class="language-${el}"><code class="language-${el}">${escHtml(ec.code)}</code></pre>
+      </div>`;
+    });
+  }
+  return html;
+}
+
+function renderSection(s, idx, total) {
+  const prev = idx > 0 ? SECTIONS[idx - 1] : null;
+  const next = idx < total - 1 ? SECTIONS[idx + 1] : null;
+  const num  = String(idx + 1).padStart(2, '0');
+
+  let html = `<div id="sec-${s.id}" class="sec${idx === 0 ? ' vis' : ''}">
+    <div class="sec-crumb">${s.group} <span>/ ${s.title}</span></div>
+    <div class="sec-title">${s.title}</div>
+    <p class="sec-sub">${s.sub}</p>`;
+
+  if (s.content)    html += s.content;
+  if (s.mockup)     html += s.mockup;
+  if (s.boxes)      s.boxes.forEach(b => { html += buildBox(b); });
+  if (s.code)       html += buildCode(s.code, s.codeFile||'', s.codeLang||'typescript', s.extraCodes);
+
+  html += `<div class="nav-row">`;
+  html += prev
+    ? `<button class="nav-btn" onclick="navigate('${prev.id}')">${ICONS.prev} ${prev.title}</button>`
+    : `<span></span>`;
+  html += next
+    ? `<button class="nav-btn next" onclick="navigate('${next.id}')">${next.title} ${ICONS.next}</button>`
+    : `<button class="nav-btn next" onclick="navigate('${SECTIONS[0].id}')">${ICONS.rocket} Start Over</button>`;
+  html += `</div></div>`;
+  return html;
+}
+
+// ── Build sidebar (IDs, not indices) ──────────────────────────
+function buildSidebar() {
+  const el = document.getElementById('sidebar');
+  let html = '', currentGroup = '', num = 0;
+  SECTIONS.forEach((s, i) => {
+    if (s.group !== currentGroup) {
+      currentGroup = s.group;
+      html += `<div class="sg-label">${s.group}</div>`;
+    }
+    num++;
+    html += `<div class="si${i === 0 ? ' active' : ''}" id="si-${s.id}" onclick="navigate('${s.id}')">
+      ${ICONS[s.icon] || ICONS.ts}
+      <span>${s.title}</span>
+      <span class="sn">${String(num).padStart(2,'0')}</span>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+// ── Build content (all sections upfront) ─────────────────────
+function buildContent() {
+  document.getElementById('content').innerHTML =
+    SECTIONS.map((s, i) => renderSection(s, i, SECTIONS.length)).join('');
+}
+
+// ── Navigate by string ID ─────────────────────────────────────
+let current = SECTIONS[0].id;
+const visited = new Set([SECTIONS[0].id]);
+
+function navigate(id) {
+  // hide old
+  document.getElementById('sec-' + current)?.classList.remove('vis');
+  document.getElementById('si-'  + current)?.classList.remove('active');
+  // show new
+  current = id;
+  const sec = document.getElementById('sec-' + id);
+  const si  = document.getElementById('si-'  + id);
+  if (sec) {
+    sec.classList.add('vis');
+    document.querySelector('.content').scrollTop = 0;
+  }
+  if (si) {
+    si.classList.add('active');
+    si.scrollIntoView({ block: 'nearest' });
+  }
+  updateProgress();
+  if (window.Prism && sec) Prism.highlightAllUnder(sec);
+}
+
+// ── Progress ──────────────────────────────────────────────────
+function updateProgress() {
+  visited.add(current);
+  const pct = Math.round((visited.size / SECTIONS.length) * 100);
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progTxt').textContent  = `${visited.size} / ${SECTIONS.length}`;
+}
+
+// ── Copy code ─────────────────────────────────────────────────
+function copyCode(btn) {
+  const code = btn.closest('.cb').querySelector('code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1800);
+  });
+}
+
+// ── Search (dropdown, matches React guide) ────────────────────
+const searchIndex = SECTIONS.map(s => ({
+  id: s.id,
+  title: s.title,
+  group: s.group,
+  text: (s.sub + ' ' + (s.content || '')).replace(/<[^>]+>/g, '').toLowerCase()
+}));
+
+let selIdx = -1; // keyboard-selected item in dropdown
+
+
+// Sync mobile search input with main search
+document.getElementById('searchInputMobile')?.addEventListener('input', function() {
+  const mainInput = document.getElementById('searchInput')
+  mainInput.value = this.value
+  mainInput.dispatchEvent(new Event('input'))
+  const drop = document.getElementById('searchResults')
+  if (drop) {
+    drop.style.position = 'fixed'
+    drop.style.left = '14px'
+    drop.style.right = '14px'
+    drop.style.width = 'auto'
+    drop.style.transform = 'none'
+    drop.style.top = 'var(--hdr)'
+  }
+})
+document.getElementById('searchInputMobile')?.addEventListener('keydown', function(e) {
+  document.getElementById('searchInput').dispatchEvent(new KeyboardEvent('keydown', e))
+})
+
+document.getElementById('searchInput').addEventListener('input', function () {
+  const q = this.value.trim().toLowerCase();
+  const drop = document.getElementById('searchResults');
+  selIdx = -1;
+  if (!q) { drop.classList.remove('vis'); return; }
+
+  const hits = searchIndex
+    .filter(s => s.title.toLowerCase().includes(q) || s.text.includes(q))
+    .slice(0, 8);
+
+  if (!hits.length) {
+    drop.innerHTML = `<div class="srch-empty">No results for "<strong>${q}</strong>"</div>`;
+    drop.classList.add('vis');
+    return;
+  }
+
+  drop.innerHTML = hits.map(h => `
+    <div class="srch-item" data-id="${h.id}"
+         onclick="pickSearch('${h.id}')">
+      <div class="sg">${h.group}</div>
+      ${h.title}
+    </div>`).join('');
+  drop.classList.add('vis');
+});
+
+function pickSearch(id) {
+  navigate(id);
+  document.getElementById('searchInput').value = '';
+  const mobileInput = document.getElementById('searchInputMobile');
+  if (mobileInput) mobileInput.value = '';
+  document.getElementById('searchResults').classList.remove('vis');
+  selIdx = -1;
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('.hdr-search') && !e.target.closest('.srch-drop')) {
+    document.getElementById('searchResults').classList.remove('vis');
+    selIdx = -1;
+  }
+});
+
+// ── Keyboard navigation ────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  const drop = document.getElementById('searchResults');
+  const isDropOpen = drop.classList.contains('vis');
+  const inInput = document.activeElement === document.getElementById('searchInput') ||
+                  document.activeElement === document.getElementById('searchInputMobile');
+
+  // ⌘K / Ctrl+K — focus search
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+    return;
+  }
+
+  // Escape — close dropdown / blur search
+  if (e.key === 'Escape') {
+    document.getElementById('searchResults').classList.remove('vis');
+    document.getElementById('searchInput').blur();
+    selIdx = -1;
+    return;
+  }
+
+  // Arrow keys inside open dropdown — keyboard select items
+  if (isDropOpen && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+    e.preventDefault();
+    const items = drop.querySelectorAll('.srch-item');
+    if (!items.length) return;
+    items[selIdx]?.classList.remove('sel');
+    selIdx = e.key === 'ArrowDown'
+      ? Math.min(selIdx + 1, items.length - 1)
+      : Math.max(selIdx - 1, 0);
+    items[selIdx]?.classList.add('sel');
+    items[selIdx]?.scrollIntoView({ block: 'nearest' });
+    return;
+  }
+
+  // Enter — confirm keyboard-selected dropdown item
+  if (isDropOpen && e.key === 'Enter') {
+    const items = drop.querySelectorAll('.srch-item');
+    if (selIdx >= 0 && items[selIdx]) {
+      pickSearch(items[selIdx].dataset.id);
+    }
+    return;
+  }
+
+  // ← / → — prev / next section (when not typing in search)
+  if (!inInput) {
+    if (e.key === 'ArrowRight') {
+      const idx = SECTIONS.findIndex(s => s.id === current);
+      if (idx < SECTIONS.length - 1) navigate(SECTIONS[idx + 1].id);
+    }
+    if (e.key === 'ArrowLeft') {
+      const idx = SECTIONS.findIndex(s => s.id === current);
+      if (idx > 0) navigate(SECTIONS[idx - 1].id);
+    }
+  }
+});
+
+// ── Mobile sidebar toggle ─────────────────────────────────────
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open')
+  document.getElementById('sidebarOverlay').classList.add('vis')
+  document.body.style.overflow = 'hidden'
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open')
+  document.getElementById('sidebarOverlay').classList.remove('vis')
+  document.body.style.overflow = ''
+}
+document.getElementById('menuBtn')?.addEventListener('click', () => {
+  document.getElementById('sidebar').classList.contains('open') ? closeSidebar() : openSidebar()
+})
+document.getElementById('sidebarOverlay')?.addEventListener('click', closeSidebar)
+
+// Wrap navigate to also close sidebar on mobile
+const _navigate = navigate
+navigate = function(id) { _navigate(id); closeSidebar() }
+
+// ── Init ──────────────────────────────────────────────────────
+buildSidebar();
+buildContent();
+updateProgress();
+Prism.highlightAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TypeScript 6 & React 19 — Interactive Beginner Guides</title>
+<meta name="description" content="Two interactive, beginner-friendly guides to TypeScript 6 and React 19. Learn modern web development with real-world code, pro tips, and hands-on examples.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── DESIGN TOKENS ──────────────────────────────────────────────── */
+:root {
+  --bg:        #07090f;
+  --surf:      #0c1018;
+  --surf2:     #111620;
+  --surf3:     #17202e;
+  --border:    rgba(80,120,220,.14);
+  --border2:   rgba(80,120,220,.08);
+  --text:      #dce8ff;
+  --text2:     #7a9ac8;
+  --text3:     #3f5578;
+
+  --ts:        #5b8dee;
+  --ts-dim:    rgba(91,141,238,.10);
+  --ts-border: rgba(91,141,238,.28);
+  --ts-glow:   rgba(91,141,238,.22);
+
+  --rx:        #22d3ee;
+  --rx-dim:    rgba(34,211,238,.09);
+  --rx-border: rgba(34,211,238,.25);
+  --rx-glow:   rgba(34,211,238,.20);
+
+  --nd:        #4ade80;
+  --nd-dim:    rgba(74,222,128,.09);
+  --nd-border: rgba(74,222,128,.28);
+  --nd-glow:   rgba(74,222,128,.22);
+
+  --ex:        #fb923c;
+  --ex-dim:    rgba(251,146,60,.09);
+  --ex-border: rgba(251,146,60,.28);
+
+  --tip:    #34d399;
+  --warn:   #f59e0b;
+  --new:    #a78bfa;
+
+  --radius: 12px;
+  --radius-lg: 20px;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font: 'Geist', sans-serif;
+}
+
+/* ── RESET ─────────────────────────────────────────────────────── */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; -webkit-font-smoothing:antialiased; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* ── SCROLLBAR ──────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--surf3); border-radius: 9px; }
+
+/* ── GRAIN OVERLAY ──────────────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 999; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: .35;
+}
+
+/* ── UTILITY ────────────────────────────────────────────────────── */
+.container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+.pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; font-family: var(--font-mono);
+  letter-spacing: .4px;
+}
+.pill-ts  { background: var(--ts-dim);  color: var(--ts);  border: 1px solid var(--ts-border); }
+.pill-rx  { background: var(--rx-dim);  color: var(--rx);  border: 1px solid var(--rx-border); }
+.pill-nd  { background: var(--nd-dim);  color: var(--nd);  border: 1px solid var(--nd-border); }
+.pill-new { background: rgba(167,139,250,.09); color: var(--new); border: 1px solid rgba(167,139,250,.28); }
+.dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.dot-ts { background: var(--ts); box-shadow: 0 0 6px var(--ts); animation: pulse-ts 2s ease-in-out infinite; }
+.dot-rx { background: var(--rx); box-shadow: 0 0 6px var(--rx); animation: pulse-rx 2s ease-in-out infinite; }
+.dot-nd { background: var(--nd); box-shadow: 0 0 6px var(--nd); animation: pulse-nd 2s ease-in-out infinite; }
+
+@keyframes pulse-ts { 0%,100% { opacity:.7; box-shadow: 0 0 4px var(--ts); } 50% { opacity:1; box-shadow: 0 0 10px var(--ts); } }
+@keyframes pulse-rx { 0%,100% { opacity:.7; box-shadow: 0 0 4px var(--rx); } 50% { opacity:1; box-shadow: 0 0 10px var(--rx); } }
+@keyframes pulse-nd { 0%,100% { opacity:.7; box-shadow: 0 0 4px var(--nd); } 50% { opacity:1; box-shadow: 0 0 10px var(--nd); } }
+
+/* ── REVEAL ANIMATION ────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ── NAV ────────────────────────────────────────────────────────── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 58px;
+  background: rgba(7,9,15,.88);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; max-width: 1160px; margin: 0 auto; padding: 0 24px;
+}
+.nav-logo {
+  font-size: 14px; font-weight: 800; letter-spacing: -.4px;
+  display: flex; align-items: center; gap: 9px;
+}
+.nav-logo .slash { color: var(--text3); font-weight: 400; margin: 0 2px; }
+.nav-logo .ts-word { color: var(--ts); }
+.nav-logo .rx-word { color: var(--rx); }
+.nav-links {
+  display: flex; align-items: center; gap: 28px;
+  font-size: 13px; color: var(--text2);
+}
+.nav-links a { transition: color .2s; }
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  display: flex; align-items: center; gap: 8px;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px; border-radius: 8px;
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; transition: all .2s;
+  text-decoration: none;
+}
+.btn:active { transform: scale(.97); }
+.btn-ghost {
+  background: transparent; color: var(--text2);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--surf); color: var(--text); border-color: var(--border2); }
+.btn-ts {
+  background: var(--ts); color: #07090f;
+  box-shadow: 0 0 18px var(--ts-glow);
+}
+.btn-ts:hover { background: #7aaaf2; box-shadow: 0 0 26px var(--ts-glow); }
+.btn-rx {
+  background: var(--rx); color: #07090f;
+  box-shadow: 0 0 18px var(--rx-glow);
+}
+.btn-rx:hover { background: #5ae3f5; box-shadow: 0 0 26px var(--rx-glow); }
+.btn-nd {
+  background: var(--nd); color: #07090f;
+  box-shadow: 0 0 18px var(--nd-glow);
+}
+.btn-nd:hover { background: #6eeba0; box-shadow: 0 0 26px var(--nd-glow); }
+
+/* ── HERO ────────────────────────────────────────────────────────── */
+.hero {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 0;
+  padding-top: 58px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ambient glow blobs */
+.hero::after {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 55% 50% at 15% 60%, rgba(91,141,238,.09) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 45% at 85% 35%, rgba(34,211,238,.07) 0%, transparent 70%);
+}
+
+.hero-left {
+  padding: 80px 60px 80px 0;
+  position: relative; z-index: 1;
+}
+.hero-eyebrow {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 28px;
+}
+.hero-eyebrow-line {
+  width: 28px; height: 1px; background: var(--ts);
+  box-shadow: 0 0 6px var(--ts);
+}
+.hero-eyebrow-text {
+  font-size: 11px; font-weight: 600; font-family: var(--font-mono);
+  color: var(--text2); letter-spacing: .8px; text-transform: uppercase;
+}
+.hero-headline {
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  color: var(--text);
+  margin-bottom: 22px;
+}
+.hero-headline em { font-style: normal; color: var(--ts); }
+.hero-headline .rx-word { color: var(--rx); }
+
+.hero-sub {
+  font-size: 16px; color: var(--text2); max-width: 52ch;
+  line-height: 1.7; margin-bottom: 36px;
+}
+.hero-sub strong { color: var(--text); font-weight: 600; }
+
+.hero-actions {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+}
+.hero-actions .btn { padding: 11px 22px; font-size: 14px; }
+
+.hero-stats {
+  display: flex; align-items: center; gap: 24px;
+  margin-top: 44px; padding-top: 32px;
+  border-top: 1px solid var(--border2);
+}
+.stat-item { text-align: left; }
+.stat-num {
+  font-size: 22px; font-weight: 800; letter-spacing: -1px;
+  font-family: var(--font-mono);
+}
+.stat-num.ts { color: var(--ts); }
+.stat-num.rx { color: var(--rx); }
+.stat-num.tip { color: var(--tip); }
+.stat-label { font-size: 11px; color: var(--text3); font-weight: 500; margin-top: 1px; }
+.stat-divider { width: 1px; height: 32px; background: var(--border); }
+
+/* ── CODE WINDOW ─────────────────────────────────────────────────── */
+.hero-right {
+  padding: 80px 0 80px 48px;
+  position: relative; z-index: 1;
+}
+.code-window {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.03);
+  position: relative;
+}
+.code-window::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.02) 0%, transparent 60%);
+  border-radius: inherit;
+}
+.cw-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,.02);
+}
+.cw-dots { display: flex; gap: 6px; }
+.cw-dot { width: 11px; height: 11px; border-radius: 50%; }
+.cw-dot:nth-child(1) { background: #ff5f57; }
+.cw-dot:nth-child(2) { background: #ffbd2e; }
+.cw-dot:nth-child(3) { background: #28ca41; }
+.cw-tabs {
+  display: flex; gap: 2px;
+}
+.cw-tab {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+  padding: 4px 12px; border-radius: 6px;
+  cursor: pointer; transition: all .2s; color: var(--text3);
+  border: 1px solid transparent;
+}
+.cw-tab.active-ts { background: var(--ts-dim); color: var(--ts); border-color: var(--ts-border); }
+.cw-tab.active-rx { background: var(--rx-dim); color: var(--rx); border-color: var(--rx-border); }
+.cw-body {
+  padding: 20px 22px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.75;
+  min-height: 320px;
+  position: relative;
+  overflow: hidden;
+}
+.code-panel {
+  position: absolute; inset: 20px 22px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .35s ease, transform .35s ease;
+  pointer-events: none;
+}
+.code-panel.active {
+  opacity: 1; transform: none; pointer-events: auto;
+}
+/* syntax colours */
+.kw  { color: #c792ea; }
+.fn  { color: #82aaff; }
+.ty  { color: var(--ts); }
+.st  { color: #c3e88d; }
+.cm  { color: #546e7a; font-style: italic; }
+.num { color: #f78c6c; }
+.rx-color { color: var(--rx); }
+.op  { color: #89ddff; }
+.pu  { color: var(--text2); }
+
+.cw-footer {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border2);
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 10px; color: var(--text3);
+}
+
+/* ── MARQUEE STRIP ────────────────────────────────────────────────── */
+.marquee-wrap {
+  border-top: 1px solid var(--border2);
+  border-bottom: 1px solid var(--border2);
+  background: var(--surf);
+  padding: 13px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.marquee-inner {
+  display: inline-flex; gap: 0;
+  animation: marquee 28s linear infinite;
+}
+.marquee-inner span {
+  font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+  color: var(--text3); padding: 0 24px;
+}
+.marquee-inner span.ts { color: var(--ts); opacity: .8; }
+.marquee-inner span.rx { color: var(--rx); opacity: .8; }
+.marquee-inner span.sep { color: var(--border); }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ── SECTION COMMON ──────────────────────────────────────────────── */
+section { padding: 96px 0; }
+.section-label {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  color: var(--text3); letter-spacing: 1.2px; text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-label::before {
+  content: ''; width: 18px; height: 1px;
+  background: currentColor; opacity: .5;
+}
+.section-title {
+  font-size: clamp(1.9rem, 3vw, 2.8rem);
+  font-weight: 800; letter-spacing: -1.5px; line-height: 1.1;
+  margin-bottom: 16px;
+}
+.section-sub {
+  font-size: 16px; color: var(--text2);
+  max-width: 54ch; line-height: 1.7; margin-bottom: 56px;
+}
+
+/* ── PATHS SECTION ───────────────────────────────────────────────── */
+#paths { background: var(--surf); }
+
+.paths-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.path-card {
+  background: var(--surf);
+  padding: 48px 44px;
+  position: relative;
+  overflow: hidden;
+  transition: background .3s;
+}
+.path-card:hover { background: var(--surf2); }
+.path-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  transition: opacity .3s;
+}
+.path-card.ts-card::before { background: linear-gradient(90deg, var(--ts) 0%, transparent 80%); }
+.path-card.rx-card::before { background: linear-gradient(90deg, var(--rx) 0%, transparent 80%); }
+.path-card.nd-card::before { background: linear-gradient(90deg, var(--nd) 0%, transparent 80%); }
+
+.path-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 22px; flex-shrink: 0;
+}
+.path-icon.ts-bg { background: var(--ts-dim); border: 1px solid var(--ts-border); }
+.path-icon.rx-bg { background: var(--rx-dim); border: 1px solid var(--rx-border); }
+.path-icon.nd-bg { background: var(--nd-dim); border: 1px solid var(--nd-border); }
+
+.path-tagline {
+  font-size: 11px; font-weight: 600; font-family: var(--font-mono);
+  letter-spacing: .8px; text-transform: uppercase; margin-bottom: 10px;
+}
+.path-tagline.ts { color: var(--ts); }
+.path-tagline.rx { color: var(--rx); }
+.path-tagline.nd { color: var(--nd); }
+
+.path-title {
+  font-size: 1.6rem; font-weight: 800; letter-spacing: -1px;
+  margin-bottom: 12px; line-height: 1.15;
+}
+.path-desc { font-size: 14px; color: var(--text2); line-height: 1.7; margin-bottom: 28px; }
+
+.path-topics {
+  list-style: none; display: flex; flex-direction: column; gap: 9px;
+  margin-bottom: 32px;
+}
+.path-topics li {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; font-family: var(--font-mono); color: var(--text2);
+}
+.check-ts { color: var(--ts); flex-shrink: 0; }
+.check-rx { color: var(--rx); flex-shrink: 0; }
+.check-nd { color: var(--nd); flex-shrink: 0; }
+
+.path-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600; padding: 10px 20px;
+  border-radius: 8px; border: 1px solid;
+  transition: all .2s; cursor: pointer;
+}
+.path-cta:active { transform: scale(.97); }
+.path-cta.ts {
+  background: var(--ts-dim); color: var(--ts); border-color: var(--ts-border);
+}
+.path-cta.ts:hover { background: var(--ts); color: #07090f; box-shadow: 0 0 20px var(--ts-glow); }
+.path-cta.rx {
+  background: var(--rx-dim); color: var(--rx); border-color: var(--rx-border);
+}
+.path-cta.rx:hover { background: var(--rx); color: #07090f; box-shadow: 0 0 20px var(--rx-glow); }
+.path-cta.nd {
+  background: var(--nd-dim); color: var(--nd); border-color: var(--nd-border);
+}
+.path-cta.nd:hover { background: var(--nd); color: #07090f; box-shadow: 0 0 20px var(--nd-glow); }
+
+/* ── FEATURES SECTION ────────────────────────────────────────────── */
+.features-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  border: 1px solid var(--border);
+}
+.feature-card {
+  background: var(--bg);
+  padding: 40px 36px;
+  transition: background .25s;
+  position: relative;
+}
+.feature-card:hover { background: var(--surf); }
+.feature-icon {
+  width: 44px; height: 44px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+  background: var(--surf2); border: 1px solid var(--border);
+}
+.feature-title { font-size: 16px; font-weight: 700; letter-spacing: -.4px; margin-bottom: 10px; }
+.feature-desc { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+/* ── CURRICULUM ──────────────────────────────────────────────────── */
+#curriculum { background: var(--surf); }
+
+.curriculum-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px;
+  background: var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  border: 1px solid var(--border);
+}
+.curriculum-col { background: var(--surf); padding: 44px 40px; }
+.curriculum-col-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 32px;
+  padding-bottom: 20px; border-bottom: 1px solid var(--border2);
+}
+.curriculum-col-title { font-size: 18px; font-weight: 800; letter-spacing: -.6px; }
+.curriculum-steps { display: flex; flex-direction: column; gap: 0; }
+.step {
+  display: flex; gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border2);
+}
+.step:last-child { border-bottom: none; }
+.step-num {
+  width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+}
+.step-num.ts { background: var(--ts-dim); color: var(--ts); border: 1px solid var(--ts-border); }
+.step-num.rx { background: var(--rx-dim); color: var(--rx); border: 1px solid var(--rx-border); }
+.step-content {}
+.step-title { font-size: 14px; font-weight: 600; letter-spacing: -.3px; margin-bottom: 4px; }
+.step-desc { font-size: 12px; color: var(--text3); line-height: 1.6; font-family: var(--font-mono); }
+
+/* ── BRIDGE SECTION ──────────────────────────────────────────────── */
+.bridge-inner {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 64px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.bridge-inner::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 60% 70% at 50% 50%, rgba(91,141,238,.05) 0%, transparent 70%);
+}
+.bridge-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; }
+.bridge-title { font-size: 2rem; font-weight: 800; letter-spacing: -1.2px; line-height: 1.2; margin-bottom: 20px; }
+.bridge-desc { font-size: 15px; color: var(--text2); line-height: 1.8; }
+
+.synergy-list { display: flex; flex-direction: column; gap: 16px; }
+.synergy-item {
+  background: var(--surf2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.synergy-item:hover { border-color: var(--ts-border); }
+.synergy-icon { flex-shrink: 0; margin-top: 2px; }
+.synergy-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; letter-spacing: -.3px; }
+.synergy-desc { font-size: 12px; color: var(--text3); line-height: 1.6; font-family: var(--font-mono); }
+
+/* ── PREREQS ─────────────────────────────────────────────────────── */
+.prereq-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.prereq-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 26px;
+  transition: border-color .25s;
+}
+.prereq-card:hover { border-color: var(--ts-border); }
+.prereq-icon { margin-bottom: 14px; }
+.prereq-title { font-size: 14px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 8px; }
+.prereq-desc { font-size: 12px; color: var(--text3); line-height: 1.65; font-family: var(--font-mono); }
+
+/* ── FOOTER ──────────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  background: var(--surf);
+  padding: 48px 0 36px;
+}
+.footer-inner {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 40px; flex-wrap: wrap;
+}
+.footer-brand .logo { font-size: 15px; font-weight: 800; letter-spacing: -.5px; margin-bottom: 10px; }
+.footer-brand p { font-size: 12px; color: var(--text3); max-width: 34ch; line-height: 1.65; }
+.footer-links-col h4 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--text3); font-family: var(--font-mono); margin-bottom: 14px; }
+.footer-links-col ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.footer-links-col ul li a { font-size: 13px; color: var(--text2); transition: color .2s; }
+.footer-links-col ul li a:hover { color: var(--text); }
+.footer-bottom {
+  margin-top: 40px; padding-top: 24px;
+  border-top: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px; color: var(--text3);
+}
+.back-top {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--text3); transition: color .2s; cursor: pointer;
+}
+.back-top:hover { color: var(--text); }
+
+/* ── GHOST BUTTON VARIANTS ─────────────────────────────────────────── */
+.btn-ghost-ts { color: var(--ts); border-color: var(--ts-border); }
+.btn-ghost-ts:hover { background: var(--ts-dim); color: var(--ts); border-color: var(--ts-border); }
+.btn-ghost-rx { color: var(--rx); border-color: var(--rx-border); }
+.btn-ghost-rx:hover { background: var(--rx-dim); color: var(--rx); border-color: var(--rx-border); }
+.btn-ghost-nd { color: var(--nd); border-color: var(--nd-border); }
+.btn-ghost-nd:hover { background: var(--nd-dim); color: var(--nd); border-color: var(--nd-border); }
+
+/* ── NO-WRAP GUARD ──────────────────────────────────────────────────── */
+.pill { white-space: nowrap; }
+.nav-logo { white-space: nowrap; flex-shrink: 0; }
+.btn { white-space: nowrap; }
+.stat-num { white-space: nowrap; }
+.hero-eyebrow-text { white-space: nowrap; }
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────── */
+
+/* ① Large tablet: 3-col grids tighten padding, nav slightly smaller */
+@media (max-width: 1100px) {
+  .nav-links { gap: 18px; font-size: 12px; }
+  .nav-cta { gap: 6px; }
+  .btn { padding: 7px 13px; font-size: 12px; }
+
+  .path-card { padding: 36px 24px; }
+  .path-title { font-size: 1.35rem; }
+  .path-desc { font-size: 13px; }
+  .path-topics li { font-size: 12px; }
+
+  .curriculum-col { padding: 32px 24px; }
+  .curriculum-col-title { font-size: 15px; }
+  .step-title { font-size: 13px; }
+  .step-desc { font-size: 11px; }
+}
+
+/* ② Tablet: hide nav text links, hero collapses, grids go 3 → 2 col */
+@media (max-width: 860px) {
+  .nav-links { display: none; }
+  .btn { padding: 7px 11px; font-size: 12px; gap: 5px; }
+
+  .hero { grid-template-columns: 1fr; padding: 80px 0 60px; }
+  .hero-left { padding: 40px 24px 32px; }
+  .hero-right { display: none; }
+
+  .paths-grid { grid-template-columns: 1fr 1fr; }
+  .path-card { padding: 28px 20px; }
+  .path-title { font-size: 1.25rem; }
+  .path-tagline { font-size: 10px; }
+
+  .features-grid { grid-template-columns: 1fr 1fr; }
+
+  .curriculum-grid { grid-template-columns: 1fr 1fr; }
+  .curriculum-col { padding: 28px 20px; }
+  .curriculum-col-title { font-size: 14px; letter-spacing: -.4px; }
+  .step { gap: 12px; padding: 12px 0; }
+  .step-num { width: 24px; height: 24px; font-size: 10px; border-radius: 6px; }
+  .step-title { font-size: 12.5px; }
+  .step-desc { font-size: 10.5px; }
+
+  .bridge-inner { grid-template-columns: 1fr; padding: 40px 28px; gap: 36px; }
+  .prereq-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ③ Narrow tablet / large phone: grids go 2 → 1 col */
+@media (max-width: 640px) {
+  .paths-grid { grid-template-columns: 1fr; }
+  .path-card { padding: 32px 24px; }
+  .path-title { font-size: 1.5rem; }
+  .path-desc { font-size: 14px; }
+  .path-topics li { font-size: 13px; }
+  .path-tagline { font-size: 11px; }
+
+  .curriculum-grid { grid-template-columns: 1fr; }
+  .curriculum-col { padding: 32px 24px; }
+  .curriculum-col-title { font-size: 16px; }
+  .step { gap: 14px; padding: 14px 0; }
+  .step-num { width: 26px; height: 26px; font-size: 11px; }
+  .step-title { font-size: 13.5px; }
+  .step-desc { font-size: 11.5px; }
+
+  .features-grid { grid-template-columns: 1fr; }
+  .prereq-grid { grid-template-columns: 1fr; }
+  .bridge-inner { padding: 28px 20px; }
+  .section-sub { margin-bottom: 36px; }
+}
+
+/* ④ Mobile: icon-only nav buttons, hero stacks, full single-col */
+@media (max-width: 540px) {
+  .nav-inner { padding: 0 14px; }
+  .nav-logo { font-size: 12px; gap: 5px; }
+  .nav-cta { gap: 5px; }
+
+  .btn-label { display: none; }
+  .btn { padding: 7px 9px; gap: 0; min-width: 34px; justify-content: center; }
+  .btn svg { width: 15px; height: 15px; }
+
+  .hero-headline { font-size: 2.2rem; letter-spacing: -1.5px; }
+  .hero-actions { flex-direction: column; align-items: stretch; gap: 10px; }
+  .hero-actions .btn { width: 100%; justify-content: center; padding: 11px 16px; gap: 7px; }
+  .hero-actions .btn .btn-label { display: inline; }
+
+  .hero-stats { gap: 16px; flex-wrap: wrap; }
+  .stat-divider { display: none; }
+
+  .footer-inner { flex-direction: column; gap: 28px; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+
+  section { padding: 64px 0; }
+  .section-title { font-size: 1.7rem; letter-spacing: -1px; }
+}
+
+/* ── CURSOR GLOW ─────────────────────────────────────────────────── */
+#cursor-glow {
+  position: fixed; pointer-events: none; z-index: 998;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(91,141,238,.06) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: transform .12s ease, opacity .3s;
+  will-change: transform;
+}
+</style>
+</head>
+<body>
+
+<div id="cursor-glow"></div>
+
+<!-- ── NAV ──────────────────────────────────────────────────────────── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <span class="ts-word">TS 6</span>
+      <span class="slash">/</span>
+      <span class="rx-word">React 19</span>
+      <span class="slash">/</span>
+      <span style="color:var(--nd)">Node.js</span>
+    </div>
+    <div class="nav-links">
+      <a href="#paths">Guides</a>
+      <a href="#features">Features</a>
+      <a href="#curriculum">Curriculum</a>
+      <a href="#prereqs">Prerequisites</a>
+    </div>
+    <div class="nav-cta">
+      <a href="typescript6-guide.html" class="btn btn-ghost btn-ghost-ts">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <span class="btn-label">TypeScript 6</span>
+      </a>
+      <a href="react19-ts6-guide-complete.html" class="btn btn-ghost btn-ghost-rx">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1c-4.6 0-7 4-7 11s2.4 11 7 11 7-4 7-11-2.4-11-7-11z"/></svg>
+        <span class="btn-label">React 19</span>
+      </a>
+      <a href="Node_js-Express_Interactive_Guide.html" class="btn btn-ghost btn-ghost-nd">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="12 2 22 8 22 16 12 22 2 16 2 8"/></svg>
+        <span class="btn-label">Node.js</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ──────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-left container" style="max-width:580px; margin-left:max(24px, calc(50vw - 580px))">
+    <div class="hero-eyebrow reveal">
+      <div class="hero-eyebrow-line"></div>
+      <span class="hero-eyebrow-text">Interactive Beginner Guides · 2025</span>
+    </div>
+    <h1 class="hero-headline reveal" style="transition-delay:.08s">
+      Master Modern<br>
+      <em>TypeScript 6</em>,<br>
+      <span class="rx-word">React 19</span> &amp; <span style="color:var(--nd)">Node.js</span>
+    </h1>
+    <p class="hero-sub reveal" style="transition-delay:.15s">
+      Three <strong>deeply interactive</strong>, beginner-friendly guides built for the newest versions.
+      Real-world code, annotated examples, and <strong>pro-tips</strong> that keep you
+      from common traps.
+    </p>
+    <div class="hero-actions reveal" style="transition-delay:.22s">
+      <a href="typescript6-guide.html" class="btn btn-ts">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <span class="btn-label">Start TypeScript Guide</span>
+      </a>
+      <a href="react19-ts6-guide-complete.html" class="btn btn-rx">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><path d="M12 2a10 10 0 0 1 0 20A10 10 0 0 1 12 2"/></svg>
+        <span class="btn-label">React 19 Guide</span>
+      </a>
+      <a href="Node_js-Express_Interactive_Guide.html" class="btn btn-nd">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 22 8 22 16 12 22 2 16 2 8"/></svg>
+        <span class="btn-label">Node.js Guide</span>
+      </a>
+    </div>
+    <div class="hero-stats reveal" style="transition-delay:.3s">
+      <div class="stat-item">
+        <div class="stat-num ts">9+</div>
+        <div class="stat-label">TS Chapters</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-num rx">12+</div>
+        <div class="stat-label">React Topics</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-num" style="color:var(--nd)">21+</div>
+        <div class="stat-label">Node Sections</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-num tip">100+</div>
+        <div class="stat-label">Code Examples</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="code-window reveal" style="transition-delay:.18s">
+      <div class="cw-header">
+        <div class="cw-dots">
+          <div class="cw-dot"></div><div class="cw-dot"></div><div class="cw-dot"></div>
+        </div>
+        <div class="cw-tabs">
+          <div class="cw-tab active-ts" id="tab-ts" onclick="switchTab('ts')">app.ts</div>
+          <div class="cw-tab" id="tab-rx" onclick="switchTab('rx')">App.tsx</div>
+        </div>
+        <div style="width:60px"></div>
+      </div>
+      <div class="cw-body">
+
+        <!-- TypeScript panel -->
+        <div class="code-panel active" id="panel-ts">
+<span class="cm">// TypeScript 6 — strict mode by default</span>
+<br>
+<span class="kw">interface</span> <span class="ty">User</span> <span class="pu">{</span>
+<br>&nbsp;&nbsp;<span class="fn">id</span><span class="op">:</span>    <span class="ty">number</span><span class="pu">;</span>
+<br>&nbsp;&nbsp;<span class="fn">name</span><span class="op">:</span>  <span class="ty">string</span><span class="pu">;</span>
+<br>&nbsp;&nbsp;<span class="fn">role</span><span class="op">:</span>  <span class="st">"admin"</span> <span class="op">|</span> <span class="st">"viewer"</span><span class="pu">;</span>
+<br><span class="pu">}</span>
+<br>
+<br><span class="kw">function</span> <span class="fn">greet</span><span class="pu">(</span><span class="fn">user</span><span class="op">:</span> <span class="ty">User</span><span class="pu">)</span><span class="op">:</span> <span class="ty">string</span> <span class="pu">{</span>
+<br>&nbsp;&nbsp;<span class="kw">const</span> <span class="fn">prefix</span> <span class="op">=</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">user</span><span class="op">.</span><span class="fn">role</span> <span class="op">===</span> <span class="st">"admin"</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="op">?</span> <span class="st">"Admin"</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="op">:</span> <span class="st">"Welcome"</span><span class="pu">;</span>
+<br>&nbsp;&nbsp;<span class="kw">return</span> <span class="st">`</span><span class="op">${</span><span class="fn">prefix</span><span class="op">}</span><span class="st">, </span><span class="op">${</span><span class="fn">user</span><span class="op">.</span><span class="fn">name</span><span class="op">}</span><span class="st">!`</span><span class="pu">;</span>
+<br><span class="pu">}</span>
+<br>
+<br><span class="cm">// TS catches this at compile time ✓</span>
+<br><span class="fn">greet</span><span class="pu">({</span> <span class="fn">id</span><span class="op">:</span> <span class="num">1</span><span class="pu">,</span> <span class="fn">name</span><span class="op">:</span> <span class="st">"Alex"</span><span class="pu">,</span> <span class="fn">role</span><span class="op">:</span> <span class="st">"admin"</span> <span class="pu">});</span>
+        </div>
+
+        <!-- React panel -->
+        <div class="code-panel" id="panel-rx">
+<span class="cm">// React 19 — use() hook + Actions</span>
+<br>
+<span class="kw">import</span> <span class="pu">{</span> <span class="fn">use</span><span class="pu">,</span> <span class="fn">useState</span> <span class="pu">}</span> <span class="kw">from</span> <span class="st">"react"</span><span class="pu">;</span>
+<br>
+<br><span class="kw">interface</span> <span class="ty">Post</span> <span class="pu">{</span>
+<br>&nbsp;&nbsp;<span class="fn">id</span><span class="op">:</span> <span class="ty">number</span><span class="pu">;</span> <span class="fn">title</span><span class="op">:</span> <span class="ty">string</span><span class="pu">;</span>
+<br><span class="pu">}</span>
+<br>
+<br><span class="kw">function</span> <span class="fn rx-color">PostCard</span><span class="pu">({</span> <span class="fn">promise</span> <span class="pu">}</span><span class="op">:</span> <span class="pu">{</span>
+<br>&nbsp;&nbsp;<span class="fn">promise</span><span class="op">:</span> <span class="ty">Promise</span><span class="op">&lt;</span><span class="ty">Post</span><span class="op">&gt;</span>
+<br><span class="pu">})</span> <span class="pu">{</span>
+<br>&nbsp;&nbsp;<span class="cm">// New in React 19 — use() unwraps promises</span>
+<br>&nbsp;&nbsp;<span class="kw">const</span> <span class="fn">post</span> <span class="op">=</span> <span class="fn">use</span><span class="pu">(</span><span class="fn">promise</span><span class="pu">);</span>
+<br>&nbsp;&nbsp;<span class="kw">return</span> <span class="pu">&lt;</span><span class="rx-color">h2</span><span class="pu">&gt;{</span><span class="fn">post</span><span class="op">.</span><span class="fn">title</span><span class="pu">}&lt;/</span><span class="rx-color">h2</span><span class="pu">&gt;;</span>
+<br><span class="pu">}</span>
+        </div>
+
+      </div>
+      <div class="cw-footer">
+        <div class="dot dot-ts" id="cw-status-dot"></div>
+        <span id="cw-status-text">TypeScript 6 &mdash; strict: true by default</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MARQUEE ────────────────────────────────────────────────────────── -->
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <!-- set 1 -->
+    <span class="ts">TypeScript 6</span><span class="sep"> · </span>
+    <span class="rx">React 19</span><span class="sep"> · </span>
+    <span style="color:var(--nd);opacity:.8">Node.js 22</span><span class="sep"> · </span>
+    <span style="color:var(--ex,#fb923c);opacity:.8">Express 5</span><span class="sep"> · </span>
+    <span>Type Annotations</span><span class="sep"> · </span>
+    <span>use() Hook</span><span class="sep"> · </span>
+    <span>REST APIs</span><span class="sep"> · </span>
+    <span>Generics</span><span class="sep"> · </span>
+    <span>Server Actions</span><span class="sep"> · </span>
+    <span>Middleware</span><span class="sep"> · </span>
+    <span>Union Types</span><span class="sep"> · </span>
+    <span>useReducer</span><span class="sep"> · </span>
+    <span>Routing</span><span class="sep"> · </span>
+    <span>Interfaces</span><span class="sep"> · </span>
+    <span>Context API</span><span class="sep"> · </span>
+    <span>strict: true</span><span class="sep"> · </span>
+    <span>Vite + React</span><span class="sep"> · </span>
+    <span>npm</span><span class="sep"> · </span>
+    <span>Intersections</span><span class="sep"> · </span>
+    <span>Error Boundaries</span><span class="sep"> · </span>
+    <!-- set 2 (duplicate for seamless loop) -->
+    <span class="ts">TypeScript 6</span><span class="sep"> · </span>
+    <span class="rx">React 19</span><span class="sep"> · </span>
+    <span style="color:var(--nd);opacity:.8">Node.js 22</span><span class="sep"> · </span>
+    <span style="color:var(--ex,#fb923c);opacity:.8">Express 5</span><span class="sep"> · </span>
+    <span>Type Annotations</span><span class="sep"> · </span>
+    <span>use() Hook</span><span class="sep"> · </span>
+    <span>REST APIs</span><span class="sep"> · </span>
+    <span>Generics</span><span class="sep"> · </span>
+    <span>Server Actions</span><span class="sep"> · </span>
+    <span>Middleware</span><span class="sep"> · </span>
+    <span>Union Types</span><span class="sep"> · </span>
+    <span>useReducer</span><span class="sep"> · </span>
+    <span>Routing</span><span class="sep"> · </span>
+    <span>Interfaces</span><span class="sep"> · </span>
+    <span>Context API</span><span class="sep"> · </span>
+    <span>strict: true</span><span class="sep"> · </span>
+    <span>Vite + React</span><span class="sep"> · </span>
+    <span>npm</span><span class="sep"> · </span>
+    <span>Intersections</span><span class="sep"> · </span>
+    <span>Error Boundaries</span><span class="sep"> · </span>
+    <span class="ts">TypeScript 6</span><span class="sep"> · </span>
+    <span class="rx">React 19</span><span class="sep"> · </span>
+    <span>Type Annotations</span><span class="sep"> · </span>
+    <span>use() Hook</span><span class="sep"> · </span>
+    <span>Generics</span><span class="sep"> · </span>
+    <span>Server Actions</span><span class="sep"> · </span>
+    <span>Union Types</span><span class="sep"> · </span>
+    <span>useReducer</span><span class="sep"> · </span>
+    <span>Interfaces</span><span class="sep"> · </span>
+    <span>Context API</span><span class="sep"> · </span>
+    <span>strict: true</span><span class="sep"> · </span>
+    <span>Vite + React</span><span class="sep"> · </span>
+    <span>Intersections</span><span class="sep"> · </span>
+    <span>Error Boundaries</span><span class="sep"> · </span>
+  </div>
+</div>
+
+<!-- ── PATHS ─────────────────────────────────────────────────────────── -->
+<section id="paths">
+  <div class="container">
+    <div class="section-label reveal">Choose Your Path</div>
+    <h2 class="section-title reveal" style="transition-delay:.06s">Three guides. One modern stack.</h2>
+    <p class="section-sub reveal" style="transition-delay:.1s">
+      Start with TypeScript for type-system foundations, apply them in React 19, or go backend-first with Node.js &amp; Express. Every guide is beginner-friendly and cross-linked.
+    </p>
+
+    <div class="paths-grid reveal" style="transition-delay:.14s">
+      <!-- TypeScript Card -->
+      <div class="path-card ts-card">
+        <div class="path-icon ts-bg">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5b8dee" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div class="path-tagline ts">TypeScript 6 &mdash; The Superpower of JavaScript</div>
+        <h3 class="path-title">Type Safety,<br>From Zero.</h3>
+        <p class="path-desc">
+          A bottom-up guide covering every primitive, pattern, and pitfall
+          in TypeScript 6 — including the new <code style="font-family:var(--font-mono);color:var(--ts);font-size:12px">strict: true</code> defaults
+          that ship out of the box.
+        </p>
+        <ul class="path-topics">
+          <li>
+            <svg class="check-ts" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Primitive Types &amp; Annotations
+          </li>
+          <li>
+            <svg class="check-ts" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Interfaces, Objects &amp; Arrays
+          </li>
+          <li>
+            <svg class="check-ts" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Unions, Intersections &amp; Narrowing
+          </li>
+          <li>
+            <svg class="check-ts" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Generics &amp; Utility Types
+          </li>
+          <li>
+            <svg class="check-ts" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="pill pill-new">New in TS 6</span>&nbsp;strict mode by default
+          </li>
+        </ul>
+        <a href="typescript6-guide.html" class="path-cta ts">
+          Start TypeScript Guide
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <!-- React Card -->
+      <div class="path-card rx-card">
+        <div class="path-icon rx-bg">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1c-4.6 0-7 4-7 11s2.4 11 7 11 7-4 7-11-2.4-11-7-11z"/><path d="M1 12c0-1.7 4-3 11-3s11 1.3 11 3-4 3-11 3S1 13.7 1 12z"/></svg>
+        </div>
+        <div class="path-tagline rx">React 19 &mdash; Modern UI Building</div>
+        <h3 class="path-title">Components,<br>Fully Typed.</h3>
+        <p class="path-desc">
+          Build real interfaces using the freshest React 19 APIs — the
+          <code style="font-family:var(--font-mono);color:var(--rx);font-size:12px">use()</code> hook,
+          improved Action handling, and TypeScript woven in at every step.
+        </p>
+        <ul class="path-topics">
+          <li>
+            <svg class="check-rx" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Components, Props &amp; JSX
+          </li>
+          <li>
+            <svg class="check-rx" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            useState, useReducer &amp; Context
+          </li>
+          <li>
+            <svg class="check-rx" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Async patterns &amp; Error Boundaries
+          </li>
+          <li>
+            <svg class="check-rx" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Vite scaffold &amp; project setup
+          </li>
+          <li>
+            <svg class="check-rx" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="pill pill-new">New in React 19</span>&nbsp;use() &amp; Actions
+          </li>
+        </ul>
+        <a href="react19-ts6-guide-complete.html" class="path-cta rx">
+          Explore React 19 Guide
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <!-- Node.js + Express Card -->
+      <div class="path-card nd-card">
+        <div class="path-icon nd-bg">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"><polygon points="12 2 22 8 22 16 12 22 2 16 2 8"/></svg>
+        </div>
+        <div class="path-tagline nd">Node.js 22 + Express 5 &mdash; Server-Side JavaScript</div>
+        <h3 class="path-title">Backends,<br>Built Fast.</h3>
+        <p class="path-desc">
+          Go from zero to a fully working REST API with Node.js 22 and Express 5 —
+          covering routing, middleware, error handling, and real-world patterns.
+        </p>
+        <ul class="path-topics">
+          <li>
+            <svg class="check-nd" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Node.js Runtime &amp; npm Ecosystem
+          </li>
+          <li>
+            <svg class="check-nd" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Express Routing &amp; Middleware
+          </li>
+          <li>
+            <svg class="check-nd" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            REST API Design &amp; JSON Responses
+          </li>
+          <li>
+            <svg class="check-nd" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Error Handling &amp; Async Patterns
+          </li>
+          <li>
+            <svg class="check-nd" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="pill pill-nd">New</span>&nbsp;Express 5 &amp; Node 22 LTS
+          </li>
+        </ul>
+        <a href="Node_js-Express_Interactive_Guide.html" class="path-cta nd">
+          Start Node.js Guide
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ──────────────────────────────────────────────────────── -->
+<section id="features">
+  <div class="container">
+    <div class="section-label reveal">What's Inside</div>
+    <h2 class="section-title reveal" style="transition-delay:.06s">Built to teach, not just show.</h2>
+    <p class="section-sub reveal" style="transition-delay:.1s">
+      Every guide is structured around the same interactive anatomy —
+      so you always know where you are and what comes next.
+    </p>
+
+    <div class="features-grid reveal" style="transition-delay:.14s">
+      <!-- Feature 1 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5b8dee" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div class="feature-title">Interactive Code Blocks</div>
+        <p class="feature-desc">
+          Every snippet is copy-ready and uses modern ES6+ syntax — arrow functions,
+          spread operators, destructuring. Annotated line by line so nothing is opaque.
+        </p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="feature-title">Pro-Tips &amp; Warnings</div>
+        <p class="feature-desc">
+          Callout boxes flag real traps — the <code style="font-family:var(--font-mono);font-size:12px;color:#f59e0b">any</code> anti-pattern,
+          index-as-key warnings, async pitfalls —
+          before you hit them in production.
+        </p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+        </div>
+        <div class="feature-title">Before / After Comparisons</div>
+        <p class="feature-desc">
+          Side-by-side JavaScript vs TypeScript and old-React vs React 19 diffs
+          make it immediately obvious what changed, and exactly why it matters.
+        </p>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="feature-title">Progress Tracking</div>
+        <p class="feature-desc">
+          Both guides include an in-page progress bar and sidebar navigation
+          so you always know how far you've come and what's left to cover.
+        </p>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="feature-title">Concept Cross-Links</div>
+        <p class="feature-desc">
+          Every React topic that relies on TypeScript shows a panel explaining
+          the TS concept in place — no context switching required.
+        </p>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5b8dee" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </div>
+        <div class="feature-title">Structured Curriculum</div>
+        <p class="feature-desc">
+          Topics build on each other deliberately. Each chapter declares
+          what you'll learn, why it matters, and what you need to know first.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CURRICULUM ────────────────────────────────────────────────────── -->
+<section id="curriculum">
+  <div class="container">
+    <div class="section-label reveal">Curriculum Overview</div>
+    <h2 class="section-title reveal" style="transition-delay:.06s">A clear path through all three guides.</h2>
+    <p class="section-sub reveal" style="transition-delay:.1s">
+      Scan the full chapter list before you start — everything is deliberate, sequenced, and scoped.
+    </p>
+
+    <div class="curriculum-grid reveal" style="transition-delay:.14s">
+      <!-- TypeScript column -->
+      <div class="curriculum-col">
+        <div class="curriculum-col-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5b8dee" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span class="curriculum-col-title" style="color:var(--ts)">TypeScript 6 Path</span>
+          <span class="pill pill-ts">9 chapters</span>
+        </div>
+        <div class="curriculum-steps">
+          <div class="step">
+            <div class="step-num ts">01</div>
+            <div class="step-content">
+              <div class="step-title">What Is TypeScript?</div>
+              <div class="step-desc">Compilation pipeline · JS superpowers · Why TS 6</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num ts">02</div>
+            <div class="step-content">
+              <div class="step-title">Setup &amp; Configuration</div>
+              <div class="step-desc">Node.js · tsconfig.json · VS Code extensions</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num ts">03</div>
+            <div class="step-content">
+              <div class="step-title">Built-In Types</div>
+              <div class="step-desc">string · number · boolean · null · undefined</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num ts">04</div>
+            <div class="step-content">
+              <div class="step-title">Objects &amp; Arrays</div>
+              <div class="step-desc">Interfaces · Readonly · Typed arrays &amp; tuples</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num ts">05</div>
+            <div class="step-content">
+              <div class="step-title">Unions &amp; Intersections</div>
+              <div class="step-desc">Type narrowing · Discriminated unions · Guards</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num ts">06</div>
+            <div class="step-content">
+              <div class="step-title">Functions &amp; Overloads</div>
+              <div class="step-desc">Parameter types · Return types · Optional params</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num ts">07</div>
+            <div class="step-content">
+              <div class="step-title">Generics</div>
+              <div class="step-desc">Generic functions · Constraints · Utility types</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num ts">08</div>
+            <div class="step-content">
+              <div class="step-title">Classes &amp; Enums</div>
+              <div class="step-desc">Access modifiers · Abstract classes · const enums</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num ts">09</div>
+            <div class="step-content">
+              <div class="step-title">TS 6 Defaults</div>
+              <div class="step-desc">strict: true out-of-box · Module resolution changes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- React column -->
+      <div class="curriculum-col">
+        <div class="curriculum-col-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M12 1c-4.6 0-7 4-7 11s2.4 11 7 11 7-4 7-11-2.4-11-7-11z"/></svg>
+          <span class="curriculum-col-title" style="color:var(--rx)">React 19 Path</span>
+          <span class="pill pill-rx">12 topics</span>
+        </div>
+        <div class="curriculum-steps">
+          <div class="step">
+            <div class="step-num rx">01</div>
+            <div class="step-content">
+              <div class="step-title">Vite + React 19 Setup</div>
+              <div class="step-desc">Scaffold · tsconfig · Entry point anatomy</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num rx">02</div>
+            <div class="step-content">
+              <div class="step-title">Components &amp; JSX</div>
+              <div class="step-desc">Functional components · Props · Typed interfaces</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num rx">03</div>
+            <div class="step-content">
+              <div class="step-title">State with useState</div>
+              <div class="step-desc">Typed state · Immutability · Array/object updates</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num rx">04</div>
+            <div class="step-content">
+              <div class="step-title">Destructuring &amp; Spread</div>
+              <div class="step-desc">Props destructuring · Spread patterns · TS inference</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num rx">05</div>
+            <div class="step-content">
+              <div class="step-title">Lists &amp; Conditional UI</div>
+              <div class="step-desc">.map() · Key warnings · && vs ternary rendering</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num rx">06</div>
+            <div class="step-content">
+              <div class="step-title">useReducer &amp; Complex State</div>
+              <div class="step-desc">Action types · Discriminated union reducers</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num rx">07</div>
+            <div class="step-content">
+              <div class="step-title">Context API</div>
+              <div class="step-desc">createContext · Provider pattern · Typed contexts</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num rx">08</div>
+            <div class="step-content">
+              <div class="step-title">Async &amp; Data Fetching</div>
+              <div class="step-desc">useEffect · Optional chaining · Nullish coalescing</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num rx">09</div>
+            <div class="step-content">
+              <div class="step-title">Error Boundaries</div>
+              <div class="step-desc">Typed errors · Suspense fallbacks · Recovery UI</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num rx">10</div>
+            <div class="step-content">
+              <div class="step-title" style="color:var(--new)">New: use() Hook</div>
+              <div class="step-desc">Unwrap promises in render · React 19 exclusive</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num rx">11</div>
+            <div class="step-content">
+              <div class="step-title" style="color:var(--new)">New: Actions &amp; Forms</div>
+              <div class="step-desc">Async transitions · useActionState · Form handling</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num rx">12</div>
+            <div class="step-content">
+              <div class="step-title">Patterns &amp; Best Practices</div>
+              <div class="step-desc">Composition · Custom hooks · Project structure</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Node.js column -->
+      <div class="curriculum-col">
+        <div class="curriculum-col-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polygon points="12 2 22 8 22 16 12 22 2 16 2 8"/></svg>
+          <span class="curriculum-col-title" style="color:var(--nd)">Node.js + Express Path</span>
+          <span class="pill pill-nd">21 sections</span>
+        </div>
+        <div class="curriculum-steps">
+          <div class="step">
+            <div class="step-num nd" style="background:var(--nd-dim);color:var(--nd);border:1px solid var(--nd-border);">01</div>
+            <div class="step-content">
+              <div class="step-title">What Is Node.js?</div>
+              <div class="step-desc">V8 engine · Event loop · Non-blocking I/O</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num nd" style="background:var(--nd-dim);color:var(--nd);border:1px solid var(--nd-border);">02</div>
+            <div class="step-content">
+              <div class="step-title">Setup &amp; First Server</div>
+              <div class="step-desc">Node 22 install · npm init · http module</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num nd" style="background:var(--nd-dim);color:var(--nd);border:1px solid var(--nd-border);">03</div>
+            <div class="step-content">
+              <div class="step-title">npm &amp; Package Management</div>
+              <div class="step-desc">package.json · dependencies · scripts</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num nd" style="background:var(--nd-dim);color:var(--nd);border:1px solid var(--nd-border);">04</div>
+            <div class="step-content">
+              <div class="step-title">Intro to Express 5</div>
+              <div class="step-desc">Install · app.listen() · First route</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num nd" style="background:var(--nd-dim);color:var(--nd);border:1px solid var(--nd-border);">05</div>
+            <div class="step-content">
+              <div class="step-title">Routing</div>
+              <div class="step-desc">GET/POST/PUT/DELETE · Route params · Query strings</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num nd" style="background:var(--nd-dim);color:var(--nd);border:1px solid var(--nd-border);">06</div>
+            <div class="step-content">
+              <div class="step-title">Middleware</div>
+              <div class="step-desc">Built-in · Third-party · Custom middleware chain</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num nd" style="background:var(--nd-dim);color:var(--nd);border:1px solid var(--nd-border);">07</div>
+            <div class="step-content">
+              <div class="step-title">Request &amp; Response</div>
+              <div class="step-desc">req.body · req.params · res.json() · status codes</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num nd" style="background:var(--nd-dim);color:var(--nd);border:1px solid var(--nd-border);">08</div>
+            <div class="step-content">
+              <div class="step-title">REST API Design</div>
+              <div class="step-desc">Resource naming · CRUD patterns · JSON responses</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num nd" style="background:var(--nd-dim);color:var(--nd);border:1px solid var(--nd-border);">09</div>
+            <div class="step-content">
+              <div class="step-title">Async &amp; Promises</div>
+              <div class="step-desc">async/await · Error propagation · Promise.all</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num nd" style="background:var(--nd-dim);color:var(--nd);border:1px solid var(--nd-border);">10</div>
+            <div class="step-content">
+              <div class="step-title">Error Handling</div>
+              <div class="step-desc">Express error middleware · try/catch · HTTP errors</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num nd" style="background:var(--nd-dim);color:var(--nd);border:1px solid var(--nd-border);">11</div>
+            <div class="step-content">
+              <div class="step-title" style="color:var(--new)">New: Express 5 Changes</div>
+              <div class="step-desc">Async error handling · Router improvements · Promises</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num nd" style="background:var(--nd-dim);color:var(--nd);border:1px solid var(--nd-border);">12</div>
+            <div class="step-content">
+              <div class="step-title">Project Structure &amp; Best Practices</div>
+              <div class="step-desc">MVC pattern · Route separation · Environment config</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BRIDGE ─────────────────────────────────────────────────────────── -->
+<section id="why-together">
+  <div class="container">
+    <div class="bridge-inner reveal">
+      <div>
+        <div class="bridge-label">Why Learn These Together?</div>
+        <h2 class="bridge-title">Three technologies,<br>one complete stack.</h2>
+        <p class="bridge-desc">
+          TypeScript gives you type safety, React puts that safety into the UI layer,
+          and Node.js + Express brings it to the server. Together they form the full
+          JavaScript ecosystem — learn them as a trio and every concept reinforces the next.
+        </p>
+      </div>
+      <div class="synergy-list">
+        <div class="synergy-item">
+          <div class="synergy-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5b8dee" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div>
+            <div class="synergy-title">TypeScript → Safer React Components</div>
+            <div class="synergy-desc">TS Interfaces document every prop a component accepts — no more runtime "undefined is not a function".</div>
+          </div>
+        </div>
+        <div class="synergy-item">
+          <div class="synergy-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2"><polygon points="12 2 22 8 22 16 12 22 2 16 2 8"/></svg>
+          </div>
+          <div>
+            <div class="synergy-title">Node.js → The Runtime Under Everything</div>
+            <div class="synergy-desc">React's build tools, TypeScript's compiler, and Express all run on Node — understanding it unlocks the whole ecosystem.</div>
+          </div>
+        </div>
+        <div class="synergy-item">
+          <div class="synergy-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M3 9h18M3 15h18M12 3v18"/></svg>
+          </div>
+          <div>
+            <div class="synergy-title">Express APIs → Real React Data</div>
+            <div class="synergy-desc">The REST APIs you build with Express are exactly what React's <code style="font-family:var(--font-mono);font-size:11px">use()</code> hook and <code style="font-family:var(--font-mono);font-size:11px">useEffect</code> fetch from.</div>
+          </div>
+        </div>
+        <div class="synergy-item">
+          <div class="synergy-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div>
+            <div class="synergy-title">Async Patterns Carry Across All Three</div>
+            <div class="synergy-desc">Promises, async/await, and error handling learned in Node transfer directly to React hooks and TypeScript utility types.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PREREQS ────────────────────────────────────────────────────────── -->
+<section id="prereqs" style="background:var(--surf)">
+  <div class="container">
+    <div class="section-label reveal">Before You Start</div>
+    <h2 class="section-title reveal" style="transition-delay:.06s">What you'll need.</h2>
+    <p class="section-sub reveal" style="transition-delay:.1s">
+      All three guides are beginner-friendly. Here's what to have ready before you open the first chapter.
+    </p>
+    <div class="prereq-grid reveal" style="transition-delay:.14s">
+      <div class="prereq-card">
+        <div class="prereq-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5b8dee" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div class="prereq-title">Modern JavaScript (ES6+)</div>
+        <p class="prereq-desc">Comfort with arrow functions, destructuring, template literals, and async/await. All three guides build on these foundations — not past them.</p>
+      </div>
+      <div class="prereq-card">
+        <div class="prereq-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"><polygon points="12 2 22 8 22 16 12 22 2 16 2 8"/></svg>
+        </div>
+        <div class="prereq-title">Node.js 18+ &amp; npm</div>
+        <p class="prereq-desc">Required for all three guides. Node runs TypeScript compilation, Express servers, and Vite's dev server. Install once — use everywhere.</p>
+      </div>
+      <div class="prereq-card">
+        <div class="prereq-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div class="prereq-title">VS Code</div>
+        <p class="prereq-desc">Recommended for all guides. Install the TypeScript and ESLint extensions to get the inline autocomplete and error highlighting the guides reference.</p>
+      </div>
+      <div class="prereq-card" style="border-color:var(--ts-border)">
+        <div class="prereq-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5b8dee" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div class="prereq-title" style="color:var(--ts)">For TypeScript Guide</div>
+        <p class="prereq-desc">No prior TypeScript knowledge needed. A basic grasp of JavaScript objects and functions is enough to follow along from Chapter 1.</p>
+      </div>
+      <div class="prereq-card" style="border-color:var(--rx-border)">
+        <div class="prereq-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        </div>
+        <div class="prereq-title" style="color:var(--rx)">For React Guide</div>
+        <p class="prereq-desc">Uses Vite as the build tool — one scaffold command covered in Chapter 1. Basic HTML and JS knowledge is all you need to start.</p>
+      </div>
+      <div class="prereq-card" style="border-color:var(--nd-border)">
+        <div class="prereq-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+        </div>
+        <div class="prereq-title" style="color:var(--nd)">For Node.js Guide</div>
+        <p class="prereq-desc">No backend experience required. If you can run a command in the terminal and understand basic JS functions, you're ready to build your first server.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo">
+          <span style="color:var(--ts)">TypeScript 6</span>
+          <span style="color:var(--text3);margin:0 6px">/</span>
+          <span style="color:var(--rx)">React 19</span>
+          <span style="color:var(--text3);margin:0 6px">/</span>
+          <span style="color:var(--nd)">Node.js</span>
+          <span style="color:var(--text3);font-weight:400"> Guides</span>
+        </div>
+        <p>Free, interactive, open-source learning guides for the modern JavaScript ecosystem.</p>
+      </div>
+      <div class="footer-links-col">
+        <h4>Guides</h4>
+        <ul>
+          <li><a href="typescript6-guide.html">TypeScript 6 Guide</a></li>
+          <li><a href="react19-ts6-guide-complete.html">React 19 Guide</a></li>
+          <li><a href="Node_js-Express_Interactive_Guide.html">Node.js + Express Guide</a></li>
+          <li><a href="#curriculum">Curriculum</a></li>
+        </ul>
+      </div>
+      <div class="footer-links-col">
+        <h4>On This Page</h4>
+        <ul>
+          <li><a href="#paths">Choose a Path</a></li>
+          <li><a href="#features">What's Inside</a></li>
+          <li><a href="#why-together">Why Together?</a></li>
+          <li><a href="#prereqs">Prerequisites</a></li>
+        </ul>
+      </div>
+      <div class="footer-links-col">
+        <h4>Connect</h4>
+        <ul>
+          <li>
+            <a href="https://github.com/" target="_blank" rel="noopener">
+              <svg style="display:inline;vertical-align:middle;margin-right:5px" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              GitHub
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Built with care for the developer community &mdash; open source &amp; free to use.</span>
+      <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        Back to top
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── CURSOR GLOW ──────────────────────────────────────────────── */
+const glow = document.getElementById('cursor-glow');
+document.addEventListener('mousemove', e => {
+  glow.style.left = e.clientX + 'px';
+  glow.style.top  = e.clientY + 'px';
+});
+
+/* ── SCROLL REVEAL ─────────────────────────────────────────────── */
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+revealEls.forEach(el => io.observe(el));
+
+/* ── CODE WINDOW TAB SWITCH ────────────────────────────────────── */
+function switchTab(lang) {
+  const tabTs  = document.getElementById('tab-ts');
+  const tabRx  = document.getElementById('tab-rx');
+  const panTs  = document.getElementById('panel-ts');
+  const panRx  = document.getElementById('panel-rx');
+  const dot    = document.getElementById('cw-status-dot');
+  const status = document.getElementById('cw-status-text');
+
+  tabTs.className = 'cw-tab';
+  tabRx.className = 'cw-tab';
+  panTs.classList.remove('active');
+  panRx.classList.remove('active');
+  dot.className = 'dot';
+
+  if (lang === 'ts') {
+    tabTs.classList.add('active-ts');
+    panTs.classList.add('active');
+    dot.classList.add('dot-ts');
+    status.textContent = 'TypeScript 6 — strict: true by default';
+  } else {
+    tabRx.classList.add('active-rx');
+    panRx.classList.add('active');
+    dot.classList.add('dot-rx');
+    status.textContent = 'React 19 — use() hook unwraps Promises';
+  }
+}
+
+/* ── AUTO-CYCLE TABS ───────────────────────────────────────────── */
+let current = 'ts';
+setInterval(() => {
+  current = current === 'ts' ? 'rx' : 'ts';
+  switchTab(current);
+}, 5200);
+
+/* ── NAV ACTIVE STATE ON SCROLL ────────────────────────────────── */
+const sections = document.querySelectorAll('section[id], div[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) cur = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + cur
+      ? 'var(--text)' : '';
+  });
+}, { passive: true });
+</script>
+</body>
+</html>
