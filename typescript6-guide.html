@@ -152,10 +152,11 @@
     .badge-warn{background:var(--warn-bg);color:var(--warn);}
 
     /* NAV BTNS */
-    .nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:44px;padding-top:28px;border-top:1px solid var(--border2);}
-    .nav-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;background:var(--surf);border:1px solid var(--border);border-radius:8px;color:var(--text2);cursor:pointer;font-size:13px;font-family:'Geist',sans-serif;transition:all .18s;}
+    .nav-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:44px;padding-top:28px;border-top:1px solid var(--border2);}
+    .nav-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;background:var(--surf);border:1px solid var(--border);border-radius:8px;color:var(--text2);cursor:pointer;font-size:13px;font-family:'Geist',sans-serif;transition:all .18s;max-width:48%;overflow:hidden;}
+    .nav-btn .nav-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .nav-btn:hover{background:var(--surf2);color:var(--text);border-color:var(--accent);}
-    .nav-btn.next{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;}
+    .nav-btn.next{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;margin-left:auto;}
     .nav-btn.next:hover{background:#6b93ff;}
     /* COMPARE */
     .cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;}
@@ -267,6 +268,11 @@
 
       /* collapse grids to 1 col */
       .g2, .g3, .cmp { grid-template-columns: 1fr; }
+
+      /* nav buttons stack full-width */
+      .nav-row { flex-direction: column; gap: 8px; }
+      .nav-btn { max-width: 100%; width: 100%; justify-content: center; font-size: 12px; padding: 10px 14px; }
+      .nav-btn.next { margin-left: 0; }
     }
     /* ── FLOATING NAV ─────────────────────────────────────────────────── */
     .fab-wrap{position:fixed;bottom:88px;right:16px;z-index:9999;touch-action:none;user-select:none;}
@@ -3516,10 +3522,10 @@ type ImmutablePreview = Readonly<Pick<User, "id" | "name">>;
 
     html += `<div class="nav-row">`;
     html += prev
-            ? `<button class="nav-btn" onclick="navigate('${prev.id}')">${ICONS.prev} ${prev.title}</button>`
+            ? `<button class="nav-btn" onclick="navigate('${prev.id}')">${ICONS.prev} <span class="nav-label">${prev.title}</span></button>`
             : `<span></span>`;
     html += next
-            ? `<button class="nav-btn next" onclick="navigate('${next.id}')">${next.title} ${ICONS.next}</button>`
+            ? `<button class="nav-btn next" onclick="navigate('${next.id}')"><span class="nav-label">${next.title}</span> ${ICONS.next}</button>`
             : `<button class="nav-btn next" onclick="navigate('${SECTIONS[0].id}')">${ICONS.rocket} Start Over</button>`;
     html += `</div></div>`;
     return html;

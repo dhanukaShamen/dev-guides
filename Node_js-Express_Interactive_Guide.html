@@ -200,10 +200,11 @@
     .card-b code{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--surf3);padding:1px 5px;border-radius:3px;color:var(--accent);}
 
     /* ── NAV BTNS ── */
-    .nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:44px;padding-top:28px;border-top:1px solid var(--border2);}
-    .nav-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;background:var(--surf);border:1px solid var(--border);border-radius:8px;color:var(--text2);cursor:pointer;font-size:13px;font-family:'Geist',sans-serif;transition:all .18s;}
+    .nav-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:44px;padding-top:28px;border-top:1px solid var(--border2);}
+    .nav-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;background:var(--surf);border:1px solid var(--border);border-radius:8px;color:var(--text2);cursor:pointer;font-size:13px;font-family:'Geist',sans-serif;transition:all .18s;max-width:48%;overflow:hidden;}
+    .nav-btn .nav-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .nav-btn:hover{background:var(--surf2);color:var(--text);border-color:var(--accent);}
-    .nav-btn.next{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;}
+    .nav-btn.next{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;margin-left:auto;}
     .nav-btn.next:hover{background:#4ade80;}
 
     /* ── COMPARE (bad/good) ── */
@@ -303,6 +304,9 @@
       .sidebar.open{transform:translateX(0);}
       .content{padding:28px 18px 80px;}
       .cmp{grid-template-columns:1fr;}.g2{grid-template-columns:1fr;}.g3{grid-template-columns:1fr;}
+      .nav-row{flex-direction:column;gap:8px;}
+      .nav-btn{max-width:100%;width:100%;justify-content:center;font-size:12px;padding:10px 14px;}
+      .nav-btn.next{margin-left:0;}
     }
     /* ── FLOATING NAV ─────────────────────────────────────────────────── */
     .fab-wrap{position:fixed;bottom:88px;right:16px;z-index:9999;touch-action:none;user-select:none;}
@@ -7335,12 +7339,12 @@ dist
 
     html += `<div class="nav-row">`
     if (prevSec) {
-      html += `<button class="nav-btn" onclick="navigate('${prevSec.id}')">${ICONS.prev} ${prevSec.title}</button>`
+      html += `<button class="nav-btn" onclick="navigate('${prevSec.id}')">${ICONS.prev} <span class="nav-label">${prevSec.title}</span></button>`
     } else {
       html += `<span></span>`
     }
     if (nextSec) {
-      html += `<button class="nav-btn next" onclick="navigate('${nextSec.id}')">${nextSec.title} ${ICONS.next}</button>`
+      html += `<button class="nav-btn next" onclick="navigate('${nextSec.id}')"><span class="nav-label">${nextSec.title}</span> ${ICONS.next}</button>`
     }
     html += `</div></div>`
     return html
