@@ -422,7 +422,21 @@
   <div class="wl-title">
     <span class="a">Build backends with </span><span class="b">Node.js + Express</span>
   </div>
-  <p class="wl-sub">You already know JavaScript. This guide teaches you everything you need to go from "I have no idea what a server is" to shipping real APIs — written for someone who thinks like a developer, not a student.</p>
+  <p class="wl-sub">This guide teaches you everything you need to go from "I have no idea what a server is" to shipping real APIs — written for someone who thinks like a developer, not a student.</p>
+  <div class="box box-warn" style="margin-bottom:24px;">
+    <div class="box-hdr">${ICONS.warn} JavaScript prerequisites — make sure these click first</div>
+    <div class="box-body">
+      <p>This guide assumes comfort with modern JavaScript. If any of these feel shaky, brush up before continuing — confusing JS gaps with Node confusion is a common beginner trap.</p>
+      <ul>
+        <li><strong>Arrow functions</strong> — <code>const greet = (name) => \`Hello \${name}\`</code>. Used everywhere in Express route handlers and callbacks.</li>
+        <li><strong>Destructuring</strong> — <code>const { name, email } = req.body</code> (object) and <code>const [first] = items</code> (array). You'll use this constantly.</li>
+        <li><strong>Array methods</strong> — <code>.map()</code>, <code>.filter()</code>, <code>.find()</code>, <code>.reduce()</code>. Essential for transforming data before sending responses.</li>
+        <li><strong>Promises &amp; async/await</strong> — understanding that <code>await</code> pauses the current function (not the whole server) is critical before tackling the event loop.</li>
+        <li><strong>Modules (import/export)</strong> — splitting code into files. Node uses <code>require()</code> / <code>module.exports</code> by default (CommonJS), which this guide covers fully.</li>
+      </ul>
+      <p style="margin-top:8px;">Not sure? A quick run through <a href="https://javascript.info/js" target="_blank" rel="noopener">javascript.info</a> chapters on functions, arrays, and async will get you there in a few hours.</p>
+    </div>
+  </div>
   <div class="wl-pills">
     <span class="pill pill-nd" style="padding:7px 14px;border-radius:8px;font-size:12.5px;">Node.js 22 LTS</span>
     <span class="pill pill-ex" style="padding:7px 14px;border-radius:8px;font-size:12.5px;">Express 5</span>
@@ -619,6 +633,105 @@ app.listen(3000, () => console.log('Server on port 3000')); // keeps Node alive<
 <div class="ch-part">
   <div class="ch-label"><span class="ch-num">05</span><span class="ch-head">The analogy</span></div>
   <div class="analogy"><p class="analogy-text">Imagine a chef (the JS thread) with a to-do board. When a task takes a long time — "simmer for 30 minutes" (a database query) — the chef <strong>doesn't stand at the stove watching</strong>. They hand it to a sous-chef (libuv), go back to the board, and pick up the next item. When the sous-chef yells "soup's ready!" (callback queued), the chef finishes the current task first, then handles the soup. <strong>The chef is never idle waiting</strong> — that's the event loop. The kitchen handles dozens of simultaneous timers and I/O tasks because the chef never blocks.</p></div>
+</div>
+<div class="ch-part">
+  <div class="ch-label"><span class="ch-num">06</span><span class="ch-head">Visualised — how it all fits together</span></div>
+  <div class="prose"><p>This diagram shows the full cycle: your synchronous code runs on the Call Stack, async work is handed to <strong>libuv</strong>, and completed callbacks queue up waiting for the stack to clear before the Event Loop runs them.</p></div>
+  <div style="margin:20px 0;background:#080e18;border:1px solid rgba(34,160,80,0.20);border-radius:10px;padding:20px;overflow-x:auto;">
+    <svg viewBox="0 0 740 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px;display:block;margin:0 auto;font-family:'JetBrains Mono',monospace;">
+      <!-- Call Stack -->
+      <rect x="20" y="30" width="155" height="200" rx="8" fill="#0c1018" stroke="#22c55e" stroke-width="1.5"/>
+      <text x="97" y="18" text-anchor="middle" fill="#22c55e" font-size="11" font-weight="700" letter-spacing="1">CALL STACK</text>
+      <rect x="33" y="45" width="129" height="34" rx="5" fill="rgba(34,197,94,0.12)" stroke="rgba(34,197,94,0.35)" stroke-width="1"/>
+      <text x="97" y="66" text-anchor="middle" fill="#d4ffe3" font-size="11">console.log()</text>
+      <rect x="33" y="86" width="129" height="34" rx="5" fill="rgba(34,197,94,0.07)" stroke="rgba(34,197,94,0.2)" stroke-width="1"/>
+      <text x="97" y="107" text-anchor="middle" fill="#7ab896" font-size="11">handleRequest()</text>
+      <rect x="33" y="127" width="129" height="34" rx="5" fill="rgba(34,197,94,0.04)" stroke="rgba(34,197,94,0.12)" stroke-width="1"/>
+      <text x="97" y="148" text-anchor="middle" fill="#375c47" font-size="11">main()</text>
+      <text x="97" y="208" text-anchor="middle" fill="#375c47" font-size="10">← JS thread</text>
+      <text x="97" y="222" text-anchor="middle" fill="#375c47" font-size="10">1 task at a time</text>
+
+      <!-- Arrow: Stack → libuv -->
+      <path d="M175 110 Q220 90 255 90" stroke="#fb923c" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr-o)"/>
+      <text x="207" y="82" text-anchor="middle" fill="#fb923c" font-size="9">fs.readFile()</text>
+      <text x="207" y="93" text-anchor="middle" fill="#fb923c" font-size="9">setTimeout()</text>
+
+      <!-- libuv box -->
+      <rect x="255" y="40" width="165" height="140" rx="8" fill="#0c1018" stroke="#fb923c" stroke-width="1.5"/>
+      <text x="337" y="28" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="700" letter-spacing="1">LIBUV (C++)</text>
+      <rect x="268" y="55" width="139" height="30" rx="5" fill="rgba(251,146,60,0.08)" stroke="rgba(251,146,60,0.3)" stroke-width="1"/>
+      <text x="337" y="74" text-anchor="middle" fill="#fb923c" font-size="10">File I/O thread pool</text>
+      <rect x="268" y="92" width="139" height="30" rx="5" fill="rgba(251,146,60,0.08)" stroke="rgba(251,146,60,0.3)" stroke-width="1"/>
+      <text x="337" y="111" text-anchor="middle" fill="#fb923c" font-size="10">Network (epoll/kqueue)</text>
+      <rect x="268" y="129" width="139" height="30" rx="5" fill="rgba(251,146,60,0.08)" stroke="rgba(251,146,60,0.3)" stroke-width="1"/>
+      <text x="337" y="148" text-anchor="middle" fill="#fb923c" font-size="10">Timers (setTimeout)</text>
+
+      <!-- Arrow: libuv → Callback Queue -->
+      <path d="M420 110 Q460 110 465 165" stroke="#f59e0b" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr-y)"/>
+      <text x="453" y="130" fill="#f59e0b" font-size="9" text-anchor="middle">done!</text>
+
+      <!-- Callback Queue (Macrotask) -->
+      <rect x="460" y="170" width="195" height="55" rx="8" fill="#0c1018" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="557" y="158" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="700" letter-spacing="1">CALLBACK QUEUE</text>
+      <text x="557" y="173" text-anchor="middle" fill="#7ab896" font-size="9">(macrotasks)</text>
+      <rect x="472" y="180" width="80" height="28" rx="4" fill="rgba(245,158,11,0.1)" stroke="rgba(245,158,11,0.3)" stroke-width="1"/>
+      <text x="512" y="198" text-anchor="middle" fill="#f59e0b" font-size="10">cb1()</text>
+      <rect x="559" y="180" width="80" height="28" rx="4" fill="rgba(245,158,11,0.06)" stroke="rgba(245,158,11,0.15)" stroke-width="1"/>
+      <text x="599" y="198" text-anchor="middle" fill="#7ab896" font-size="10">cb2()</text>
+
+      <!-- Microtask Queue -->
+      <rect x="460" y="250" width="195" height="55" rx="8" fill="#0c1018" stroke="#4ade80" stroke-width="1.5"/>
+      <text x="557" y="238" text-anchor="middle" fill="#4ade80" font-size="11" font-weight="700" letter-spacing="1">MICROTASK QUEUE</text>
+      <text x="557" y="252" text-anchor="middle" fill="#7ab896" font-size="9">(Promises, queueMicrotask)</text>
+      <rect x="472" y="260" width="80" height="28" rx="4" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.35)" stroke-width="1"/>
+      <text x="512" y="278" text-anchor="middle" fill="#4ade80" font-size="10">.then()</text>
+      <rect x="559" y="260" width="80" height="28" rx="4" fill="rgba(74,222,128,0.06)" stroke="rgba(74,222,128,0.15)" stroke-width="1"/>
+      <text x="599" y="278" text-anchor="middle" fill="#7ab896" font-size="10">.then()</text>
+
+      <!-- Event Loop box -->
+      <rect x="240" y="220" width="175" height="80" rx="8" fill="#0c1018" stroke="rgba(34,160,80,0.6)" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="327" y="258" text-anchor="middle" fill="#22c55e" font-size="12" font-weight="700">EVENT LOOP</text>
+      <text x="327" y="275" text-anchor="middle" fill="#7ab896" font-size="10">Stack empty?</text>
+      <text x="327" y="288" text-anchor="middle" fill="#7ab896" font-size="10">Run next callback.</text>
+
+      <!-- Arrow: Microtask → Event Loop (priority) -->
+      <path d="M460 270 Q415 270 415 265" stroke="#4ade80" stroke-width="1.5" fill="none" stroke-dasharray="3,2" marker-end="url(#arr-g)"/>
+      <!-- Arrow: Callback Queue → Event Loop -->
+      <path d="M460 195 Q430 195 416 240" stroke="#f59e0b" stroke-width="1.5" fill="none" stroke-dasharray="3,2" marker-end="url(#arr-y)"/>
+
+      <!-- Priority label -->
+      <text x="444" y="240" text-anchor="middle" fill="#4ade80" font-size="9" font-weight="700">① first</text>
+      <text x="444" y="215" text-anchor="middle" fill="#f59e0b" font-size="9">② then</text>
+
+      <!-- Arrow: Event Loop → Call Stack -->
+      <path d="M240 262 Q140 262 97 235" stroke="#22c55e" stroke-width="1.8" fill="none" marker-end="url(#arr-g)"/>
+      <text x="168" y="276" text-anchor="middle" fill="#22c55e" font-size="9">push callback</text>
+      <text x="168" y="287" text-anchor="middle" fill="#22c55e" font-size="9">onto stack</text>
+
+      <!-- Arrowhead markers -->
+      <defs>
+        <marker id="arr-g" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#22c55e"/>
+        </marker>
+        <marker id="arr-o" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#fb923c"/>
+        </marker>
+        <marker id="arr-y" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#f59e0b"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+  <div class="box box-ok" style="margin-top:0;">
+    <div class="box-hdr">${ICONS.ok} Reading the diagram</div>
+    <div class="box-body"><ul>
+      <li><strong>Call Stack</strong> — where your JS runs. One function at a time. When empty, the Event Loop can act.</li>
+      <li><strong>libuv</strong> — handles the actual I/O (disk, network, timers) in C++ on background threads. Your JS never waits.</li>
+      <li><strong>Microtask Queue</strong> (green) — Promise callbacks. <em>Drained completely</em> before any macrotask runs. Always first.</li>
+      <li><strong>Callback Queue</strong> (yellow) — setTimeout/I/O callbacks. One per Event Loop tick, after microtasks are clear.</li>
+      <li><strong>Event Loop</strong> — the continuous checker: "Stack empty? Microtasks? Run one. Macrotasks? Run one. Repeat."</li>
+    </ul></div>
+  </div>
 </div>`,
       boxes:[
         {type:'warn',title:'Never block the event loop — this is the cardinal rule',body:`<p>The call stack must stay free so the event loop can process callbacks. Blocking means running slow synchronous code that holds the stack for too long:</p><ul><li><code>fs.readFileSync()</code> on a large file — blocks while reading</li><li>A loop with millions of iterations — blocks until done</li><li><code>JSON.parse()</code> on a very large payload — blocks while parsing</li><li><code>bcrypt.hashSync()</code> — blocks for the entire hash duration</li></ul><p>While the stack is blocked, <strong>no other request can be handled</strong>. A 200ms sync operation on a busy server means every other request queues up. Use async versions of everything: <code>fs.readFile()</code>, <code>bcrypt.hash()</code>, worker threads for CPU-heavy work.</p>`},
@@ -1633,6 +1746,19 @@ server.listen(3000, () => {              // start listening on port 3000
   console.log('Server running at http://localhost:3000');
 });`,
       codeFile:'http-server.js', codeLang:'javascript',
+      beforeCode:`
+<div class="box box-nd" style="margin-bottom:20px;">
+  <div class="box-hdr">${ICONS.info} Prefer a visual API client? Skip the CLI flags entirely</div>
+  <div class="box-body">
+    <p><code>curl</code> is powerful but its flags (<code>-X</code>, <code>-H</code>, <code>-d</code>) are cryptic for beginners. Visual API clients let you build requests with dropdowns and text fields — no memorising flags.</p>
+    <ul>
+      <li><strong><a href="https://www.postman.com/downloads/" target="_blank" rel="noopener">Postman</a></strong> — the industry standard. Free tier is generous. Great for saving and sharing collections of requests.</li>
+      <li><strong><a href="https://insomnia.rest/download" target="_blank" rel="noopener">Insomnia</a></strong> — lighter-weight alternative. Clean UI, supports GraphQL and gRPC too.</li>
+      <li><strong><a href="https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client" target="_blank" rel="noopener">Thunder Client</a></strong> — VS Code extension. Lives inside your editor so you never leave the window. Best choice if you're already coding in VS Code.</li>
+    </ul>
+    <p>All three let you set the HTTP method, URL, headers, and body via forms — and show the response with syntax highlighting. The <code>curl</code> examples below still work; use whichever approach feels more natural.</p>
+  </div>
+</div>`,
       extraCodes:[{code:`# Test your server endpoints using curl in a second terminal window
 # curl sends HTTP requests from the command line — great for quick testing
 
@@ -3054,7 +3180,67 @@ exports.getUserWithOrders = async (req, res, next) => {
   <div class="analogy"><p class="analogy-text">Think of middleware as the security and check-in process at an airport. <strong>Every passenger (request) goes through the same steps</strong>: check-in desk (JSON parsing), security scanner (authentication), gate check (authorisation), then they board their specific flight (route handler). You don't redo the security scanner for each gate — it's centralised and every passenger goes through it. The order matters: you can't board before you pass security.</p></div>
 </div>
 <div class="ch-part">
-  <div class="ch-label"><span class="ch-num">04</span><span class="ch-head">How it works</span></div>
+  <div class="ch-label"><span class="ch-num">04</span><span class="ch-head">The "onion model" — visualised</span></div>
+  <div class="prose"><p>Each middleware layer wraps the next. A request peels through every layer inward to reach the route handler, and the response travels back out through the same layers. This is why error middleware placed at the end can catch problems from anywhere inside.</p></div>
+  <div style="margin:20px 0;background:#080e18;border:1px solid rgba(34,160,80,0.20);border-radius:10px;padding:24px 16px;overflow-x:auto;">
+    <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;display:block;margin:0 auto;font-family:'JetBrains Mono',monospace;">
+      <!-- Onion layers, outermost to innermost -->
+      <!-- Layer 1: Error Handler -->
+      <rect x="10" y="10" width="660" height="280" rx="14" fill="rgba(248,113,113,0.06)" stroke="#f87171" stroke-width="1.5"/>
+      <text x="46" y="30" fill="#f87171" font-size="10" font-weight="700">① ERROR HANDLER  (err, req, res, next)</text>
+
+      <!-- Layer 2: CORS / Helmet -->
+      <rect x="35" y="40" width="610" height="220" rx="12" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="71" y="60" fill="#f59e0b" font-size="10" font-weight="700">② CORS + HELMET  — security headers on every response</text>
+
+      <!-- Layer 3: Logger -->
+      <rect x="60" y="70" width="560" height="160" rx="10" fill="rgba(251,146,60,0.06)" stroke="#fb923c" stroke-width="1.5"/>
+      <text x="96" y="90" fill="#fb923c" font-size="10" font-weight="700">③ LOGGER  — logs method, path, status, duration</text>
+
+      <!-- Layer 4: JSON Parser -->
+      <rect x="85" y="100" width="510" height="100" rx="9" fill="rgba(74,222,128,0.06)" stroke="#4ade80" stroke-width="1.5"/>
+      <text x="121" y="120" fill="#4ade80" font-size="10" font-weight="700">④ express.json()  — parses body → req.body</text>
+
+      <!-- Layer 5: Auth -->
+      <rect x="110" y="130" width="460" height="50" rx="8" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1.5"/>
+      <text x="340" y="152" text-anchor="middle" fill="#22c55e" font-size="10" font-weight="700">⑤ AUTH MIDDLEWARE  — verifies JWT → req.user</text>
+
+      <!-- Center: Route Handler -->
+      <rect x="135" y="155" width="410" height="45" rx="7" fill="rgba(34,197,94,0.18)" stroke="#22c55e" stroke-width="2"/>
+      <text x="340" y="182" text-anchor="middle" fill="#d4ffe3" font-size="11" font-weight="700">🎯  ROUTE HANDLER  — your actual business logic</text>
+
+      <!-- Request arrow -->
+      <path d="M25 155 L130 155" stroke="#22c55e" stroke-width="2" fill="none" marker-end="url(#arr-req)"/>
+      <text x="16" y="145" fill="#22c55e" font-size="9" font-weight="700">REQ</text>
+      <text x="14" y="168" fill="#22c55e" font-size="9">→</text>
+
+      <!-- Response arrow -->
+      <path d="M545 175 L650 175" stroke="#7ab896" stroke-width="2" fill="none" marker-end="url(#arr-res)"/>
+      <text x="645" y="165" fill="#7ab896" font-size="9" font-weight="700">RES</text>
+      <text x="652" y="178" fill="#7ab896" font-size="9">→</text>
+
+      <!-- next() labels on left side -->
+      <text x="62" y="150" fill="#375c47" font-size="8">next()</text>
+      <text x="87" y="150" fill="#375c47" font-size="8">next()</text>
+      <text x="112" y="150" fill="#375c47" font-size="8">next()</text>
+
+      <defs>
+        <marker id="arr-req" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#22c55e"/>
+        </marker>
+        <marker id="arr-res" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#7ab896"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+  <div class="box box-ex">
+    <div class="box-hdr">${ICONS.info} What "order matters" actually means</div>
+    <div class="box-body"><p>Express runs middleware top-to-bottom, exactly as registered. If you put <code>express.json()</code> <em>after</em> your route handler, the route runs first and <code>req.body</code> is always <code>undefined</code>. If you put auth middleware <em>before</em> the JSON parser, <code>req.body</code> won't be populated yet when auth tries to read it. Register global middleware at the top, routes in the middle, and the error handler at the very bottom.</p></div>
+  </div>
+</div>
+<div class="ch-part">
+  <div class="ch-label"><span class="ch-num">05</span><span class="ch-head">How it works</span></div>
   <ol class="steps">
     <li>Express processes middleware in the order they're registered with <code>app.use()</code>. Order is critical.</li>
     <li>Each middleware gets <code>req</code>, <code>res</code>, and <code>next</code>. Call <code>next()</code> to pass to the next one, or send a response to stop the chain.</li>
@@ -3387,9 +3573,52 @@ app.use(express.urlencoded({ extended: true }));
   <div class="analogy"><p class="analogy-text">Your Node app is a chef. <strong>MongoDB is the walk-in fridge</strong> — ingredients persist between shifts, even when the kitchen is closed. <strong>Mongoose is the inventory system</strong> — it lets the chef query "do we have salmon?" in a structured, predictable way instead of manually rummaging through every shelf. Without Mongoose you'd have to speak MongoDB's raw query syntax every time. With it, you speak JavaScript.</p></div>
 </div>
 <div class="ch-part">
-  <div class="ch-label"><span class="ch-num">04</span><span class="ch-head">How it works — step by step</span></div>
+  <div class="ch-label"><span class="ch-num">04</span><span class="ch-head">Getting your database — MongoDB Atlas setup checklist</span></div>
+  <div class="prose"><p>This is the step where beginners get stuck. Before you can run a single Mongoose query, you need a real database and a connection string. Here's the exact sequence for the free Atlas cloud tier:</p></div>
+  <div class="box box-ok" style="margin-bottom:0">
+    <div class="box-hdr">${ICONS.ok} Atlas setup — step by step</div>
+    <div class="box-body">
+      <ol style="padding-left:0;list-style:none;counter-reset:atlas-step;">
+        <li style="counter-increment:atlas-step;padding:7px 0 7px 32px;position:relative;border-bottom:1px solid rgba(52,211,153,0.12);font-size:13px;color:var(--text2);line-height:1.75;">
+          <span style="position:absolute;left:0;top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--ok);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:2px 6px;">01</span>
+          Go to <a href="https://www.mongodb.com/cloud/atlas/register" target="_blank" rel="noopener" style="color:var(--nd)">mongodb.com/cloud/atlas/register</a> and create a free account.
+        </li>
+        <li style="counter-increment:atlas-step;padding:7px 0 7px 32px;position:relative;border-bottom:1px solid rgba(52,211,153,0.12);font-size:13px;color:var(--text2);line-height:1.75;">
+          <span style="position:absolute;left:0;top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--ok);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:2px 6px;">02</span>
+          Click <strong style="color:var(--text)">Build a Database</strong> → choose <strong style="color:var(--text)">M0 Free</strong> → pick any region → click <strong style="color:var(--text)">Create</strong>. This takes ~2 minutes to provision.
+        </li>
+        <li style="counter-increment:atlas-step;padding:7px 0 7px 32px;position:relative;border-bottom:1px solid rgba(52,211,153,0.12);font-size:13px;color:var(--text2);line-height:1.75;">
+          <span style="position:absolute;left:0;top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--ok);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:2px 6px;">03</span>
+          <strong style="color:var(--text)">Create a database user:</strong> In the left sidebar click <em>Database Access</em> → <em>Add New Database User</em>. Set a username and a strong password. Keep these handy — they go into your connection string.
+        </li>
+        <li style="counter-increment:atlas-step;padding:7px 0 7px 32px;position:relative;border-bottom:1px solid rgba(52,211,153,0.12);font-size:13px;color:var(--text2);line-height:1.75;">
+          <span style="position:absolute;left:0;top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--ok);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:2px 6px;">04</span>
+          <strong style="color:var(--text)">Whitelist your IP address:</strong> Click <em>Network Access</em> → <em>Add IP Address</em>. For development, click <strong style="color:var(--text)">Allow Access From Anywhere</strong> (adds <code>0.0.0.0/0</code>). <em>Note: lock this down to specific IPs before going to production.</em>
+        </li>
+        <li style="counter-increment:atlas-step;padding:7px 0 7px 32px;position:relative;border-bottom:1px solid rgba(52,211,153,0.12);font-size:13px;color:var(--text2);line-height:1.75;">
+          <span style="position:absolute;left:0;top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--ok);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:2px 6px;">05</span>
+          <strong style="color:var(--text)">Get your connection string:</strong> On the cluster page click <em>Connect</em> → <em>Drivers</em> → select <strong style="color:var(--text)">Node.js</strong>. Copy the string — it looks like <code>mongodb+srv://&lt;user&gt;:&lt;password&gt;@cluster0.xxxxx.mongodb.net/?retryWrites=true</code>.
+        </li>
+        <li style="counter-increment:atlas-step;padding:7px 0 7px 32px;position:relative;font-size:13px;color:var(--text2);line-height:1.75;">
+          <span style="position:absolute;left:0;top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--ok);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:2px 6px;">06</span>
+          Replace <code>&lt;user&gt;</code> and <code>&lt;password&gt;</code> with the credentials from step 3. Add <code>/mydb</code> before the <code>?</code> to specify a database name. Paste the final string into your <code>.env</code> as <code>MONGO_URI=mongodb+srv://...</code>.
+        </li>
+      </ol>
+    </div>
+  </div>
+  <div class="box box-warn" style="margin-top:10px;">
+    <div class="box-hdr">${ICONS.warn} Common Atlas gotchas</div>
+    <div class="box-body"><ul>
+      <li><strong>Connection times out</strong> — almost always a Network Access issue. Double-check that your IP is whitelisted (or use <code>0.0.0.0/0</code> for development).</li>
+      <li><strong>Authentication failed</strong> — the password in the URI must match the <em>database user</em> password exactly. If it contains special characters (<code>@</code>, <code>#</code>, <code>!</code>), URL-encode them.</li>
+      <li><strong>App connects but no data appears</strong> — check that the database name in your URI matches what your code expects. Atlas creates the database automatically on first write.</li>
+    </ul></div>
+  </div>
+</div>
+<div class="ch-part">
+  <div class="ch-label"><span class="ch-num">05</span><span class="ch-head">How it works — step by step</span></div>
   <ol class="steps">
-    <li>Install Mongoose: <code>npm install mongoose</code>. Get a free MongoDB cluster from <strong>MongoDB Atlas</strong> (cloud) or run MongoDB locally. Your connection string goes in <code>.env</code> as <code>MONGO_URI</code>.</li>
+    <li>Install Mongoose: <code>npm install mongoose</code>. Add your Atlas connection string to <code>.env</code> as <code>MONGO_URI</code> (see checklist above).</li>
     <li>Connect once at startup: <code>await mongoose.connect(process.env.MONGO_URI)</code>. Mongoose manages a connection pool internally — one connect call services every query your app ever makes.</li>
     <li>Define a <strong>Schema</strong> — a JavaScript object that describes the shape, types, validations, and defaults of your documents. This is where you enforce structure on your otherwise flexible NoSQL data.</li>
     <li>Compile the schema into a <strong>Model</strong>: <code>const User = mongoose.model('User', userSchema)</code>. Mongoose pluralises the model name and maps it to a MongoDB collection (<code>users</code>). The model is your query interface.</li>
@@ -6034,7 +6263,95 @@ node_modules/
   <div class="analogy"><p class="analogy-text">MVC is a restaurant kitchen. The <strong>Model</strong> is the pantry and the recipes — it knows where the ingredients are and how to combine them. The <strong>Controller</strong> is the chef — they receive an order (request), go to the pantry, cook the meal, and plate it. The <strong>Route</strong> is the waiter — they take the order from the customer and hand it to the right chef. The customer never talks to the pantry directly.</p></div>
 </div>
 <div class="ch-part">
-  <div class="ch-label"><span class="ch-num">04</span><span class="ch-head">How it works</span></div>
+  <div class="ch-label"><span class="ch-num">04</span><span class="ch-head">MVC in Express — the request flow visualised</span></div>
+  <div class="prose"><p>A request enters through the <strong>Router</strong>, hits the <strong>Controller</strong> for logic, which queries the <strong>Model</strong> for data, and sends back a JSON response. The dependency arrow only ever points in one direction.</p></div>
+  <div style="margin:20px 0;background:#080e18;border:1px solid rgba(34,160,80,0.20);border-radius:10px;padding:20px;overflow-x:auto;">
+    <svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;display:block;margin:0 auto;font-family:'JetBrains Mono',monospace;">
+      <!-- Client -->
+      <rect x="10" y="90" width="100" height="70" rx="8" fill="#0c1018" stroke="rgba(34,160,80,0.4)" stroke-width="1.5"/>
+      <text x="60" y="120" text-anchor="middle" fill="#7ab896" font-size="10" font-weight="700">CLIENT</text>
+      <text x="60" y="135" text-anchor="middle" fill="#375c47" font-size="9">browser / app</text>
+      <text x="60" y="150" text-anchor="middle" fill="#375c47" font-size="9">curl / Postman</text>
+
+      <!-- Arrow: Client → Routes -->
+      <path d="M110 118 L165 118" stroke="#22c55e" stroke-width="1.8" fill="none" marker-end="url(#m-g)"/>
+      <text x="138" y="111" text-anchor="middle" fill="#22c55e" font-size="8">HTTP</text>
+      <text x="138" y="122" text-anchor="middle" fill="#22c55e" font-size="8">request</text>
+      <!-- Response arrow back -->
+      <path d="M165 135 L110 135" stroke="#7ab896" stroke-width="1.4" fill="none" stroke-dasharray="3,2" marker-end="url(#m-t)"/>
+      <text x="138" y="148" text-anchor="middle" fill="#7ab896" font-size="8">JSON</text>
+
+      <!-- Routes box -->
+      <rect x="165" y="70" width="130" height="110" rx="8" fill="#0c1018" stroke="#fb923c" stroke-width="1.8"/>
+      <text x="230" y="55" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="700">ROUTES</text>
+      <text x="230" y="68" text-anchor="middle" fill="#fb923c" font-size="9">routes/users.js</text>
+      <rect x="178" y="80" width="104" height="22" rx="4" fill="rgba(251,146,60,0.1)" stroke="rgba(251,146,60,0.3)" stroke-width="1"/>
+      <text x="230" y="95" text-anchor="middle" fill="#fb923c" font-size="9">GET /users</text>
+      <rect x="178" y="108" width="104" height="22" rx="4" fill="rgba(251,146,60,0.1)" stroke="rgba(251,146,60,0.3)" stroke-width="1"/>
+      <text x="230" y="123" text-anchor="middle" fill="#fb923c" font-size="9">POST /users</text>
+      <rect x="178" y="136" width="104" height="22" rx="4" fill="rgba(251,146,60,0.1)" stroke="rgba(251,146,60,0.3)" stroke-width="1"/>
+      <text x="230" y="151" text-anchor="middle" fill="#fb923c" font-size="9">DELETE /users/:id</text>
+      <text x="230" y="190" text-anchor="middle" fill="#375c47" font-size="9">Maps URL+method</text>
+      <text x="230" y="202" text-anchor="middle" fill="#375c47" font-size="9">→ controller fn</text>
+
+      <!-- Arrow: Routes → Controller -->
+      <path d="M295 118 L355 118" stroke="#4ade80" stroke-width="1.8" fill="none" marker-end="url(#m-g2)"/>
+      <text x="325" y="111" text-anchor="middle" fill="#4ade80" font-size="8">calls</text>
+
+      <!-- Controller box -->
+      <rect x="355" y="50" width="145" height="150" rx="8" fill="#0c1018" stroke="#22c55e" stroke-width="2"/>
+      <text x="427" y="37" text-anchor="middle" fill="#22c55e" font-size="11" font-weight="700">CONTROLLER</text>
+      <text x="427" y="50" text-anchor="middle" fill="#22c55e" font-size="9">controllers/userController.js</text>
+      <rect x="368" y="60" width="119" height="22" rx="4" fill="rgba(34,197,94,0.1)" stroke="rgba(34,197,94,0.35)" stroke-width="1"/>
+      <text x="427" y="75" text-anchor="middle" fill="#22c55e" font-size="9">getAllUsers(req,res)</text>
+      <rect x="368" y="88" width="119" height="22" rx="4" fill="rgba(34,197,94,0.1)" stroke="rgba(34,197,94,0.35)" stroke-width="1"/>
+      <text x="427" y="103" text-anchor="middle" fill="#22c55e" font-size="9">createUser(req,res)</text>
+      <rect x="368" y="116" width="119" height="22" rx="4" fill="rgba(34,197,94,0.1)" stroke="rgba(34,197,94,0.35)" stroke-width="1"/>
+      <text x="427" y="131" text-anchor="middle" fill="#22c55e" font-size="9">deleteUser(req,res)</text>
+      <text x="427" y="170" text-anchor="middle" fill="#375c47" font-size="9">Business logic.</text>
+      <text x="427" y="182" text-anchor="middle" fill="#375c47" font-size="9">Validates, transforms,</text>
+      <text x="427" y="194" text-anchor="middle" fill="#375c47" font-size="9">calls models.</text>
+
+      <!-- Arrow: Controller → Model -->
+      <path d="M500 118 L560 118" stroke="#f59e0b" stroke-width="1.8" fill="none" marker-end="url(#m-y)"/>
+      <text x="530" y="111" text-anchor="middle" fill="#f59e0b" font-size="8">query</text>
+
+      <!-- Model box -->
+      <rect x="560" y="60" width="145" height="120" rx="8" fill="#0c1018" stroke="#f59e0b" stroke-width="1.8"/>
+      <text x="632" y="47" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="700">MODEL</text>
+      <text x="632" y="60" text-anchor="middle" fill="#f59e0b" font-size="9">models/User.js</text>
+      <rect x="572" y="70" width="121" height="22" rx="4" fill="rgba(245,158,11,0.1)" stroke="rgba(245,158,11,0.3)" stroke-width="1"/>
+      <text x="632" y="85" text-anchor="middle" fill="#f59e0b" font-size="9">Schema + validation</text>
+      <rect x="572" y="98" width="121" height="22" rx="4" fill="rgba(245,158,11,0.1)" stroke="rgba(245,158,11,0.3)" stroke-width="1"/>
+      <text x="632" y="113" text-anchor="middle" fill="#f59e0b" font-size="9">User.find()</text>
+      <rect x="572" y="126" width="121" height="22" rx="4" fill="rgba(245,158,11,0.1)" stroke="rgba(245,158,11,0.3)" stroke-width="1"/>
+      <text x="632" y="141" text-anchor="middle" fill="#f59e0b" font-size="9">User.create()</text>
+      <text x="632" y="195" text-anchor="middle" fill="#375c47" font-size="9">Data shape + DB</text>
+      <text x="632" y="207" text-anchor="middle" fill="#375c47" font-size="9">queries only.</text>
+
+      <!-- Database icon -->
+      <ellipse cx="632" cy="228" rx="36" ry="10" fill="#0c1018" stroke="#f59e0b" stroke-width="1.2"/>
+      <rect x="596" y="228" width="72" height="22" fill="#0c1018" stroke="none"/>
+      <line x1="596" y1="228" x2="596" y2="240" stroke="#f59e0b" stroke-width="1.2"/>
+      <line x1="668" y1="228" x2="668" y2="240" stroke="#f59e0b" stroke-width="1.2"/>
+      <ellipse cx="632" cy="240" rx="36" ry="10" fill="#0c1018" stroke="#f59e0b" stroke-width="1.2"/>
+      <text x="632" y="244" text-anchor="middle" fill="#7ab896" font-size="8">MongoDB</text>
+      <path d="M632 218 L632 228" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="3,2"/>
+
+      <!-- Dependency flow label -->
+      <text x="360" y="245" text-anchor="middle" fill="#375c47" font-size="9">dependency flow →  Routes → Controllers → Models  (never backwards)</text>
+
+      <defs>
+        <marker id="m-g" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#22c55e"/></marker>
+        <marker id="m-g2" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#4ade80"/></marker>
+        <marker id="m-y" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#f59e0b"/></marker>
+        <marker id="m-t" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#7ab896"/></marker>
+      </defs>
+    </svg>
+  </div>
+</div>
+<div class="ch-part">
+  <div class="ch-label"><span class="ch-num">05</span><span class="ch-head">How it works</span></div>
   <ol class="steps">
     <li>Create a <code>models/</code> folder. Each file exports a Mongoose model (or Prisma model). No business logic here — just data shape and database queries.</li>
     <li>Create a <code>controllers/</code> folder. Each file imports a model and exports handler functions. Business logic lives here: validation fallback, authorization checks, data transformation.</li>
@@ -7334,6 +7651,7 @@ dist
 
     if (s.content) html += s.content
     if (s.boxes)   s.boxes.forEach(b => { html += renderBox(b) })
+    if (s.beforeCode) html += s.beforeCode
     if (s.code)    html += codeBlock(s.code, s.codeFile || '', s.codeLang || 'javascript', s.extraCodes)
     if (s.afterCode) html += s.afterCode
 
