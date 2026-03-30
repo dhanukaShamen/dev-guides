@@ -222,7 +222,7 @@
     .ft-comment{color:var(--text3);font-style:italic;}
 
     /* ── SEARCH OVERLAY ── */
-    .srch-drop{position:absolute;top:54px;left:50%;transform:translateX(-50%);width:320px;background:var(--surf);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,.6);z-index:300;display:none;overflow:hidden;}
+    .srch-drop{position:fixed;width:320px;background:var(--surf);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,.6);z-index:300;display:none;overflow:hidden;}
     .srch-drop.vis{display:block;}
     .srch-item{padding:9px 15px;cursor:pointer;font-size:12.5px;color:var(--text2);border-bottom:1px solid var(--border2);transition:background .12s;}
     .srch-item:last-child{border-bottom:none;}
@@ -346,7 +346,6 @@
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input id="searchInput" type="text" placeholder="Search topics… (⌘K)">
     </div>
-    <div class="srch-drop" id="searchResults"></div>
   </div>
   <div class="hdr-right">
     <span class="prog-txt-wrap" style="font-size:12px;color:var(--text2)"><span id="progTxt">1 / 21</span></span>
@@ -360,6 +359,7 @@
   </div>
 </header>
 
+<div class="srch-drop" id="searchResults"></div>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 <div class="layout">
   <nav class="sidebar" id="sidebar"></nav>
@@ -8110,29 +8110,32 @@ dist
   const searchIndex = buildSearchIndex()
   let selIdx = -1
 
-  document.getElementById('searchInputMobile')?.addEventListener('input', function() {
-    const mainInput = document.getElementById('searchInput')
-    mainInput.value = this.value
-    mainInput.dispatchEvent(new Event('input'))
+  function positionDropdown(inputEl) {
     const drop = document.getElementById('searchResults')
-    if (drop) {
-      drop.style.position = 'fixed'
-      drop.style.left = '14px'
-      drop.style.right = '14px'
-      drop.style.width = 'auto'
-      drop.style.transform = 'none'
-      drop.style.top = 'var(--hdr)'
+    const rect = inputEl.getBoundingClientRect()
+    const isMobile = window.innerWidth <= 900
+    if (isMobile) {
+      drop.style.left = '0'
+      drop.style.right = '0'
+      drop.style.width = '100%'
+      drop.style.top = (rect.bottom + 2) + 'px'
+      drop.style.borderRadius = '0 0 var(--radius) var(--radius)'
+    } else {
+      const w = Math.max(rect.width, 320)
+      const left = Math.min(rect.left, window.innerWidth - w - 8)
+      drop.style.left = left + 'px'
+      drop.style.right = ''
+      drop.style.width = w + 'px'
+      drop.style.top = (rect.bottom + 6) + 'px'
+      drop.style.borderRadius = 'var(--radius)'
     }
-  })
-  document.getElementById('searchInputMobile')?.addEventListener('keydown', function(e) {
-    document.getElementById('searchInput').dispatchEvent(new KeyboardEvent('keydown', e))
-  })
+  }
 
-  document.getElementById('searchInput').addEventListener('input', function() {
-    const q = this.value.trim().toLowerCase()
+  function runSearch(q, inputEl) {
     const drop = document.getElementById('searchResults')
     selIdx = -1
     if (!q) { drop.classList.remove('vis'); return }
+    positionDropdown(inputEl)
     const hits = searchIndex.filter(s => s.title.toLowerCase().includes(q) || s.text.includes(q)).slice(0, 8)
     if (!hits.length) {
       drop.innerHTML = `<div class="srch-empty">No results for "<strong>${q}</strong>"</div>`
@@ -8145,6 +8148,19 @@ dist
       ${h.title}
     </div>`).join('')
     drop.classList.add('vis')
+  }
+
+  document.getElementById('searchInput').addEventListener('input', function() {
+    runSearch(this.value.trim().toLowerCase(), this)
+  })
+  document.getElementById('searchInputMobile')?.addEventListener('input', function() {
+    runSearch(this.value.trim().toLowerCase(), this)
+  })
+  document.getElementById('searchInputMobile')?.addEventListener('keydown', function(e) {
+    // Forward only navigation keys to keep arrow/enter nav working from mobile
+    if (['ArrowDown','ArrowUp','Enter','Escape'].includes(e.key)) {
+      document.getElementById('searchInput').dispatchEvent(new KeyboardEvent('keydown', e))
+    }
   })
 
   function pickSearch(id) {
@@ -8166,7 +8182,8 @@ dist
   document.addEventListener('keydown', e => {
     const drop = document.getElementById('searchResults')
     const isDropOpen = drop.classList.contains('vis')
-    const inInput = document.activeElement === document.getElementById('searchInput')
+    const inInput = document.activeElement === document.getElementById('searchInput') ||
+            document.activeElement === document.getElementById('searchInputMobile')
 
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
       e.preventDefault()
