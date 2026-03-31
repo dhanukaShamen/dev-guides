@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TypeScript 6 & React 19 — Interactive Beginner Guides</title>
-  <meta name="description" content="Two interactive, beginner-friendly guides to TypeScript 6 and React 19. Learn modern web development with real-world code, pro tips, and hands-on examples.">
+  <title>TypeScript 6, React 19, Node.js & Next.js 16 — Interactive Beginner Guides</title>
+  <meta name="description" content="Four interactive, beginner-friendly guides to TypeScript 6, React 19, Node.js + Express, and Next.js 16. Learn modern full-stack web development with real-world code, pro tips, and hands-on examples.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <style>
@@ -38,6 +38,11 @@
       --ex:        #fb923c;
       --ex-dim:    rgba(251,146,60,.09);
       --ex-border: rgba(251,146,60,.28);
+
+      --nx:        #e2e8f0;
+      --nx-dim:    rgba(226,232,240,.07);
+      --nx-border: rgba(226,232,240,.22);
+      --nx-glow:   rgba(226,232,240,.14);
 
       --tip:    #34d399;
       --warn:   #f59e0b;
@@ -86,15 +91,18 @@
     .pill-ts  { background: var(--ts-dim);  color: var(--ts);  border: 1px solid var(--ts-border); }
     .pill-rx  { background: var(--rx-dim);  color: var(--rx);  border: 1px solid var(--rx-border); }
     .pill-nd  { background: var(--nd-dim);  color: var(--nd);  border: 1px solid var(--nd-border); }
+    .pill-nx  { background: var(--nx-dim);  color: var(--nx);  border: 1px solid var(--nx-border); }
     .pill-new { background: rgba(167,139,250,.09); color: var(--new); border: 1px solid rgba(167,139,250,.28); }
     .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
     .dot-ts { background: var(--ts); box-shadow: 0 0 6px var(--ts); animation: pulse-ts 2s ease-in-out infinite; }
     .dot-rx { background: var(--rx); box-shadow: 0 0 6px var(--rx); animation: pulse-rx 2s ease-in-out infinite; }
     .dot-nd { background: var(--nd); box-shadow: 0 0 6px var(--nd); animation: pulse-nd 2s ease-in-out infinite; }
+    .dot-nx { background: var(--nx); box-shadow: 0 0 6px var(--nx); animation: pulse-nx 2s ease-in-out infinite; }
 
     @keyframes pulse-ts { 0%,100% { opacity:.7; box-shadow: 0 0 4px var(--ts); } 50% { opacity:1; box-shadow: 0 0 10px var(--ts); } }
     @keyframes pulse-rx { 0%,100% { opacity:.7; box-shadow: 0 0 4px var(--rx); } 50% { opacity:1; box-shadow: 0 0 10px var(--rx); } }
     @keyframes pulse-nd { 0%,100% { opacity:.7; box-shadow: 0 0 4px var(--nd); } 50% { opacity:1; box-shadow: 0 0 10px var(--nd); } }
+    @keyframes pulse-nx { 0%,100% { opacity:.7; box-shadow: 0 0 4px var(--nx); } 50% { opacity:1; box-shadow: 0 0 10px var(--nx); } }
 
     /* ── REVEAL ANIMATION ────────────────────────────────────────────── */
     .reveal {
@@ -161,6 +169,11 @@
       box-shadow: 0 0 18px var(--nd-glow);
     }
     .btn-nd:hover { background: #6eeba0; box-shadow: 0 0 26px var(--nd-glow); }
+    .btn-nx {
+      background: var(--nx); color: #07090f;
+      box-shadow: 0 0 18px var(--nx-glow);
+    }
+    .btn-nx:hover { background: #fff; box-shadow: 0 0 26px var(--nx-glow); }
 
     /* ── HERO ────────────────────────────────────────────────────────── */
     .hero {
@@ -279,6 +292,7 @@
     .cw-tab.active-ts { background: var(--ts-dim); color: var(--ts); border-color: var(--ts-border); }
     .cw-tab.active-rx { background: var(--rx-dim); color: var(--rx); border-color: var(--rx-border); }
     .cw-tab.active-nd { background: var(--nd-dim); color: var(--nd); border-color: var(--nd-border); }
+    .cw-tab.active-nx { background: var(--nx-dim); color: var(--nx); border-color: var(--nx-border); }
     .cw-body {
       padding: 20px 22px;
       font-family: var(--font-mono);
@@ -364,7 +378,7 @@
     #paths { background: var(--surf); }
 
     .paths-grid {
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
       background: var(--border);
       border-radius: var(--radius-lg);
       overflow: hidden;
@@ -386,6 +400,7 @@
     .path-card.ts-card::before { background: linear-gradient(90deg, var(--ts) 0%, transparent 80%); }
     .path-card.rx-card::before { background: linear-gradient(90deg, var(--rx) 0%, transparent 80%); }
     .path-card.nd-card::before { background: linear-gradient(90deg, var(--nd) 0%, transparent 80%); }
+    .path-card.nx-card::before { background: linear-gradient(90deg, var(--nx) 0%, transparent 80%); }
 
     .path-icon {
       width: 52px; height: 52px; border-radius: 14px;
@@ -395,6 +410,7 @@
     .path-icon.ts-bg { background: var(--ts-dim); border: 1px solid var(--ts-border); }
     .path-icon.rx-bg { background: var(--rx-dim); border: 1px solid var(--rx-border); }
     .path-icon.nd-bg { background: var(--nd-dim); border: 1px solid var(--nd-border); }
+    .path-icon.nx-bg { background: var(--nx-dim); border: 1px solid var(--nx-border); }
 
     .path-tagline {
       font-size: 11px; font-weight: 600; font-family: var(--font-mono);
@@ -421,6 +437,7 @@
     .check-ts { color: var(--ts); flex-shrink: 0; }
     .check-rx { color: var(--rx); flex-shrink: 0; }
     .check-nd { color: var(--nd); flex-shrink: 0; }
+    .check-nx { color: var(--nx); flex-shrink: 0; }
 
     .path-cta {
       display: inline-flex; align-items: center; gap: 8px;
@@ -441,6 +458,10 @@
       background: var(--nd-dim); color: var(--nd); border-color: var(--nd-border);
     }
     .path-cta.nd:hover { background: var(--nd); color: #07090f; box-shadow: 0 0 20px var(--nd-glow); }
+    .path-cta.nx {
+      background: var(--nx-dim); color: var(--nx); border-color: var(--nx-border);
+    }
+    .path-cta.nx:hover { background: var(--nx); color: #07090f; box-shadow: 0 0 20px var(--nx-glow); }
 
     /* ── FEATURES SECTION ────────────────────────────────────────────── */
     .features-grid {
@@ -469,7 +490,7 @@
     #curriculum { background: var(--surf); }
 
     .curriculum-grid {
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
       background: var(--border);
       border-radius: var(--radius-lg); overflow: hidden;
       border: 1px solid var(--border);
@@ -584,6 +605,8 @@
     .btn-ghost-rx:hover { background: var(--rx-dim); color: var(--rx); border-color: var(--rx-border); }
     .btn-ghost-nd { color: var(--nd); border-color: var(--nd-border); }
     .btn-ghost-nd:hover { background: var(--nd-dim); color: var(--nd); border-color: var(--nd-border); }
+    .btn-ghost-nx { color: var(--nx); border-color: var(--nx-border); }
+    .btn-ghost-nx:hover { background: var(--nx-dim); color: var(--nx); border-color: var(--nx-border); }
 
     /* ── NO-WRAP GUARD ──────────────────────────────────────────────────── */
     .pill { white-space: nowrap; }
@@ -594,27 +617,34 @@
 
     /* ── RESPONSIVE ──────────────────────────────────────────────────────── */
 
-    /* ① Large tablet: 3-col grids tighten padding, nav slightly smaller */
-    @media (max-width: 1100px) {
-      .nav-links { gap: 18px; font-size: 12px; }
-      .nav-cta { gap: 6px; }
-      .btn { padding: 7px 13px; font-size: 12px; }
+    /* ① Wide desktop: 4 nav CTA buttons — go icon-only early to prevent overflow */
+    @media (max-width: 1280px) {
+      .nav-cta .btn-label { display: none; }
+      .nav-cta .btn { padding: 7px 9px; gap: 0; min-width: 34px; justify-content: center; }
+      .nav-cta .btn svg { width: 15px; height: 15px; }
+      .nav-cta { gap: 5px; }
+    }
 
-      .path-card { padding: 36px 24px; }
-      .path-title { font-size: 1.35rem; }
+    /* ② Large tablet: tighten nav-links + card padding */
+    @media (max-width: 1100px) {
+      .nav-links { gap: 16px; font-size: 12px; }
+
+      .path-card { padding: 36px 28px; }
+      .path-title { font-size: 1.3rem; }
       .path-desc { font-size: 13px; }
       .path-topics li { font-size: 12px; }
 
-      .curriculum-col { padding: 32px 24px; }
+      .curriculum-col { padding: 32px 28px; }
       .curriculum-col-title { font-size: 15px; }
       .step-title { font-size: 13px; }
       .step-desc { font-size: 11px; }
     }
 
-    /* ② Tablet: hide nav text links, hero collapses, grids go 3 → 2 col */
+    /* ③ Tablet: hide nav-links, hero collapses — grids already 2-col on desktop */
     @media (max-width: 860px) {
       .nav-links { display: none; }
-      .btn { padding: 7px 11px; font-size: 12px; gap: 5px; }
+      .nav-cta .btn-label { display: none; }
+      .nav-cta .btn { padding: 7px 9px; gap: 0; min-width: 34px; justify-content: center; }
 
       .hero { grid-template-columns: 1fr; padding: 80px 0 60px; }
       .hero-left {
@@ -643,7 +673,7 @@
       .prereq-grid { grid-template-columns: 1fr 1fr; }
     }
 
-    /* ③ Narrow tablet / large phone: grids go 2 → 1 col */
+    /* ④ Narrow tablet / large phone: paths + curriculum → 1 col */
     @media (max-width: 640px) {
       .paths-grid { grid-template-columns: 1fr; }
       .path-card { padding: 32px 24px; }
@@ -666,11 +696,11 @@
       .section-sub { margin-bottom: 36px; }
     }
 
-    /* ④ Mobile: icon-only nav buttons, hero stacks, full single-col */
+    /* ⑤ Mobile: full single-col, full-width hero buttons */
     @media (max-width: 540px) {
       .nav-inner { padding: 0 14px; }
-      .nav-logo { font-size: 12px; gap: 5px; }
-      .nav-cta { gap: 5px; }
+      .nav-logo { font-size: 11px; gap: 4px; }
+      .nav-cta { gap: 4px; }
 
       .btn-label { display: none; }
       .btn { padding: 7px 9px; gap: 0; min-width: 34px; justify-content: center; }
@@ -717,6 +747,8 @@
       <span class="rx-word">React 19</span>
       <span class="slash">/</span>
       <span style="color:var(--nd)">Node.js</span>
+      <span class="slash nav-logo-next">/</span>
+      <span class="nav-logo-next" style="color:var(--nx)">Next.js</span>
     </div>
     <div class="nav-links">
       <a href="#paths">Guides</a>
@@ -737,6 +769,10 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="12 2 22 8 22 16 12 22 2 16 2 8"/></svg>
         <span class="btn-label">Node.js</span>
       </a>
+      <a href="nextjs16-guide.html" class="btn btn-ghost btn-ghost-nx">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span class="btn-label">Next.js 16</span>
+      </a>
     </div>
   </div>
 </nav>
@@ -751,10 +787,11 @@
     <h1 class="hero-headline reveal" style="transition-delay:.08s">
       Master Modern<br>
       <em>TypeScript 6</em>,<br>
-      <span class="rx-word">React 19</span> &amp; <span style="color:var(--nd)">Node.js</span>
+      <span class="rx-word">React 19</span>, <span style="color:var(--nd)">Node.js</span><br>
+      &amp; <span style="color:var(--nx)">Next.js 16</span>
     </h1>
     <p class="hero-sub reveal" style="transition-delay:.15s">
-      Three <strong>deeply interactive</strong>, beginner-friendly guides built for the newest versions.
+      Four <strong>deeply interactive</strong>, beginner-friendly guides built for the newest versions.
       Real-world code, annotated examples, and <strong>pro-tips</strong> that keep you
       from common traps.
     </p>
@@ -770,6 +807,10 @@
       <a href="Node_js-Express_Interactive_Guide.html" class="btn btn-nd">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 22 8 22 16 12 22 2 16 2 8"/></svg>
         <span class="btn-label">Node.js Guide</span>
+      </a>
+      <a href="nextjs16-guide.html" class="btn btn-nx">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span class="btn-label">Next.js 16 Guide</span>
       </a>
     </div>
     <div class="hero-stats reveal" style="transition-delay:.3s">
@@ -789,6 +830,11 @@
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
+        <div class="stat-num" style="color:var(--nx)">58+</div>
+        <div class="stat-label">Next.js Sections</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
         <div class="stat-num tip">100+</div>
         <div class="stat-label">Code Examples</div>
       </div>
@@ -805,6 +851,7 @@
           <div class="cw-tab active-ts" id="tab-ts" onclick="switchTab('ts')">app.ts</div>
           <div class="cw-tab" id="tab-rx" onclick="switchTab('rx')">App.tsx</div>
           <div class="cw-tab" id="tab-nd" onclick="switchTab('nd')">server.js</div>
+          <div class="cw-tab" id="tab-nx" onclick="switchTab('nx')">page.tsx</div>
         </div>
         <div style="width:60px"></div>
       </div>
@@ -870,6 +917,29 @@
           <br><span class="fn">app</span><span class="op">.</span><span class="fn">listen</span><span class="pu">(</span><span class="num">3000</span><span class="pu">);</span>
         </div>
 
+        <!-- Next.js panel -->
+        <div class="code-panel" id="panel-nx">
+          <span class="cm">// Next.js 16 — App Router + Server Component</span>
+          <br>
+          <span class="kw">import</span> <span class="pu">{</span> <span class="fn">db</span> <span class="pu">}</span> <span class="kw">from</span> <span class="st">"@/lib/db"</span><span class="pu">;</span>
+          <br>
+          <br><span class="cm">// This component runs on the server by default</span>
+          <br><span class="kw">export default async function</span> <span class="fn" style="color:var(--nx)">ProductPage</span><span class="pu">({</span>
+          <br>&nbsp;&nbsp;<span class="fn">params</span><span class="pu">,</span>
+          <br><span class="pu">}:</span> <span class="pu">{</span> <span class="fn">params</span><span class="op">:</span> <span class="pu">{</span> <span class="fn">id</span><span class="op">:</span> <span class="ty">string</span> <span class="pu">}</span> <span class="pu">})</span> <span class="pu">{</span>
+          <br>&nbsp;&nbsp;<span class="cm">// Direct DB call — no useEffect, no API route</span>
+          <br>&nbsp;&nbsp;<span class="kw">const</span> <span class="fn">product</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">db</span><span class="op">.</span><span class="fn">product</span><span class="op">.</span><span class="fn">findUnique</span><span class="pu">({</span>
+          <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">where</span><span class="op">:</span> <span class="pu">{</span> <span class="fn">id</span><span class="op">:</span> <span class="fn">params</span><span class="op">.</span><span class="fn">id</span> <span class="pu">},</span>
+          <br>&nbsp;&nbsp;<span class="pu">});</span>
+          <br>
+          <br>&nbsp;&nbsp;<span class="kw">return</span> <span class="pu">(</span>
+          <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="pu">&lt;</span><span class="rx-color">main</span><span class="pu">&gt;</span>
+          <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="pu">&lt;</span><span class="rx-color">h1</span><span class="pu">&gt;{</span><span class="fn">product</span><span class="op">?.</span><span class="fn">name</span><span class="pu">}&lt;/</span><span class="rx-color">h1</span><span class="pu">&gt;</span>
+          <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="pu">&lt;/</span><span class="rx-color">main</span><span class="pu">&gt;</span>
+          <br>&nbsp;&nbsp;<span class="pu">);</span>
+          <br><span class="pu">}</span>
+        </div>
+
       </div>
       <div class="cw-footer">
         <div class="dot dot-ts" id="cw-status-dot"></div>
@@ -886,15 +956,18 @@
     <span class="ts">TypeScript 6</span><span class="sep"> · </span>
     <span class="rx">React 19</span><span class="sep"> · </span>
     <span style="color:var(--nd);opacity:.8">Node.js 22</span><span class="sep"> · </span>
+    <span style="color:var(--nx);opacity:.9">Next.js 16</span><span class="sep"> · </span>
     <span style="color:var(--ex,#fb923c);opacity:.8">Express 5</span><span class="sep"> · </span>
     <span>Type Annotations</span><span class="sep"> · </span>
     <span>use() Hook</span><span class="sep"> · </span>
     <span>REST APIs</span><span class="sep"> · </span>
     <span>Generics</span><span class="sep"> · </span>
     <span>Server Actions</span><span class="sep"> · </span>
+    <span>App Router</span><span class="sep"> · </span>
     <span>Middleware</span><span class="sep"> · </span>
     <span>Union Types</span><span class="sep"> · </span>
     <span>useReducer</span><span class="sep"> · </span>
+    <span>Server Components</span><span class="sep"> · </span>
     <span>Routing</span><span class="sep"> · </span>
     <span>Interfaces</span><span class="sep"> · </span>
     <span>Context API</span><span class="sep"> · </span>
@@ -907,15 +980,18 @@
     <span class="ts">TypeScript 6</span><span class="sep"> · </span>
     <span class="rx">React 19</span><span class="sep"> · </span>
     <span style="color:var(--nd);opacity:.8">Node.js 22</span><span class="sep"> · </span>
+    <span style="color:var(--nx);opacity:.9">Next.js 16</span><span class="sep"> · </span>
     <span style="color:var(--ex,#fb923c);opacity:.8">Express 5</span><span class="sep"> · </span>
     <span>Type Annotations</span><span class="sep"> · </span>
     <span>use() Hook</span><span class="sep"> · </span>
     <span>REST APIs</span><span class="sep"> · </span>
     <span>Generics</span><span class="sep"> · </span>
     <span>Server Actions</span><span class="sep"> · </span>
+    <span>App Router</span><span class="sep"> · </span>
     <span>Middleware</span><span class="sep"> · </span>
     <span>Union Types</span><span class="sep"> · </span>
     <span>useReducer</span><span class="sep"> · </span>
+    <span>Server Components</span><span class="sep"> · </span>
     <span>Routing</span><span class="sep"> · </span>
     <span>Interfaces</span><span class="sep"> · </span>
     <span>Context API</span><span class="sep"> · </span>
@@ -926,10 +1002,12 @@
     <span>Error Boundaries</span><span class="sep"> · </span>
     <span class="ts">TypeScript 6</span><span class="sep"> · </span>
     <span class="rx">React 19</span><span class="sep"> · </span>
+    <span style="color:var(--nx);opacity:.9">Next.js 16</span><span class="sep"> · </span>
     <span>Type Annotations</span><span class="sep"> · </span>
     <span>use() Hook</span><span class="sep"> · </span>
     <span>Generics</span><span class="sep"> · </span>
     <span>Server Actions</span><span class="sep"> · </span>
+    <span>App Router</span><span class="sep"> · </span>
     <span>Union Types</span><span class="sep"> · </span>
     <span>useReducer</span><span class="sep"> · </span>
     <span>Interfaces</span><span class="sep"> · </span>
@@ -945,9 +1023,9 @@
 <section id="paths">
   <div class="container">
     <div class="section-label reveal">Choose Your Path</div>
-    <h2 class="section-title reveal" style="transition-delay:.06s">Three guides. One modern stack.</h2>
+    <h2 class="section-title reveal" style="transition-delay:.06s">Four guides. One modern stack.</h2>
     <p class="section-sub reveal" style="transition-delay:.1s">
-      Start with TypeScript for type-system foundations, apply them in React 19, or go backend-first with Node.js &amp; Express. Every guide is beginner-friendly and cross-linked.
+      Start with TypeScript for type-system foundations, apply them in React 19, go backend-first with Node.js &amp; Express, or build full-stack apps with Next.js 16. Every guide is beginner-friendly and cross-linked.
     </p>
 
     <div class="paths-grid reveal" style="transition-delay:.14s">
@@ -1069,11 +1147,48 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
       </div>
+
+      <!-- Next.js 16 Card -->
+      <div class="path-card nx-card">
+        <div class="path-icon nx-bg">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="path-tagline" style="color:var(--nx);opacity:.8">Next.js 16 &mdash; Full-Stack React Framework</div>
+        <h3 class="path-title">Full-Stack,<br>Done Right.</h3>
+        <p class="path-desc">
+          Go from zero to a production-ready full-stack app with Next.js 16 —
+          covering the App Router, Server Components, data fetching, auth, and deployment.
+        </p>
+        <ul class="path-topics">
+          <li>
+            <svg class="check-nx" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            App Router &amp; File-Based Routing
+          </li>
+          <li>
+            <svg class="check-nx" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Server &amp; Client Components
+          </li>
+          <li>
+            <svg class="check-nx" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Data Fetching, Caching &amp; Revalidation
+          </li>
+          <li>
+            <svg class="check-nx" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            API Routes &amp; Server Actions
+          </li>
+          <li>
+            <svg class="check-nx" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="pill pill-nx">New in v16</span>&nbsp;Turbopack &amp; React 19.2
+          </li>
+        </ul>
+        <a href="nextjs16-guide.html" class="path-cta nx">
+          Start Next.js 16 Guide
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
     </div>
   </div>
 </section>
-
-<!-- ── FEATURES ──────────────────────────────────────────────────────── -->
 <section id="features">
   <div class="container">
     <div class="section-label reveal">What's Inside</div>
@@ -1433,21 +1548,114 @@
           </div>
         </div>
       </div>
+
+      <!-- Next.js 16 column -->
+      <div class="curriculum-col">
+        <div class="curriculum-col-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span class="curriculum-col-title" style="color:var(--nx)">Next.js 16 Path</span>
+          <span class="pill pill-nx">58 sections</span>
+        </div>
+        <div class="curriculum-steps">
+          <div class="step">
+            <div class="step-num" style="background:var(--nx-dim);color:var(--nx);border:1px solid var(--nx-border);">01</div>
+            <div class="step-content">
+              <div class="step-title">Welcome to Next.js 16</div>
+              <div class="step-desc">Why Next.js · React + backend · What you'll build</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nx-dim);color:var(--nx);border:1px solid var(--nx-border);">02</div>
+            <div class="step-content">
+              <div class="step-title">Project Setup</div>
+              <div class="step-desc">create-next-app · Folder structure · tsconfig</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nx-dim);color:var(--nx);border:1px solid var(--nx-border);">03</div>
+            <div class="step-content">
+              <div class="step-title">App Router Fundamentals</div>
+              <div class="step-desc">File-based routing · page.tsx · layout.tsx</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nx-dim);color:var(--nx);border:1px solid var(--nx-border);">04</div>
+            <div class="step-content">
+              <div class="step-title">Server Components</div>
+              <div class="step-desc">Default async · Direct DB access · Zero client JS</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nx-dim);color:var(--nx);border:1px solid var(--nx-border);">05</div>
+            <div class="step-content">
+              <div class="step-title">Client Components</div>
+              <div class="step-desc">"use client" · Interactivity · useState &amp; hooks</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nx-dim);color:var(--nx);border:1px solid var(--nx-border);">06</div>
+            <div class="step-content">
+              <div class="step-title">Data Fetching &amp; Caching</div>
+              <div class="step-desc">fetch() options · revalidate · cache strategies</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nx-dim);color:var(--nx);border:1px solid var(--nx-border);">07</div>
+            <div class="step-content">
+              <div class="step-title">Server Actions</div>
+              <div class="step-desc">"use server" · Form handling · Mutations</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nx-dim);color:var(--nx);border:1px solid var(--nx-border);">08</div>
+            <div class="step-content">
+              <div class="step-title">API Routes</div>
+              <div class="step-desc">Route handlers · GET/POST/PUT · NextRequest</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nx-dim);color:var(--nx);border:1px solid var(--nx-border);">09</div>
+            <div class="step-content">
+              <div class="step-title">Authentication</div>
+              <div class="step-desc">NextAuth · Middleware guards · Session handling</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nx-dim);color:var(--nx);border:1px solid var(--nx-border);">10</div>
+            <div class="step-content">
+              <div class="step-title" style="color:var(--new)">New: Turbopack</div>
+              <div class="step-desc">Stable in v16 · 10× faster HMR · Config options</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nx-dim);color:var(--nx);border:1px solid var(--nx-border);">11</div>
+            <div class="step-content">
+              <div class="step-title">Styling &amp; Fonts</div>
+              <div class="step-desc">CSS Modules · Tailwind · next/font optimization</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nx-dim);color:var(--nx);border:1px solid var(--nx-border);">12</div>
+            <div class="step-content">
+              <div class="step-title">Deployment</div>
+              <div class="step-desc">Vercel · Static export · Environment variables</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
-
-<!-- ── BRIDGE ─────────────────────────────────────────────────────────── -->
 <section id="why-together">
   <div class="container">
     <div class="bridge-inner reveal">
       <div>
         <div class="bridge-label">Why Learn These Together?</div>
-        <h2 class="bridge-title">Three technologies,<br>one complete stack.</h2>
+        <h2 class="bridge-title">Four technologies,<br>one complete stack.</h2>
         <p class="bridge-desc">
           TypeScript gives you type safety, React puts that safety into the UI layer,
-          and Node.js + Express brings it to the server. Together they form the full
-          JavaScript ecosystem — learn them as a trio and every concept reinforces the next.
+          Node.js + Express brings it to the server, and Next.js 16 ties it all together
+          into a full-stack framework. Learn them as a suite and every concept reinforces the next.
         </p>
       </div>
       <div class="synergy-list">
@@ -1466,7 +1674,7 @@
           </div>
           <div>
             <div class="synergy-title">Node.js → The Runtime Under Everything</div>
-            <div class="synergy-desc">React's build tools, TypeScript's compiler, and Express all run on Node — understanding it unlocks the whole ecosystem.</div>
+            <div class="synergy-desc">React's build tools, TypeScript's compiler, Express, and Next.js all run on Node — understanding it unlocks the whole ecosystem.</div>
           </div>
         </div>
         <div class="synergy-item">
@@ -1480,11 +1688,20 @@
         </div>
         <div class="synergy-item">
           <div class="synergy-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div>
+            <div class="synergy-title">Next.js → Everything in One Framework</div>
+            <div class="synergy-desc">Next.js 16 layers App Router, Server Components, and Server Actions on top of React — so your TypeScript, Node, and React knowledge pays off immediately.</div>
+          </div>
+        </div>
+        <div class="synergy-item">
+          <div class="synergy-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
           <div>
-            <div class="synergy-title">Async Patterns Carry Across All Three</div>
-            <div class="synergy-desc">Promises, async/await, and error handling learned in Node transfer directly to React hooks and TypeScript utility types.</div>
+            <div class="synergy-title">Async Patterns Carry Across All Four</div>
+            <div class="synergy-desc">Promises, async/await, and error handling learned in Node transfer directly to React hooks, TypeScript utility types, and Next.js Server Components.</div>
           </div>
         </div>
       </div>
@@ -1498,7 +1715,7 @@
     <div class="section-label reveal">Before You Start</div>
     <h2 class="section-title reveal" style="transition-delay:.06s">What you'll need.</h2>
     <p class="section-sub reveal" style="transition-delay:.1s">
-      All three guides are beginner-friendly. Here's what to have ready before you open the first chapter.
+      All four guides are beginner-friendly. Here's what to have ready before you open the first chapter.
     </p>
     <div class="prereq-grid reveal" style="transition-delay:.14s">
       <div class="prereq-card">
@@ -1543,6 +1760,13 @@
         <div class="prereq-title" style="color:var(--nd)">For Node.js Guide</div>
         <p class="prereq-desc">No backend experience required. If you can run a command in the terminal and understand basic JS functions, you're ready to build your first server.</p>
       </div>
+      <div class="prereq-card" style="border-color:var(--nx-border)">
+        <div class="prereq-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="prereq-title" style="color:var(--nx)">For Next.js Guide</div>
+        <p class="prereq-desc">Basic React knowledge (components + useState) is recommended but not required — Chapter 1 covers everything you need. Familiarity with TypeScript is a bonus.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -1558,6 +1782,8 @@
           <span style="color:var(--rx)">React 19</span>
           <span style="color:var(--text3);margin:0 6px">/</span>
           <span style="color:var(--nd)">Node.js</span>
+          <span style="color:var(--text3);margin:0 6px">/</span>
+          <span style="color:var(--nx)">Next.js 16</span>
           <span style="color:var(--text3);font-weight:400"> Guides</span>
         </div>
         <p>Free, interactive, open-source learning guides for the modern JavaScript ecosystem.</p>
@@ -1568,6 +1794,7 @@
           <li><a href="typescript6-guide.html">TypeScript 6 Guide</a></li>
           <li><a href="react19-ts6-guide-complete.html">React 19 Guide</a></li>
           <li><a href="Node_js-Express_Interactive_Guide.html">Node.js + Express Guide</a></li>
+          <li><a href="nextjs16-guide.html">Next.js 16 Guide</a></li>
           <li><a href="#curriculum">Curriculum</a></li>
         </ul>
       </div>
@@ -1624,8 +1851,8 @@
 
   /* ── CODE WINDOW TAB SWITCH ────────────────────────────────────── */
   function switchTab(lang) {
-    const tabs   = { ts: document.getElementById('tab-ts'), rx: document.getElementById('tab-rx'), nd: document.getElementById('tab-nd') };
-    const panels = { ts: document.getElementById('panel-ts'), rx: document.getElementById('panel-rx'), nd: document.getElementById('panel-nd') };
+    const tabs   = { ts: document.getElementById('tab-ts'), rx: document.getElementById('tab-rx'), nd: document.getElementById('tab-nd'), nx: document.getElementById('tab-nx') };
+    const panels = { ts: document.getElementById('panel-ts'), rx: document.getElementById('panel-rx'), nd: document.getElementById('panel-nd'), nx: document.getElementById('panel-nx') };
     const dot    = document.getElementById('cw-status-dot');
     const status = document.getElementById('cw-status-text');
 
@@ -1643,11 +1870,16 @@
       panels.rx.classList.add('active');
       dot.classList.add('dot-rx');
       status.textContent = 'React 19 — use() hook unwraps Promises';
-    } else {
+    } else if (lang === 'nd') {
       tabs.nd.classList.add('active-nd');
       panels.nd.classList.add('active');
       dot.classList.add('dot-nd');
       status.textContent = 'Node.js + Express 5 — async errors auto-forwarded';
+    } else {
+      tabs.nx.classList.add('active-nx');
+      panels.nx.classList.add('active');
+      dot.classList.add('dot-nx');
+      status.textContent = 'Next.js 16 — Server Components fetch data directly';
     }
   }
 
