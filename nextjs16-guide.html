@@ -271,7 +271,7 @@
       .ms-arrow{display:none;}
     }
 
-    /* ── FLOATING NAV ─────────────────────────────────────────────────── */
+    /* FAB */
     .fab-wrap{position:fixed;bottom:88px;right:16px;z-index:9999;touch-action:none;user-select:none;}
     .fab-btn{width:46px;height:46px;border-radius:50%;background:#1a2236;border:1.5px solid rgba(255,255,255,0.18);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06);transition:background .2s,transform .28s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;outline:none;padding:0;animation:fab-pulse 3.5s ease-in-out infinite;}
     @keyframes fab-pulse{0%,100%{box-shadow:0 4px 20px rgba(0,0,0,.5);}50%{box-shadow:0 4px 24px rgba(0,0,0,.5),0 0 0 6px rgba(255,255,255,.04);}}
@@ -310,7 +310,7 @@
     </div>
   </div>
   <div class="hdr-right">
-    <span id="progTxt" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);">0 / 49</span>
+    <span id="progTxt" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);">0 / 58</span>
     <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
   </div>
   <div class="hdr-search-row" id="mobileSearchRow">
@@ -332,7 +332,7 @@
 <!-- SEARCH DROPDOWN -->
 <div class="srch-drop" id="srchDrop"></div>
 
-<!-- ── FLOATING NAV ─────────────────────────────────────────────── -->
+<!-- FAB -->
 <div class="fab-wrap" id="fabWrap">
   <div class="fab-menu" id="fabMenu">
     <a class="fab-item" href="index.html">
@@ -535,6 +535,10 @@ npm run dev</code></pre></div>
         {type:'nxt',title:'next.config.ts',body:`<p>The <code>next.config.ts</code> file is where you configure Next.js behavior — enabling experimental features, setting image domains, configuring redirects, and customizing the build output. In Next.js 16, you can also opt into the new <strong>Build Adapters API</strong> (alpha) here to create custom adapters that modify the build process for non-standard deployment targets.</p>`},
         {type:'new',title:'React Compiler (Stable in Next.js 16)',body:`<p>Next.js 16 ships with <strong>React Compiler support as stable</strong>. The React Compiler automatically memoizes your components and hooks — the equivalent of manually wrapping everything in <code>useMemo</code>, <code>useCallback</code>, and <code>React.memo</code>. Enable it in <code>next.config.ts</code> with <code>experimental: { reactCompiler: true }</code>. No code changes needed; it works on your existing components automatically.</p>`},
         {type:'tip',title:'Turbopack is Now Stable in Next.js 16',body:`<p>Next.js 16 ships <strong>Turbopack as the stable default bundler</strong> — replacing Webpack for both the dev server and production builds. Built in Rust, Turbopack delivers up to <strong>5–10× faster Fast Refresh</strong> and <strong>2–5× faster production builds</strong>. Additionally, Turbopack File System Caching (beta) makes repeat startups and incremental compiles dramatically faster in large apps. No configuration needed — it just works.</p>`},
+        {type:'new',title:'New Debugging Tools in Next.js 16',body:`<p>Next.js 16 significantly improved the developer experience with two debugging upgrades beginners should know about:</p><ul>
+<li><strong>Hydration Diff Indicator:</strong> When the HTML the server renders doesn't match what the client renders (a hydration error), Next.js now shows a clear <code>+</code> / <code>-</code> diff in the error overlay — exactly like a git diff. You'll see the specific element and attribute that caused the mismatch instead of a cryptic error. Don't fear hydration errors: read the diff, find the mismatch (often a timestamp, random ID, or browser-only value), and fix it.</li>
+<li><strong>Upgrade CLI:</strong> Run <code>npx next upgrade</code> to upgrade Next.js, automatically apply codemods for breaking changes, and update your config. This is the official, recommended way to stay up to date — it handles API changes that would otherwise take hours to migrate manually.</li>
+</ul>`},
       ]
     },
 
@@ -707,6 +711,28 @@ export default function HomePage() {
   <div class="card"><div class="card-t">[...slug] — Catch-All</div><div class="card-b"><code>app/docs/[...slug]/page.tsx</code> matches <code>/docs/a</code>, <code>/docs/a/b</code>, <code>/docs/a/b/c</code></div></div>
   <div class="card"><div class="card-t">[[...slug]] — Optional</div><div class="card-b"><code>app/shop/[[...slug]]/page.tsx</code> also matches <code>/shop</code> (the slug itself is optional)</div></div>
 </div>
+
+<div class="tbl-wrap" style="margin-top:4px;">
+  <table>
+    <thead><tr><th>URL</th><th><code>[id]</code></th><th><code>[...slug]</code> catch-all</th><th><code>[[...slug]]</code> optional</th></tr></thead>
+    <tbody>
+      <tr><td><code>/posts</code></td><td>✗ No match</td><td>✗ No match</td><td><span class="badge badge-ok">✓ Matches</span> — slug = <code>undefined</code></td></tr>
+      <tr><td><code>/posts/a</code></td><td><span class="badge badge-ok">✓ Matches</span> id=<code>a</code></td><td><span class="badge badge-ok">✓ Matches</span> slug=<code>['a']</code></td><td><span class="badge badge-ok">✓ Matches</span> slug=<code>['a']</code></td></tr>
+      <tr><td><code>/posts/a/b</code></td><td>✗ No match</td><td><span class="badge badge-ok">✓ Matches</span> slug=<code>['a','b']</code></td><td><span class="badge badge-ok">✓ Matches</span> slug=<code>['a','b']</code></td></tr>
+      <tr><td><code>/posts/a/b/c</code></td><td>✗ No match</td><td><span class="badge badge-ok">✓ Matches</span> slug=<code>['a','b','c']</code></td><td><span class="badge badge-ok">✓ Matches</span> slug=<code>['a','b','c']</code></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="box box-tip" style="margin-top:12px;">
+  <div class="box-hdr">${SVG.info} When to Use Each Pattern</div>
+  <div class="box-body">
+    <ul>
+      <li>Use <strong>[id]</strong> for simple IDs: <code>/posts/123</code>, <code>/users/alice</code></li>
+      <li>Use <strong>[...slug]</strong> when the base URL is always required: <code>/docs/getting-started/installation</code> — a <code>/docs</code> listing page would be a separate route</li>
+      <li>Use <strong>[[...slug]]</strong> when one component handles both the index and nested paths: <code>/shop</code> shows all products, <code>/shop/electronics/laptops</code> shows a filtered view</li>
+    </ul>
+  </div>
+</div>
 <div class="cb"><div class="cb-hdr"><span class="cb-fname">app/posts/[id]/page.tsx</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>// The params prop is automatically injected by Next.js
 // In Next.js 15+, params is a Promise — must be awaited!
 interface PageProps {
@@ -734,7 +760,14 @@ export async function generateStaticParams() {
   return posts.map((post: { id: number }) => ({ id: String(post.id) }))
 }</code></pre></div>`,
       boxes:[
-        {type:'new',title:'Breaking Change: params is a Promise',body:`<p>This was introduced as a breaking change in Next.js 15. In earlier versions, <code>params</code> was a plain object. Now it is a <strong>Promise</strong> that must be awaited. This applies to <code>params</code>, <code>searchParams</code>, and header-related APIs. If you're upgrading from Next.js 14, update all your page components.</p>`},
+        {type:'new',title:'Breaking Change: params is a Promise',body:`<p>This was introduced as a breaking change in Next.js 15 and continues in Next.js 16. In earlier versions, <code>params</code> was a plain object. Now it is a <strong>Promise</strong> that must be awaited. This applies to <code>params</code>, <code>searchParams</code>, and header-related APIs. If you're upgrading from Next.js 14, update all your page components.</p>`},
+        {type:'warn',title:'All Async APIs in Next.js 15/16 — The Full List',body:`<p>These APIs changed from synchronous to <strong>async</strong> and will throw TypeScript errors (and silent runtime bugs) if not awaited. Memorize this list:</p><ul>
+<li><code>params</code> — <strong>await params</strong> before destructuring in any page/layout</li>
+<li><code>searchParams</code> — <strong>await searchParams</strong> before reading query strings</li>
+<li><code>cookies()</code> — <strong>await cookies()</strong> before calling <code>.get()</code> or <code>.set()</code></li>
+<li><code>headers()</code> — <strong>await headers()</strong> before calling <code>.get()</code></li>
+<li><code>draftMode()</code> — <strong>await draftMode()</strong> before <code>.isEnabled</code></li>
+</ul><p style="margin-top:8px;">Pattern to remember: <strong>if Next.js injects it or reads from the request, it's now a Promise.</strong></p>`},
         {type:'tip',title:'generateStaticParams for Performance',body:`<p>Use <code>generateStaticParams</code> to tell Next.js which dynamic routes exist at build time. These pages will be statically generated (HTML pre-built) instead of rendered on-demand — much faster and cheaper to serve. You only need dynamic rendering for pages whose content changes per-request.</p>`},
       ]
     },
@@ -794,6 +827,27 @@ export default function LoginForm() {
 }</code></pre></div>`,
       boxes:[
         {type:'nxt',title:'Incremental Prefetching in Next.js 16',body:`<p>Next.js 16 enhances the <code>&lt;Link&gt;</code> prefetching system with <strong>incremental prefetching</strong> and <strong>layout deduplication</strong>. When prefetching a page that shares layouts with the current route, only the new page segment is fetched — not the layouts you already have. This significantly reduces prefetch payloads and navigation overhead in large apps with deeply nested layouts.</p>`},
+        {type:'new',title:'View Transitions with transitionTypes (React 19.2)',body:`<p>React 19.2 adds native View Transitions API support to <code>&lt;Link&gt;</code> via the <code>unstable_viewTransition</code> and <code>transitionTypes</code> props. You can create "app-like" slide or fade animations between pages with almost no CSS.</p>
+<pre style="background:#070a12;border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.7;overflow-x:auto;margin:10px 0;">
+<span style="color:#c792ea;">import</span> Link <span style="color:#c792ea;">from</span> <span style="color:#c3e88d;">'next/link'</span>
+
+<span style="color:#546e7a;">// Pass transitionTypes to hint which animation to use</span>
+&lt;Link href="/blog/post-1" <span style="color:#82aaff;">unstable_viewTransition</span>
+  <span style="color:#82aaff;">transitionTypes</span>={[<span style="color:#c3e88d;">'slide-left'</span>]}&gt;
+  Read Post
+&lt;/Link&gt;
+
+<span style="color:#546e7a;">// In your CSS — name the transition based on the type:</span>
+<span style="color:#c3e88d;">@keyframes</span> <span style="color:#ffcb6b;">slide-in-left</span> {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+<span style="color:#c3e88d;">::view-transition-new</span>(root) {
+  animation: slide-in-left 300ms ease;
+}
+</pre>
+<p>The <code>transitionTypes</code> prop is an array of strings you define. Read them in CSS using <code>:active-view-transition-type(slide-left)</code> to apply different animations per navigation direction. Works in any modern browser with no JavaScript animation library needed.</p>`},
         {type:'warn',title:'next/navigation vs next/router',body:`<p>In the App Router, always import from <code>'next/navigation'</code>. The old <code>'next/router'</code> import only works in the Pages Router. They are not interchangeable. Common mistake for people migrating.</p>`},
       ]
     },
@@ -1099,6 +1153,23 @@ export default async function Dashboard() {
 }</code></pre></div>`,
       boxes:[
         {type:'warn',title:'Server-only packages',body:`<p>Some npm packages only work on Node.js (like <code>fs</code>, <code>bcrypt</code>, database drivers). If you accidentally import them in a Client Component, you'll get a build error. Use the <code>server-only</code> package to prevent this: <code>import 'server-only'</code> at the top of any module that must never run in the browser.</p>`},
+        {type:'warn',title:'The Third-Party Library Trap — Boundary Strategy',body:`<p>Most popular UI libraries — <code>framer-motion</code>, <code>react-toastify</code>, <code>react-select</code>, <code>recharts</code>, and others — were built before Server Components existed. They use browser APIs and React hooks internally, which means <strong>importing them directly in a Server Component will crash your app</strong>.</p>
+<p style="margin-top:8px;"><strong>The Boundary Strategy:</strong> wrap any third-party UI library in a thin <code>'use client'</code> component that you control:</p>
+<pre style="background:#070a12;border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.7;overflow-x:auto;margin:10px 0;">
+<span style="color:#546e7a;">// components/Toast.tsx — the 'use client' wrapper</span>
+<span style="color:#c3e88d;">'use client'</span>
+<span style="color:#c792ea;">import</span> { ToastContainer, toast } <span style="color:#c792ea;">from</span> <span style="color:#c3e88d;">'react-toastify'</span>
+<span style="color:#c792ea;">import</span> <span style="color:#c3e88d;">'react-toastify/dist/ReactToastify.css'</span>
+
+<span style="color:#c792ea;">export</span> { toast }  <span style="color:#546e7a;">// re-export for convenience</span>
+<span style="color:#c792ea;">export</span> <span style="color:#c792ea;">default function</span> <span style="color:#82aaff;">Toaster</span>() {
+  <span style="color:#c792ea;">return</span> &lt;ToastContainer /&gt;
+}
+
+<span style="color:#546e7a;">// app/layout.tsx — import the WRAPPER, not the library directly</span>
+<span style="color:#c792ea;">import</span> Toaster <span style="color:#c792ea;">from</span> <span style="color:#c3e88d;">'@/components/Toast'</span>  <span style="color:#546e7a;">// ✅ safe in Server Component</span>
+</pre>
+<p>Many popular libraries like <code>shadcn/ui</code> already do this for you. Check if a library has a Next.js guide before using it directly in Server Components.</p>`},
       ]
     },
 
@@ -1452,6 +1523,335 @@ export async function POST(request: Request) {
     },
 
     {
+      id:'swr-intro', group:'Phase 4 — Data Fetching', icon:'refresh', title:'SWR — What It Is & Why Use It',
+      sub:'Understanding stale-while-revalidate, installing SWR, and the core hook: keys, fetchers, and return values.',
+      content:`
+<div class="prose">
+  <p><strong>SWR</strong> is a React Hooks library for client-side data fetching, created by Vercel (the same team behind Next.js). The name stands for <strong>stale-while-revalidate</strong> — an HTTP caching strategy that says: show the user the cached (stale) data immediately, then quietly fetch fresh data in the background and update the UI when it arrives.</p>
+  <p>Before SWR, client-side fetching in React meant writing the same boilerplate over and over: <code>useState</code> for the data, <code>useState</code> for loading, <code>useState</code> for errors, a <code>useEffect</code> to fetch, and manual cleanup. SWR replaces all of that with a single hook call — and adds automatic caching, deduplication, revalidation, and error retry on top.</p>
+</div>
+
+<div class="mental-shift">
+  <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> The SWR Mental Model</h3>
+  <div class="mental-shift-grid">
+    <div class="ms-side ms-old">
+      <div class="ms-side-label">Without SWR</div>
+      <ul>
+        <li>Manual useState for data, loading, error</li>
+        <li>useEffect with cleanup logic</li>
+        <li>Duplicate requests across components</li>
+        <li>No automatic refresh on focus</li>
+        <li>No built-in retry on failure</li>
+        <li>Cache logic written from scratch</li>
+      </ul>
+    </div>
+    <div class="ms-arrow">→</div>
+    <div class="ms-side ms-new">
+      <div class="ms-side-label">With SWR</div>
+      <ul>
+        <li>One <code>useSWR(key, fetcher)</code> call</li>
+        <li>Automatic request deduplication</li>
+        <li>Built-in loading and error states</li>
+        <li>Re-fetches when tab regains focus</li>
+        <li>Auto-retry with backoff on errors</li>
+        <li>Global cache shared across components</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">terminal — install SWR</span><span class="cb-lang">bash</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-bash"><code>npm install swr</code></pre></div>
+
+<div class="prose"><h3>The Three Parts of useSWR</h3><p>Every <code>useSWR</code> call has three ingredients: a <strong>key</strong>, a <strong>fetcher</strong>, and optional <strong>config</strong>.</p></div>
+
+<div class="g3">
+  <div class="card"><div class="card-t">1 — Key</div><div class="card-b">A unique string (usually a URL) that identifies the request. SWR uses it as the cache key. If two components use the same key, only one request is made — both components share the cached result.</div></div>
+  <div class="card"><div class="card-t">2 — Fetcher</div><div class="card-b">A plain async function that takes the key and returns data. SWR does not care how you fetch — <code>fetch()</code>, <code>axios</code>, GraphQL — anything works. You define it once and reuse it globally.</div></div>
+  <div class="card"><div class="card-t">3 — Config</div><div class="card-b">Optional object to customise behaviour: revalidation intervals, retry logic, initial data, deduplication intervals, and more. Can also be set globally with <code>SWRConfig</code>.</div></div>
+</div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">lib/fetcher.ts — define your fetcher once</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>// A fetcher is just an async function that accepts the key (URL)
+// and returns the parsed JSON response.
+// Define it once and reuse it across your whole app.
+
+export const fetcher = (url: string) =>
+  fetch(url).then((res) => {
+    if (!res.ok) throw new Error('Request failed: ' + res.status)
+    return res.json()
+  })</code></pre></div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">components/UserProfile.tsx — basic useSWR usage</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use client'
+
+import useSWR from 'swr'
+import { fetcher } from '@/lib/fetcher'
+
+interface User {
+  id: string
+  name: string
+  email: string
+  avatar: string
+}
+
+export default function UserProfile({ userId }: { userId: string }) {
+  // useSWR(key, fetcher, config?)
+  // - key:     the URL — also acts as the cache key
+  // - fetcher: the async function to load data
+  // Returns: data, error, isLoading, isValidating, mutate
+  const { data, error, isLoading } = useSWR&lt;User&gt;(
+    \`/api/users/\${userId}\`,
+    fetcher
+  )
+
+  // Three simple states — no useState or useEffect needed
+  if (isLoading) return &lt;div&gt;Loading profile...&lt;/div&gt;
+  if (error)     return &lt;div&gt;Failed to load user.&lt;/div&gt;
+  if (!data)     return null
+
+  return (
+    &lt;div&gt;
+      &lt;img src={data.avatar} alt={data.name} /&gt;
+      &lt;h2&gt;{data.name}&lt;/h2&gt;
+      &lt;p&gt;{data.email}&lt;/p&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div>
+
+<div class="prose"><h3>What useSWR Returns</h3></div>
+<div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Return Value</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>data</code></td><td><code>T | undefined</code></td><td>The fetched data. <code>undefined</code> while loading or on error.</td></tr>
+      <tr><td><code>error</code></td><td><code>any | undefined</code></td><td>The error thrown by the fetcher. <code>undefined</code> when successful.</td></tr>
+      <tr><td><code>isLoading</code></td><td><code>boolean</code></td><td><code>true</code> only on the very first load (no cached data yet).</td></tr>
+      <tr><td><code>isValidating</code></td><td><code>boolean</code></td><td><code>true</code> whenever a request is in-flight — including background revalidations.</td></tr>
+      <tr><td><code>mutate</code></td><td><code>function</code></td><td>Manually trigger a revalidation or update the local cache. Covered in the next section.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="prose"><h3>Deduplication — One Key, One Request</h3><p>One of SWR's most powerful features is <strong>automatic request deduplication</strong>. If many components on the same page call <code>useSWR('/api/user', fetcher)</code>, SWR fires only one HTTP request and shares the result across all of them. This means you can freely call <code>useSWR</code> wherever you need data — in deeply nested components, in layout components, in sidebars — without worrying about making duplicate network requests.</p></div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">components/Navbar.tsx + components/Sidebar.tsx — same key, one request</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use client'
+import useSWR from 'swr'
+import { fetcher } from '@/lib/fetcher'
+
+// Both components call useSWR with the SAME key: '/api/me'
+// SWR fires only ONE network request and shares the cached result.
+
+export function Navbar() {
+  const { data: user } = useSWR('/api/me', fetcher)
+  return &lt;nav&gt;{user ? \`Hello, \${user.name}\` : 'Loading...'}&lt;/nav&gt;
+}
+
+export function Sidebar() {
+  const { data: user } = useSWR('/api/me', fetcher)
+  return &lt;aside&gt;{user?.avatar &amp;&amp; &lt;img src={user.avatar} /&gt;}&lt;/aside&gt;
+}
+
+// When either component triggers revalidation (e.g., on focus),
+// both components update simultaneously from the new cached data.</code></pre></div>`,
+      boxes:[
+        {type:'nxt',title:'SWR is for Client Components only',body:`<p>SWR uses React hooks (<code>useState</code>, <code>useEffect</code> internally) and runs in the browser. It must be used inside <code>'use client'</code> components. For Server Components, use <code>async/await</code> with <code>fetch()</code> directly — no SWR needed. A common Next.js pattern: fetch initial data on the server, pass it as <code>fallbackData</code> to SWR, then let SWR keep it fresh on the client. More on this in the next section.</p>`},
+        {type:'tip',title:'Install once, use a global fetcher',body:`<p>Define one <code>fetcher</code> function in <code>lib/fetcher.ts</code> and import it everywhere. You can also set it globally via <code>&lt;SWRConfig value={{ fetcher }}&gt;</code> so you never need to pass it to individual <code>useSWR</code> calls — covered in the next section under Global Config.</p>`},
+        {type:'warn',title:'SWR fetcher errors must be thrown, not returned',body:`<p>SWR detects errors only when the fetcher function <strong>throws</strong>. If your fetcher silently returns <code>null</code> or an error object on a failed request, SWR treats it as success. Always check <code>res.ok</code> and throw if the response is not OK: <code>if (!res.ok) throw new Error('Failed')</code>. This ensures the <code>error</code> return value works correctly and SWR's retry logic kicks in.</p>`},
+      ]
+    },
+
+    {
+      id:'swr-advanced', group:'Phase 4 — Data Fetching', icon:'refresh', title:'SWR — Patterns & Features',
+      sub:'Conditional fetching, keepPreviousData, global SWRConfig, mutate, revalidation options, and when to pick SWR vs Server Components.',
+      content:`
+<div class="prose">
+  <p>With the basics down, here are the SWR patterns you'll use in real apps. These cover the most common scenarios: fetching only when ready, smooth loading UX, global setup, manually updating the cache, and integrating server-fetched data with client-side freshness.</p>
+</div>
+
+<div class="prose"><h3>Conditional Fetching — Pass null to Pause</h3><p>Passing <code>null</code> as the key tells SWR to do nothing. Use this to delay a fetch until you have the data you need — a user ID from auth, a search query from input, or a selected item from a list.</p></div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">components/ConditionalFetch.tsx</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use client'
+
+import useSWR from 'swr'
+import { fetcher } from '@/lib/fetcher'
+
+export function UserPosts({ userId }: { userId: string | null }) {
+  // Pass null as key → SWR skips the fetch entirely
+  // The moment userId becomes a real value, SWR starts fetching
+  const { data, isLoading } = useSWR(
+    userId ? \`/api/users/\${userId}/posts\` : null,
+    fetcher
+  )
+
+  if (!userId)   return &lt;p&gt;Select a user to see their posts.&lt;/p&gt;
+  if (isLoading) return &lt;p&gt;Loading posts...&lt;/p&gt;
+  return &lt;ul&gt;{data?.map(p =&gt; &lt;li key={p.id}&gt;{p.title}&lt;/li&gt;)}&lt;/ul&gt;
+}
+
+// ── Another common pattern: wait for auth ───────────────
+function useCurrentUserPosts() {
+  const { data: user } = useSWR('/api/me', fetcher)
+
+  // Don't fetch posts until we know who the user is
+  return useSWR(user ? \`/api/users/\${user.id}/posts\` : null, fetcher)
+}</code></pre></div>
+
+<div class="prose"><h3>keepPreviousData — Smooth UX While Re-fetching</h3><p>Without <code>keepPreviousData</code>, every time the key changes (e.g., the user types a new search query) SWR clears <code>data</code> and shows <code>isLoading: true</code> — causing a flash of empty content. With <code>keepPreviousData: true</code>, the old data stays visible until the new data arrives.</p></div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">components/LiveSearch.tsx</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use client'
+
+import { useState } from 'react'
+import useSWR from 'swr'
+import { fetcher } from '@/lib/fetcher'
+
+export default function LiveSearch() {
+  const [query, setQuery] = useState('')
+
+  const { data, isLoading, isValidating } = useSWR(
+    query ? \`/api/search?q=\${encodeURIComponent(query)}\` : null,
+    fetcher,
+    {
+      keepPreviousData: true, // ← keep old results while new ones load
+      dedupingInterval: 300,  // ← wait 300ms before firing a new request
+    }
+  )
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        value={query}
+        onChange={e =&gt; setQuery(e.target.value)}
+        placeholder="Search..."
+      /&gt;
+
+      {/* Subtle spinner for background refreshes — not a full loading state */}
+      {isValidating &amp;&amp; &lt;span&gt;Updating...&lt;/span&gt;}
+
+      {/* Results stay visible while the next query loads */}
+      {data?.results.map(r =&gt; &lt;div key={r.id}&gt;{r.title}&lt;/div&gt;)}
+    &lt;/div&gt;
+  )
+}</code></pre></div>
+
+<div class="prose"><h3>Global Config with SWRConfig</h3><p>Wrap your app (or a subtree) in <code>SWRConfig</code> to set defaults that apply to every <code>useSWR</code> call inside it. This is where you set the global fetcher, revalidation behaviour, and error handling.</p></div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">app/providers.tsx — global SWR setup</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use client'
+
+import { SWRConfig } from 'swr'
+
+const globalFetcher = (url: string) =>
+  fetch(url).then(res =&gt; {
+    if (!res.ok) throw new Error('Fetch error: ' + res.status)
+    return res.json()
+  })
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    &lt;SWRConfig
+      value={{
+        fetcher: globalFetcher,        // No need to pass fetcher to each useSWR
+        revalidateOnFocus: true,        // Re-fetch when tab comes back into focus
+        revalidateOnReconnect: true,    // Re-fetch when internet reconnects
+        shouldRetryOnError: true,       // Retry failed requests automatically
+        errorRetryCount: 3,             // Stop retrying after 3 failures
+        dedupingInterval: 2000,         // Deduplicate requests within 2s window
+      }}
+    &gt;
+      {children}
+    &lt;/SWRConfig&gt;
+  )
+}
+
+// In app/layout.tsx:
+// import { Providers } from './providers'
+// &lt;body&gt;&lt;Providers&gt;{children}&lt;/Providers&gt;&lt;/body&gt;</code></pre></div>
+
+<div class="prose"><h3>mutate — Update the Cache Manually</h3><p><code>mutate</code> lets you either trigger a re-fetch or directly update the local cache. It's essential for optimistic updates — changing the UI instantly before the server confirms, then syncing with the real response.</p></div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">components/LikeButton.tsx — optimistic update with mutate</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use client'
+
+import useSWR from 'swr'
+
+interface Post { id: string; title: string; likes: number; likedByMe: boolean }
+
+export default function PostCard({ postId }: { postId: string }) {
+  const { data: post, mutate } = useSWR&lt;Post&gt;(\`/api/posts/\${postId}\`)
+
+  async function handleLike() {
+    if (!post) return
+
+    // 1. Optimistically update the cache immediately (no wait)
+    mutate({ ...post, likes: post.likes + 1, likedByMe: true }, false)
+    //                                                          ↑ false = don't revalidate yet
+
+    // 2. Send the real request to the server
+    await fetch(\`/api/posts/\${postId}/like\`, { method: 'POST' })
+
+    // 3. Revalidate to sync with server truth
+    mutate()
+  }
+
+  if (!post) return null
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;{post.title}&lt;/h2&gt;
+      &lt;button onClick={handleLike} disabled={post.likedByMe}&gt;
+        {post.likedByMe ? 'Liked ✓' : 'Like'} · {post.likes}
+      &lt;/button&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div>
+
+<div class="prose"><h3>Hydration — Combining Server & Client Data</h3><p>The best pattern in Next.js: fetch initial data on the server (fast, SEO-friendly, no loading flash), then hand it to SWR as <code>fallbackData</code> so SWR keeps it fresh on the client without the user ever seeing a loading state.</p></div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">app/dashboard/page.tsx — server fetch + SWR handoff</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>// Server Component — no 'use client'
+import { StatsPanel } from './StatsPanel'
+import { fetcher } from '@/lib/fetcher'
+
+export default async function DashboardPage() {
+  // Fetch on the server — instant first paint, no loading state
+  const initialStats = await fetcher('https://api.example.com/stats')
+
+  return (
+    // Pass the server data as fallbackData to the Client Component
+    &lt;StatsPanel initialStats={initialStats} /&gt;
+  )
+}</code></pre></div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">app/dashboard/StatsPanel.tsx — SWR takes over from server data</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use client'
+
+import useSWR from 'swr'
+
+export function StatsPanel({ initialStats }: { initialStats: Stats }) {
+  const { data: stats } = useSWR('/api/stats', {
+    fallbackData: initialStats,     // ← show server data immediately
+    refreshInterval: 30_000,        // ← then auto-refresh every 30 seconds
+  })
+
+  // data is never undefined — initialStats fills the gap
+  return &lt;div&gt;Revenue: {stats.revenue}&lt;/div&gt;
+}</code></pre></div>
+
+<div class="prose"><h3>When to Use SWR vs Server Components</h3></div>
+<div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Scenario</th><th>Best Approach</th><th>Reason</th></tr></thead>
+    <tbody>
+      <tr><td>Initial page data (blog post, product listing)</td><td><span class="badge badge-nxt">Server Component</span></td><td>No loading state, better SEO, faster first paint</td></tr>
+      <tr><td>Data that changes while user is on the page</td><td><span class="badge badge-ok">SWR</span></td><td>Auto-revalidation keeps it fresh without a page reload</td></tr>
+      <tr><td>User-triggered search or filter</td><td><span class="badge badge-ok">SWR</span></td><td>Reactive to input state, built-in deduplication</td></tr>
+      <tr><td>Polling / live scores / dashboards</td><td><span class="badge badge-ok">SWR</span></td><td>Use <code>refreshInterval</code> for automatic polling</td></tr>
+      <tr><td>User-specific data (profile, cart, notifications)</td><td><span class="badge badge-ok">SWR</span> or both</td><td>Server fetch for initial render + SWR for live updates</td></tr>
+      <tr><td>Mutations (form submit, like, delete)</td><td>Server Actions + SWR <code>mutate</code></td><td>Server Action for the write, mutate to refresh the read</td></tr>
+    </tbody>
+  </table>
+</div>`,
+      boxes:[
+        {type:'tip',title:'refreshInterval — automatic polling',body:`<p>To poll an endpoint every N milliseconds, pass <code>refreshInterval: N</code> to <code>useSWR</code>. SWR will silently re-fetch in the background and update the UI when data changes. Example: <code>useSWR('/api/notifications', fetcher, { refreshInterval: 10_000 })</code> checks for new notifications every 10 seconds. The component re-renders only when the data actually changes.</p>`},
+        {type:'nxt',title:'useSWRMutation — for on-demand actions',body:`<p>For POST / PUT / DELETE operations that should only fire when triggered (not on mount), SWR ships <code>useSWRMutation</code>. It gives you a <code>trigger()</code> function you call explicitly: <code>const { trigger, isMutating } = useSWRMutation('/api/posts', createPost)</code>. Use it instead of <code>useState + fetch</code> inside a button handler — it handles loading and error states for you.</p>`},
+        {type:'warn',title:'SWR is not a replacement for Server Components',body:`<p>A common beginner mistake is reaching for SWR for <em>all</em> data fetching. In Next.js, <strong>Server Components should be your default</strong>. Use SWR specifically for data that needs to stay live after the initial render — search results that react to user input, dashboards that auto-refresh, or data that changes while the user is on the page. If data only needs to be there when the page loads, a Server Component with <code>async/await</code> is simpler and faster.</p>`},
+      ]
+    },
+
+    {
       id:'client-fetching', group:'Phase 4 — Data Fetching', icon:'monitor', title:'Fetching in Client Components',
       sub:'Using useEffect + fetch, SWR, and TanStack Query integration.',
       content:`
@@ -1495,6 +1895,229 @@ export default function SearchResults({ initialQuery }: Props) {
       boxes:[
         {type:'tip',title:'SWR vs TanStack Query',body:`<p><strong>SWR</strong> (by Vercel) is lightweight and integrates naturally with Next.js — great for simple use cases. <strong>TanStack Query</strong> (formerly React Query) is more powerful, with mutation handling, optimistic updates, and complex cache management. Both work well with Next.js. Start with SWR and upgrade if needed.</p>`},
         {type:'nxt',title:'Hydration — Initial data from server',body:`<p>Best practice: fetch initial data on the server, pass it as props to the client component, and use it as the initial cache value. The user sees content immediately, and the client library takes over from there. With SWR: <code>useSWR(key, fetcher, { fallbackData: serverData })</code>.</p>`},
+      ]
+    },
+
+    {
+      id:'zod-basics', group:'Phase 4 — Data Fetching', icon:'shield', title:'Zod — Schema Validation Basics',
+      sub:'What Zod is, how to install it, and the core building blocks: strings, numbers, objects, and arrays.',
+      content:`
+<div class="prose">
+  <p>Before diving into Server Actions, you need to know about <strong>Zod</strong> — a TypeScript-first schema validation library. You will see it in almost every serious Next.js codebase, and for good reason: it solves the problem of "I received data from a user, can I trust it?"</p>
+  <p>The short answer is <strong>never trust user data</strong>. A user can submit anything through a form — an empty string where you expected a number, a 10,000-character essay where you expected a name, a malformed email, a negative price. Zod lets you describe the exact shape and rules your data must follow, then validates incoming data against that description in one line.</p>
+</div>
+
+<div class="g2">
+  <div class="card"><div class="card-t">Without Zod</div><div class="card-b">Manual checks scattered everywhere: <code>if (!title) throw...</code>, <code>if (title.length > 100) throw...</code>, <code>if (typeof age !== 'number') throw...</code>. Tedious, inconsistent, easy to forget one.</div></div>
+  <div class="card"><div class="card-t">With Zod</div><div class="card-b">One schema definition captures all the rules. One <code>.safeParse()</code> call validates everything and returns typed, clean data or a structured list of errors. No conditionals needed.</div></div>
+</div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">terminal — install</span><span class="cb-lang">bash</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-bash"><code>npm install zod</code></pre></div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">lib/zod-basics.ts — core primitives</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>import { z } from 'zod'
+
+// ── Primitive types ────────────────────────────────────────
+const nameSchema    = z.string()
+const ageSchema     = z.number()
+const activeSchema  = z.boolean()
+const tagsSchema    = z.array(z.string())    // string[]
+const roleSchema    = z.enum(['admin', 'user', 'guest'])
+
+// ── String validators ──────────────────────────────────────
+const emailSchema = z.string()
+  .email('Must be a valid email address')
+  .toLowerCase()            // transform: always store lowercase
+  .trim()                   // transform: strip whitespace
+
+const passwordSchema = z.string()
+  .min(8,  'At least 8 characters')
+  .max(72, 'Bcrypt limit — 72 characters maximum')
+
+const slugSchema = z.string()
+  .regex(/^[a-z0-9-]+$/, 'Only lowercase letters, numbers, and hyphens')
+
+// ── Number validators ──────────────────────────────────────
+const priceSchema = z.number()
+  .positive('Price must be greater than 0')
+  .max(99999, 'Price seems too high')
+  .multipleOf(0.01, 'Max 2 decimal places')
+
+const quantitySchema = z.number().int().min(1).max(100)
+
+// ── Optional and default values ────────────────────────────
+const bioSchema  = z.string().max(500).optional()   // string | undefined
+const roleWithDefault = z.enum(['user','admin']).default('user')
+
+// ── Object schemas — the ones you'll use most ──────────────
+const UserSchema = z.object({
+  name:     z.string().min(1, 'Name is required').max(100).trim(),
+  email:    z.string().email(),
+  age:      z.number().int().min(13, 'Must be 13 or older').optional(),
+  role:     z.enum(['user', 'admin']).default('user'),
+  bio:      z.string().max(500).optional(),
+  tags:     z.array(z.string()).max(5, 'Maximum 5 tags').default([]),
+})</code></pre></div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">lib/zod-parsing.ts — parse vs safeParse</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>import { z } from 'zod'
+
+const UserSchema = z.object({
+  name:  z.string().min(1).trim(),
+  email: z.string().email(),
+  age:   z.number().int().min(13).optional(),
+})
+
+// ── .parse() — throws on failure ──────────────────────────
+// Use when a failure is a programming error (e.g., config files)
+try {
+  const user = UserSchema.parse({ name: 'Alice', email: 'alice@example.com' })
+  // user is fully typed: { name: string, email: string, age?: number }
+  console.log(user.name) // TypeScript knows this is a string ✅
+} catch (err) {
+  // err is a ZodError with detailed messages
+}
+
+// ── .safeParse() — returns result object, never throws ────
+// Use for user input — forms, API bodies, URL params
+const result = UserSchema.safeParse({
+  name:  '  Alice  ',   // will be trimmed to "Alice"
+  email: 'not-an-email',
+  age:   'thirty',      // wrong type!
+})
+
+if (!result.success) {
+  // result.error.flatten() gives field-grouped error messages
+  console.log(result.error.flatten().fieldErrors)
+  // {
+  //   email: ['Invalid email'],
+  //   age:   ['Expected number, received string']
+  // }
+} else {
+  // result.data is the TRANSFORMED, type-safe data
+  console.log(result.data.name) // "Alice" (trimmed!) ✅
+}</code></pre></div>`,
+      boxes:[
+        {type:'tip',title:'Always use .safeParse() for user input',body:`<p><code>.parse()</code> throws a <code>ZodError</code> if validation fails — great for config files and internal data where a failure is a bug. <code>.safeParse()</code> returns a <code>{ success, data, error }</code> object and never throws — perfect for form input and API bodies where invalid data is a normal user error you want to handle gracefully. In Server Actions, you will <strong>always</strong> use <code>.safeParse()</code>.</p>`},
+        {type:'nxt',title:'Zod transforms your data, not just validates it',body:`<p>Notice <code>.trim()</code>, <code>.toLowerCase()</code>, and <code>.default()</code> in the examples above. Zod does not just reject bad data — it can also <strong>clean and transform</strong> it. After a successful <code>.safeParse()</code>, <code>result.data</code> contains the transformed values: strings are trimmed, emails are lowercased, missing optional fields have their defaults filled in. This means you never need to manually sanitize before saving to the database.</p>`},
+      ]
+    },
+
+    {
+      id:'zod-forms', group:'Phase 4 — Data Fetching', icon:'shield', title:'Zod — Forms & Real-World Patterns',
+      sub:'Coercion for HTML inputs, union types, nested objects, and reading error messages in components.',
+      content:`
+<div class="prose">
+  <p>HTML forms have one quirk that trips up beginners: <strong>every form field is a string</strong>. A number input sends <code>"42"</code>, not <code>42</code>. A checkbox sends <code>"on"</code> when checked and nothing when unchecked. Zod handles this cleanly with <code>z.coerce</code>.</p>
+</div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">lib/form-schemas.ts — HTML form quirks solved with coerce</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>import { z } from 'zod'
+
+// z.coerce.* converts the string "42" → number 42 automatically
+// Use these whenever parsing HTML form data (FormData)
+const ProductSchema = z.object({
+  name:      z.string().min(1).trim(),
+  price:     z.coerce.number().positive(),        // "19.99" → 19.99
+  quantity:  z.coerce.number().int().min(0),      // "5" → 5
+  inStock:   z.coerce.boolean(),                  // "on" → true, "" → false
+  category:  z.enum(['electronics', 'clothing', 'food']),
+})
+
+// Parsing a real HTML form submission:
+// &lt;input name="price" type="number" value="19.99" /&gt;
+// &lt;input name="quantity" type="number" value="5" /&gt;
+// &lt;input name="inStock" type="checkbox" /&gt;
+
+const raw = Object.fromEntries(formData)
+// raw = { name: "Widget", price: "19.99", quantity: "5", inStock: "on" }
+
+const result = ProductSchema.safeParse(raw)
+// result.data = { name: "Widget", price: 19.99, quantity: 5, inStock: true }
+// All types correct — ready for the database ✅</code></pre></div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">lib/advanced-schemas.ts — real patterns you'll encounter</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>import { z } from 'zod'
+
+// ── Refinements: cross-field validation ───────────────────
+const PasswordSchema = z.object({
+  password:        z.string().min(8),
+  confirmPassword: z.string().min(8),
+}).refine(
+  (data) => data.password === data.confirmPassword,
+  { message: "Passwords don't match", path: ['confirmPassword'] }
+)
+
+// ── Union: one of several shapes ─────────────────────────
+const PaymentSchema = z.discriminatedUnion('method', [
+  z.object({ method: z.literal('card'), cardNumber: z.string().length(16) }),
+  z.object({ method: z.literal('paypal'), email: z.string().email() }),
+])
+
+// ── Partial: all fields optional (useful for PATCH/update) ─
+const UpdateUserSchema = z.object({
+  name:  z.string().min(1).trim(),
+  email: z.string().email(),
+  bio:   z.string().max(500),
+}).partial()  // makes ALL fields optional: { name?, email?, bio? }
+
+// ── Inferring the TypeScript type from a schema ───────────
+// You never need to write the interface manually!
+const PostSchema = z.object({
+  title:   z.string().min(1).max(100).trim(),
+  content: z.string().min(10),
+  tags:    z.array(z.string()).max(5).default([]),
+})
+
+type Post = z.infer&lt;typeof PostSchema&gt;
+// type Post = { title: string; content: string; tags: string[] }
+// Use this type anywhere you need to type a Post object ✅</code></pre></div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">components/FormErrors.tsx — displaying Zod errors in UI</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>// This pattern repeats in every form — extract it to a component
+interface FieldErrorProps {
+  errors?: string[]  // comes from result.error.flatten().fieldErrors.fieldName
+}
+
+export function FieldError({ errors }: FieldErrorProps) {
+  if (!errors?.length) return null
+  return (
+    &lt;ul className="mt-1 space-y-1"&gt;
+      {errors.map((msg) => (
+        &lt;li key={msg} className="text-sm text-red-500 flex items-center gap-1"&gt;
+          &lt;span aria-hidden&gt;✕&lt;/span&gt; {msg}
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}
+
+// Usage in a form (state comes from useActionState):
+// &lt;input name="email" /&gt;
+// &lt;FieldError errors={state.errors?.email} /&gt;
+//
+// &lt;input name="password" /&gt;
+// &lt;FieldError errors={state.errors?.password} /&gt;</code></pre></div>
+
+<div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Zod method</th><th>What it does</th><th>Common use</th></tr></thead>
+    <tbody>
+      <tr><td><code>z.string().min(n)</code></td><td>Minimum character count</td><td>Required fields, passwords</td></tr>
+      <tr><td><code>z.string().max(n)</code></td><td>Maximum character count</td><td>Titles, bios, usernames</td></tr>
+      <tr><td><code>z.string().email()</code></td><td>Valid email format</td><td>Login/register forms</td></tr>
+      <tr><td><code>z.string().url()</code></td><td>Valid URL format</td><td>Link inputs, avatar URLs</td></tr>
+      <tr><td><code>z.string().trim()</code></td><td>Strip leading/trailing whitespace</td><td>Every text input</td></tr>
+      <tr><td><code>z.coerce.number()</code></td><td>String → number (for HTML forms)</td><td>Price, quantity, age inputs</td></tr>
+      <tr><td><code>z.coerce.boolean()</code></td><td>"on"/undefined → true/false</td><td>Checkbox inputs</td></tr>
+      <tr><td><code>z.enum([...])</code></td><td>Must be one of the listed values</td><td>Dropdowns, radio buttons</td></tr>
+      <tr><td><code>.optional()</code></td><td>Value can be undefined</td><td>Non-required fields</td></tr>
+      <tr><td><code>.default(val)</code></td><td>Use val if undefined</td><td>Role, status, flags</td></tr>
+      <tr><td><code>z.infer&lt;typeof Schema&gt;</code></td><td>Extract TypeScript type</td><td>Typing props and return values</td></tr>
+      <tr><td><code>.safeParse(data)</code></td><td>Validate without throwing</td><td>All user input (forms, APIs)</td></tr>
+      <tr><td><code>.refine(fn, msg)</code></td><td>Custom cross-field rule</td><td>Password confirmation, date ranges</td></tr>
+    </tbody>
+  </table>
+</div>`,
+      boxes:[
+        {type:'tip',title:'z.infer eliminates duplicate type definitions',body:`<p>One of the most useful Zod patterns: <code>type Post = z.infer&lt;typeof PostSchema&gt;</code>. Instead of writing a TypeScript interface <em>and</em> a Zod schema that describe the same shape, you write just the schema and infer the type from it. The schema is the single source of truth — change it once and the type updates everywhere automatically.</p>`},
+        {type:'warn',title:'Put schemas in lib/, not in actions/',body:`<p>Schema definitions should live in <code>lib/schemas.ts</code> or <code>lib/validations.ts</code> — not inside Server Action files. This lets you import the same schema in multiple places: the Server Action uses it to validate, a client-side library like React Hook Form can use it too, and you can import the inferred type wherever you need to annotate a <code>Post</code> or <code>User</code> object. Co-location with just one action is a pattern that quickly becomes unmaintainable.</p>`},
+        {type:'new',title:'Coming up next',body:`<p>The next two sections — <strong>Server Actions</strong> and <strong>Zod Validation in Server Actions</strong> — apply everything you just learned. You will see <code>z.object()</code>, <code>.safeParse()</code>, <code>Object.fromEntries(formData)</code>, <code>result.error.flatten().fieldErrors</code>, and <code>z.coerce</code> used together in a real form. They will look familiar now.</p>`},
       ]
     },
 
@@ -1567,6 +2190,97 @@ export default function NewPostPage() {
       boxes:[
         {type:'new',title:'useActionState — React 19',body:`<p><code>useActionState</code> is a new React 19 hook (replacing the old <code>useFormState</code>). It connects a form to a Server Action and manages the pending state, returned data, and error states. It works with HTML forms natively — even without JavaScript enabled (progressive enhancement).</p>`},
         {type:'warn',title:'Always authenticate in Server Actions',body:`<p>Server Actions are public endpoints — anyone can call them. Always verify the user is authenticated and authorized inside the action. Never trust data that comes in through <code>formData</code>. Always validate with a schema library like Zod.</p>`},
+      ]
+    },
+
+    {
+      id:'form-power-trio', group:'Phase 4 — Data Fetching', icon:'zap', title:'Form Power Trio: useFormStatus & useOptimistic',
+      sub:'Using useFormStatus for button loading states and useOptimistic for instant UI updates.',
+      content:`
+<div class="prose">
+  <p>React 19 ships three form hooks that work together. You've seen <code>useActionState</code>. Here are the other two that elevate your forms from functional to professional.</p>
+</div>
+
+<div class="g2">
+  <div class="card"><div class="card-t">useFormStatus</div><div class="card-b">Reads the pending state of the nearest parent <code>&lt;form&gt;</code>. Use it to disable buttons, show spinners, and give instant feedback — without threading state through props.</div></div>
+  <div class="card"><div class="card-t">useOptimistic</div><div class="card-b">Shows an optimistic (assumed-success) value while a Server Action is running. If the action fails, it automatically reverts. Makes lists and likes feel instant.</div></div>
+</div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">components/SubmitButton.tsx — useFormStatus</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use client'
+
+import { useFormStatus } from 'react-dom'
+
+// This component must be a CHILD of the &lt;form&gt; to read its status
+export default function SubmitButton({ label }: { label: string }) {
+  const { pending } = useFormStatus()  // Reads nearest parent form's state
+
+  return (
+    &lt;button
+      type="submit"
+      disabled={pending}
+      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+    &gt;
+      {pending &amp;&amp; (
+        &lt;svg className="animate-spin w-4 h-4" viewBox="0 0 24 24"&gt;
+          &lt;circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/&gt;
+          &lt;path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/&gt;
+        &lt;/svg&gt;
+      )}
+      {pending ? 'Saving...' : label}
+    &lt;/button&gt;
+  )
+}
+
+// Usage inside a Server Action form:
+// &lt;form action={createPost}&gt;
+//   &lt;input name="title" /&gt;
+//   &lt;SubmitButton label="Publish" /&gt;  ← automatically reads form pending state
+// &lt;/form&gt;</code></pre></div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">components/TodoList.tsx — useOptimistic</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use client'
+
+import { useOptimistic, useTransition } from 'react'
+import { toggleTodo } from '@/app/actions/todos'
+
+interface Todo {
+  id: string
+  text: string
+  completed: boolean
+}
+
+export default function TodoList({ todos }: { todos: Todo[] }) {
+  // optimisticTodos reflects the "assumed" state while the action runs
+  const [optimisticTodos, setOptimisticTodo] = useOptimistic(
+    todos,
+    (current, updatedId: string) =>
+      current.map(t =&gt; t.id === updatedId ? { ...t, completed: !t.completed } : t)
+  )
+
+  const [, startTransition] = useTransition()
+
+  async function handleToggle(id: string) {
+    startTransition(async () => {
+      setOptimisticTodo(id)    // ← UI updates INSTANTLY (optimistic)
+      await toggleTodo(id)     // ← server catches up in the background
+      // If toggleTodo throws, React reverts to the original todos
+    })
+  }
+
+  return (
+    &lt;ul&gt;
+      {optimisticTodos.map(todo =&gt; (
+        &lt;li key={todo.id} onClick={() =&gt; handleToggle(todo.id)}&gt;
+          &lt;span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}&gt;
+            {todo.text}
+          &lt;/span&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div>`,
+      boxes:[
+        {type:'tip',title:'useFormStatus must be in a child component',body:`<p>A common beginner mistake: calling <code>useFormStatus()</code> inside the same component that renders the <code>&lt;form&gt;</code>. It won't work — it must be in a <strong>child</strong> component of the form. That's why a separate <code>&lt;SubmitButton&gt;</code> component is the standard pattern.</p>`},
+        {type:'new',title:'useOptimistic — zero perceived latency',body:`<p><code>useOptimistic</code> is the "wow" feature of React 19 forms. Show users their action succeeded immediately — the to-do toggles, the like count increments, the item disappears — before the server has even responded. If the action fails, React automatically reverts the optimistic state. This makes apps feel as fast as native applications.</p>`},
       ]
     },
 
@@ -1682,6 +2396,20 @@ export default config</code></pre></div>
       boxes:[
         {type:'new',title:'PPR — Partial Pre-Rendering',body:`<p>PPR is the core idea behind the new caching model. Instead of a route being entirely static or entirely dynamic, PPR splits it: the <strong>static shell</strong> (layout, navigation, cached components) is pre-rendered and served instantly from the CDN edge. <strong>Dynamic holes</strong> (personalized content, real-time data) stream in afterward via React Suspense. Users get an instant first paint with progressively loaded fresh content.</p>`},
         {type:'tip',title:'use cache vs unstable_cache',body:`<p>The new <code>'use cache'</code> directive replaces <code>unstable_cache</code> from previous versions. It is more expressive (works as a directive on functions or entire components), integrates with PPR natively, and uses the built-in <code>cacheLife()</code> API for readable cache profiles. Prefer <code>'use cache'</code> for all new code in Next.js 16.</p>`},
+        {type:'warn',title:'Which cache should I use? use cache vs cache()',body:`<p>React ships its own <code>cache()</code> function — beginners often confuse it with Next.js's <code>'use cache'</code> directive. They solve different problems:</p>
+<div class="tbl-wrap" style="margin:12px 0 0;">
+<table>
+<thead><tr><th>Feature</th><th>React <code>cache()</code></th><th>Next.js <code>'use cache'</code></th></tr></thead>
+<tbody>
+<tr><td>Scope</td><td>Per request (server only)</td><td>Cross-request, persistent</td></tr>
+<tr><td>Storage</td><td>In-memory, discarded after render</td><td>Data cache (survives deploys)</td></tr>
+<tr><td>Shared between users?</td><td>No — each request has its own</td><td>Yes — shared across all users</td></tr>
+<tr><td>Use case</td><td>Dedupe identical DB calls in one render</td><td>Cache expensive fetches for hours/days</td></tr>
+<tr><td>Example</td><td><code>const getUser = cache(db.getUser)</code></td><td><code>async function getData() { 'use cache'; ... }</code></td></tr>
+</tbody>
+</table>
+</div>
+<p style="margin-top:10px;">Rule of thumb: <strong>React <code>cache()</code></strong> for deduplication within one request (e.g., fetching the current user in multiple components). <strong><code>'use cache'</code></strong> for data that is expensive and safe to share between users across many requests.</p>`},
       ]
     },
 
@@ -2035,16 +2763,47 @@ npx @next/codemod@latest upgrade</code></pre></div>`,
       boxes:[
         {type:'warn',title:'proxy.ts runs on Node.js — not Edge',body:`<p>Unlike the old <code>middleware.ts</code> which defaulted to the Edge Runtime, <code>proxy.ts</code> runs on the <strong>Node.js runtime</strong> and cannot be changed. This means you now have full access to Node.js APIs (database clients, <code>fs</code>, etc.) in your proxy — but it no longer runs closer to the user on the Edge. If you need Edge execution for performance reasons (e.g., geo-based redirects at CDN level), keep <code>middleware.ts</code> for now, but note it is deprecated.</p>`},
         {type:'new',title:'Why the rename?',body:`<p>The word "middleware" was misleading — it implied Express-style request pipelines that could be stacked. In reality this file is a single network boundary in front of your app: it intercepts requests, can rewrite/redirect/add headers, and then passes them on. "Proxy" describes that behavior accurately. The logic inside is unchanged — it's genuinely just a rename backed by a one-line codemod.</p>`},
+        {type:'nxt',title:'Migration Note — Coming from Older Tutorials',body:`<p>If you are following a Next.js tutorial from 2023 or 2024 and it uses <code>middleware.ts</code>, do not panic — the file still works in Next.js 16. The migration path is mechanical: (1) rename <code>middleware.ts</code> → <code>proxy.ts</code>, (2) rename the exported function from <code>middleware()</code> → <code>proxy()</code>, (3) rename <code>skipMiddlewareUrlNormalize</code> → <code>skipProxyUrlNormalize</code> in <code>next.config.ts</code> if you use it. Everything else is identical. Run <code>npx next upgrade</code> to have the codemod do it automatically.</p><p style="margin-top:8px;">Key reason for the change beyond naming: <code>proxy.ts</code> runs the <strong>full Node.js runtime</strong>, so you can now safely import database clients and use <code>crypto</code>, <code>fs</code>, and other Node.js APIs inside it — something that was forbidden in the old Edge-only <code>middleware.ts</code>.</p>`},
       ]
     },
 
     {
       id:'env-vars', group:'Phase 6 — Backend Features', icon:'lock', title:'Environment Variables',
-      sub:'Handling .env.local, process.env, and public vs server-only variables.',
+      sub:'Handling .env.local, process.env, NEXT_PUBLIC_ prefix, and schema.ts validation.',
       content:`
 <div class="prose">
-  <p>Environment variables let you store secrets (API keys, database URLs) outside your code. Next.js has a layered system for managing them across different environments.</p>
+  <p>Environment variables let you store secrets (API keys, database URLs) outside your code. This is one of the most important concepts for real-world apps — almost every project needs them from day one. Next.js has a layered system for managing them across different environments.</p>
 </div>
+
+<div class="mental-shift">
+  <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> The Critical Rule: Server vs Public Variables</h3>
+  <div class="mental-shift-grid">
+    <div class="ms-side ms-old">
+      <div class="ms-side-label" style="color:var(--warn);">Server-Only (NO prefix)</div>
+      <ul>
+        <li><code>DATABASE_URL</code></li>
+        <li><code>JWT_SECRET</code></li>
+        <li><code>STRIPE_SECRET_KEY</code></li>
+        <li><code>SENDGRID_API_KEY</code></li>
+        <li>Only in Server Components, Actions, Handlers</li>
+        <li>Never sent to the browser — stays on server</li>
+      </ul>
+    </div>
+    <div class="ms-arrow">vs</div>
+    <div class="ms-side ms-new">
+      <div class="ms-side-label">Client-Accessible (NEXT_PUBLIC_ prefix)</div>
+      <ul>
+        <li><code>NEXT_PUBLIC_APP_URL</code></li>
+        <li><code>NEXT_PUBLIC_STRIPE_PUBLIC_KEY</code></li>
+        <li><code>NEXT_PUBLIC_ANALYTICS_ID</code></li>
+        <li>Safe to expose — baked into JS bundle</li>
+        <li>Accessible anywhere (Server + Client)</li>
+        <li>Never use for secrets or API keys</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
 <div class="filetree">
 <span class="ft-other">.env                  </span><span class="ft-other">← Defaults for all environments (commit to git)</span>
 <span class="ft-other">.env.local            </span><span class="ft-other">← Local overrides (NEVER commit — add to .gitignore)</span>
@@ -2058,20 +2817,38 @@ STRIPE_SECRET_KEY="sk_test_..."
 
 # Public — accessible in the browser (NEXT_PUBLIC_ prefix required)
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
-NEXT_PUBLIC_STRIPE_PUBLIC_KEY="pk_test_..."</code></pre></div>
-<div class="cb"><div class="cb-hdr"><span class="cb-fname">Usage in code</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>// Server Component — can access all env vars
-const db = new Database(process.env.DATABASE_URL!) // ✅
+NEXT_PUBLIC_STRIPE_PUBLIC_KEY="pk_test_..."
+NEXT_PUBLIC_ANALYTICS_ID="G-XXXXXXXXXX"</code></pre></div>
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">Usage in code</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>// ✅ Server Component — can access all env vars
+const db = new Database(process.env.DATABASE_URL!)
+const secret = process.env.JWT_SECRET!
 
-// Client Component — can only access NEXT_PUBLIC_* vars
-const apiUrl = process.env.NEXT_PUBLIC_APP_URL     // ✅
-const secret = process.env.JWT_SECRET              // ⚠️ undefined in browser!
+// ✅ Client Component — can only access NEXT_PUBLIC_* vars
+const apiUrl = process.env.NEXT_PUBLIC_APP_URL
+const trackingId = process.env.NEXT_PUBLIC_ANALYTICS_ID
 
-// Type-safe env validation with @t3-oss/env-nextjs (recommended)
-import { env } from '@/env'
-const dbUrl = env.DATABASE_URL  // TypeScript error if missing!</code></pre></div>`,
+// ❌ This will be undefined in the browser — silent bug!
+const leaked = process.env.JWT_SECRET // undefined on client</code></pre></div>
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">env.schema.ts — Next.js 16 native validation</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>// Next.js 16 automatically validates .env files if this file exists.
+// Place it at the root of your project. If a required variable is
+// missing or has the wrong type, the build FAILS with a clear error.
+import { z } from 'zod'
+
+export default {
+  server: {
+    DATABASE_URL: z.string().url(),
+    JWT_SECRET: z.string().min(32, 'JWT secret must be at least 32 characters'),
+    STRIPE_SECRET_KEY: z.string().startsWith('sk_'),
+  },
+  client: {
+    NEXT_PUBLIC_APP_URL: z.string().url(),
+    NEXT_PUBLIC_STRIPE_PUBLIC_KEY: z.string().startsWith('pk_'),
+  },
+}</code></pre></div>`,
       boxes:[
-        {type:'warn',title:'NEXT_PUBLIC_ variables are public',body:`<p>Any environment variable prefixed with <code>NEXT_PUBLIC_</code> is <strong>baked into the JavaScript bundle</strong> sent to every user. Never put secrets, passwords, or API keys with the <code>NEXT_PUBLIC_</code> prefix. Only use it for values that are safe to expose publicly.</p>`},
-        {type:'tip',title:'Validate env at startup with @t3-oss/env-nextjs',body:`<p>The <code>@t3-oss/env-nextjs</code> package validates your environment variables at build time using Zod. If a required variable is missing, the build fails with a clear error instead of a mysterious runtime crash. Highly recommended for production apps.</p>`},
+        {type:'new',title:'env.schema.ts — Native Validation in Next.js 16',body:`<p>Next.js 16 introduces <strong>native environment variable validation</strong>. Create an <code>env.schema.ts</code> file at the root of your project with Zod schemas for your variables. Next.js will validate your <code>.env</code> files against this schema during <code>next build</code> and <code>next dev</code> — if a required variable is missing or malformed, you get a clear build error instead of a mysterious <code>undefined</code> crash in production. No extra libraries needed.</p>`},
+        {type:'warn',title:'NEXT_PUBLIC_ variables are baked into the bundle',body:`<p>Any variable prefixed with <code>NEXT_PUBLIC_</code> is <strong>inlined at build time</strong> into the JavaScript bundle sent to every user. This means: (1) changing a public env var requires a rebuild, (2) never put API secrets or passwords in them — they are fully visible in browser DevTools, and (3) they work in both Server and Client Components.</p>`},
+        {type:'tip',title:'Never commit .env.local',body:`<p><code>.env.local</code> is your machine's local secret store. It must be in <code>.gitignore</code> (Next.js adds it automatically). Instead, create a <code>.env.example</code> file with all the variable names but no real values, and commit that. New team members copy it to <code>.env.local</code> and fill in their own credentials.</p>`},
       ]
     },
 
@@ -2292,9 +3069,117 @@ export async function deletePost(formData: FormData) {
       ]
     },
 
-// ═══════════════════════════════════════
-// PHASE 8 — ADVANCED FEATURES
-// ═══════════════════════════════════════
+    {
+      id:'zod-actions', group:'Phase 7 — Authentication & Security', icon:'shield', title:'Zod Validation in Server Actions',
+      sub:'Parsing formData with a Zod schema — security by design, from day one.',
+      content:`
+<div class="prose">
+  <p>Every Server Action that receives user input is a potential attack surface. The pattern below is the "lightbulb moment" for secure Next.js development: <strong>parse before you touch the database</strong>. Zod guarantees the shape and type of data coming in, so your database query only ever sees clean, validated input.</p>
+</div>
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">app/actions/createPost.ts</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use server'
+
+import { z } from 'zod'
+import { db } from '@/lib/db'
+import { auth } from '@/auth'
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+
+// 1. Define the schema FIRST — this is your contract
+const CreatePostSchema = z.object({
+  title: z.string()
+    .min(1, 'Title is required')
+    .max(100, 'Title must be under 100 characters')
+    .trim(),
+  content: z.string()
+    .min(10, 'Content must be at least 10 characters')
+    .trim(),
+  published: z.boolean().default(false),
+  // Coerce the string "on"/"off" from a checkbox to a boolean
+  featured: z.coerce.boolean().default(false),
+})
+
+// The type Next.js expects: (prevState, formData) => state
+type ActionState = {
+  errors?: { title?: string[]; content?: string[]; _?: string[] }
+  message?: string
+}
+
+export async function createPost(
+  prevState: ActionState,
+  formData: FormData
+): Promise&lt;ActionState&gt; {
+  // 2. Always authenticate first — before touching user data
+  const session = await auth()
+  if (!session?.user?.id) {
+    return { errors: { _: ['You must be logged in.'] } }
+  }
+
+  // 3. Parse + validate with Zod
+  //    Object.fromEntries converts FormData to a plain object
+  const result = CreatePostSchema.safeParse(
+    Object.fromEntries(formData)
+  )
+
+  // 4. Return field-level errors if validation fails
+  if (!result.success) {
+    return { errors: result.error.flatten().fieldErrors }
+  }
+
+  // 5. At this point, result.data is fully type-safe ✅
+  const { title, content, published, featured } = result.data
+
+  try {
+    const post = await db.post.create({
+      data: { title, content, published, featured, authorId: session.user.id },
+    })
+    revalidatePath('/posts')
+    redirect(\`/posts/\${post.id}\`)
+  } catch (err) {
+    return { errors: { _: ['Database error. Please try again.'] } }
+  }
+}</code></pre></div>
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">app/posts/new/page.tsx — the form</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use client'
+
+import { useActionState } from 'react'
+import { createPost } from '@/app/actions/createPost'
+import SubmitButton from '@/components/SubmitButton'
+
+export default function NewPostPage() {
+  const [state, action] = useActionState(createPost, {})
+
+  return (
+    &lt;form action={action} className="space-y-4"&gt;
+      {/* Global errors */}
+      {state.errors?._?.map(e =&gt; &lt;p key={e} className="text-red-500"&gt;{e}&lt;/p&gt;)}
+
+      &lt;div&gt;
+        &lt;input name="title" placeholder="Post title" /&gt;
+        {/* Field-level errors from Zod */}
+        {state.errors?.title?.map(e =&gt; (
+          &lt;p key={e} className="text-red-400 text-sm"&gt;{e}&lt;/p&gt;
+        ))}
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;textarea name="content" placeholder="Write your post..." /&gt;
+        {state.errors?.content?.map(e =&gt; (
+          &lt;p key={e} className="text-red-400 text-sm"&gt;{e}&lt;/p&gt;
+        ))}
+      &lt;/div&gt;
+
+      &lt;label&gt;
+        &lt;input type="checkbox" name="published" /&gt; Publish immediately
+      &lt;/label&gt;
+
+      &lt;SubmitButton label="Create Post" /&gt;
+    &lt;/form&gt;
+  )
+}</code></pre></div>`,
+      boxes:[
+        {type:'tip',title:'Object.fromEntries converts FormData cleanly',body:`<p>Using <code>Object.fromEntries(formData)</code> converts the entire form to a plain object that Zod's <code>safeParse()</code> can process in one line. For fields with multiple values (like a multi-select), use <code>formData.getAll('field')</code> separately and combine with the rest of the parsed data.</p>`},
+        {type:'warn',title:'z.coerce for checkbox and number inputs',body:`<p>HTML form inputs always return strings. A checkbox sends <code>"on"</code> when checked and nothing when unchecked. Use <code>z.coerce.boolean()</code> to convert this automatically. Similarly, use <code>z.coerce.number()</code> for numeric inputs instead of manually calling <code>parseInt()</code>.</p>`},
+      ]
+    },
     {
       id:'parallel-routes', group:'Phase 8 — Advanced Features', icon:'layers', title:'Parallel Routes',
       sub:'Using @team and @analytics slots to show multiple pages in one layout.',
@@ -2369,6 +3254,213 @@ export default function DashboardLayout({
 </div>`,
       boxes:[
         {type:'tip',title:'Combine with Parallel Routes for modals',body:`<p>The canonical Next.js modal pattern uses <strong>Parallel Routes + Intercepting Routes</strong> together. The modal renders in a <code>@modal</code> parallel slot. When navigating from the feed, the intercepted route fills the modal slot. On direct URL access, the real page renders. This gives you shareable URLs that open in a full page, but a smooth modal experience for in-app navigation.</p>`},
+      ]
+    },
+
+    {
+      id:'activity-component', group:'Phase 8 — Advanced Features', icon:'zap', title:'&lt;Activity /&gt; — Background Rendering',
+      sub:'Using React 19.2\'s Activity component to keep tab state alive without consuming resources.',
+      content:`
+<div class="prose">
+  <p>React 19.2 introduces the <code>&lt;Activity&gt;</code> component — the successor to the experimental Offscreen API. It lets you keep part of your UI alive in the background (preserving state, subscriptions, and scroll position) while hiding it from the user and deprioritizing its rendering. This is the "wow" feature for tab-based layouts and complex navigations.</p>
+</div>
+
+<div class="g2">
+  <div class="card"><div class="card-t">mode="visible" (default)</div><div class="card-b">Children render normally, receive full priority, are painted to screen. Switch to this mode to bring a tab into focus.</div></div>
+  <div class="card"><div class="card-t">mode="hidden"</div><div class="card-b">Children are hidden from the user and painted at low priority, but <strong>remain mounted</strong>. State, timers, and subscriptions stay alive. No unmount/remount cost when switching back.</div></div>
+</div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">components/TabPanel.tsx — Activity in practice</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use client'
+
+import { Activity } from 'react'  // React 19.2
+import { useState } from 'react'
+
+const TABS = ['Dashboard', 'Analytics', 'Settings'] as const
+type Tab = (typeof TABS)[number]
+
+export default function TabPanel() {
+  const [activeTab, setActiveTab] = useState&lt;Tab&gt;('Dashboard')
+
+  return (
+    &lt;div&gt;
+      {/* Tab buttons */}
+      &lt;nav className="flex gap-2 border-b mb-4"&gt;
+        {TABS.map(tab =&gt; (
+          &lt;button
+            key={tab}
+            onClick={() =&gt; setActiveTab(tab)}
+            className={activeTab === tab ? 'border-b-2 border-blue-500' : ''}
+          &gt;
+            {tab}
+          &lt;/button&gt;
+        ))}
+      &lt;/nav&gt;
+
+      {/* Each tab is wrapped in Activity */}
+      {/* mode="hidden" keeps state alive — no remount on switch! */}
+      &lt;Activity mode={activeTab === 'Dashboard' ? 'visible' : 'hidden'}&gt;
+        &lt;DashboardTab /&gt;     {/* Scroll position, filters preserved */}
+      &lt;/Activity&gt;
+
+      &lt;Activity mode={activeTab === 'Analytics' ? 'visible' : 'hidden'}&gt;
+        &lt;AnalyticsTab /&gt;     {/* Chart selections preserved */}
+      &lt;/Activity&gt;
+
+      &lt;Activity mode={activeTab === 'Settings' ? 'visible' : 'hidden'}&gt;
+        &lt;SettingsTab /&gt;      {/* Unsaved form values preserved */}
+      &lt;/Activity&gt;
+    &lt;/div&gt;
+  )
+}
+
+// Example: This component keeps its data and scroll when hidden
+function DashboardTab() {
+  const [filter, setFilter] = useState('all')
+  // filter survives tab switches — no re-fetch, no scroll reset
+  return &lt;div&gt;...&lt;/div&gt;
+}</code></pre></div>`,
+      boxes:[
+        {type:'new',title:'Activity vs CSS display:none — Why it matters',body:`<p>You might wonder: why not just use <code>display:none</code>? CSS hiding removes elements visually but React still renders them at full priority. <code>&lt;Activity mode="hidden"&gt;</code> tells React to <strong>defer and deprioritize</strong> rendering for hidden children — the browser won't paint them, event listeners are paused, and layout is skipped. The component stays mounted (state preserved), but consumes near-zero resources until it becomes visible again.</p>`},
+        {type:'tip',title:'Perfect for complex dashboards',body:`<p>Use <code>&lt;Activity&gt;</code> whenever you have tab panels, slide-out drawers, or wizard steps where users frequently switch back and forth. Without it, unmounting and remounting tabs on every switch loses scroll position, resets form state, re-fires data fetches, and causes layout jank. With it, switching tabs feels instant — the background tab's HTML is kept alive, just hidden from paint.</p>`},
+      ]
+    },
+
+    {
+      id:'hydration-errors', group:'Phase 8 — Advanced Features', icon:'warn', title:'Hydration Errors — Fixing Mismatches',
+      sub:'Why "Text content did not match" happens and how to fix it with useEffect or suppressHydrationWarning.',
+      content:`
+<div class="prose">
+  <p>Hydration errors are the most common source of confusion for Next.js beginners. They happen because Next.js renders your component on the server to produce HTML, then React runs the same component in the browser to "hydrate" it — attach event listeners. If the output doesn't match exactly, React throws a hydration error.</p>
+</div>
+
+<div class="mental-shift">
+  <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> The Root Cause</h3>
+  <div class="mental-shift-grid">
+    <div class="ms-side ms-old">
+      <div class="ms-side-label" style="color:var(--warn);">Server renders at build/request time</div>
+      <ul>
+        <li>Server has no browser, no clock sync</li>
+        <li><code>new Date()</code> → "2026-01-15T10:00:00Z"</li>
+        <li><code>Math.random()</code> → 0.832...</li>
+        <li><code>window</code> → undefined (crashes)</li>
+        <li>Result: HTML with specific values</li>
+      </ul>
+    </div>
+    <div class="ms-arrow">≠</div>
+    <div class="ms-side ms-new">
+      <div class="ms-side-label">Client runs milliseconds later</div>
+      <ul>
+        <li>Browser has current time, its own RNG</li>
+        <li><code>new Date()</code> → "2026-01-15T10:00:02Z"</li>
+        <li><code>Math.random()</code> → 0.417...</li>
+        <li><code>window</code> → available</li>
+        <li>Result: different HTML → MISMATCH 💥</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">Common causes and their fixes</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use client'
+
+import { useState, useEffect } from 'react'
+
+// ❌ BROKEN — Date renders differently on server vs client
+function BrokenTime() {
+  return &lt;p&gt;It is currently: {new Date().toLocaleTimeString()}&lt;/p&gt;
+}
+
+// ✅ FIX 1: useEffect — render a placeholder server-side,
+//            then update with the real value client-side
+function FixedTime() {
+  const [time, setTime] = useState('...')  // placeholder for server
+
+  useEffect(() => {
+    setTime(new Date().toLocaleTimeString())
+    const id = setInterval(() => setTime(new Date().toLocaleTimeString()), 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  return &lt;p&gt;It is currently: {time}&lt;/p&gt;
+}
+
+// ✅ FIX 2: suppressHydrationWarning — for intentional mismatches
+//            Use sparingly — only when the mismatch is expected
+function UserGreeting({ serverName }: { serverName: string }) {
+  return (
+    &lt;html lang="en" suppressHydrationWarning&gt;
+      {/* Used on &lt;html&gt; for theme scripts that run before hydration */}
+      &lt;body&gt;...&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}
+
+// ✅ FIX 3: Dynamic import with ssr:false — skip server render entirely
+// (In a Server Component parent:)
+// import dynamic from 'next/dynamic'
+// const ClientOnlyWidget = dynamic(() => import('./Widget'), { ssr: false })</code></pre></div>
+
+<div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Error Pattern</th><th>Likely Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>"Text content did not match"</td><td><code>new Date()</code>, <code>Math.random()</code></td><td><code>useEffect</code> + placeholder</td></tr>
+      <tr><td>"Expected server HTML to contain..."</td><td>Invalid HTML nesting (e.g. <code>&lt;div&gt;</code> inside <code>&lt;p&gt;</code>)</td><td>Fix the HTML structure</td></tr>
+      <tr><td>"Prop className did not match"</td><td>CSS-in-JS library generating different class names</td><td>Use Tailwind or CSS Modules instead</td></tr>
+      <tr><td>"window is not defined"</td><td>Browser API called at top level of component</td><td>Move to <code>useEffect</code> or <code>dynamic(..., {ssr:false})</code></td></tr>
+      <tr><td>Browser extension errors</td><td>Ad blocker / password manager injecting DOM</td><td>Add <code>suppressHydrationWarning</code> to <code>&lt;body&gt;</code></td></tr>
+    </tbody>
+  </table>
+</div>`,
+      boxes:[
+        {type:'nxt',title:'Next.js 16 Hydration Diff in the Overlay',body:`<p>When a hydration error occurs in development, Next.js 16 shows a <strong>visual diff</strong> in the error overlay — a <code>+</code> / <code>-</code> format showing exactly what the server produced vs. what the client expected. Look for the red/green diff lines to instantly pinpoint the mismatch. No need to add <code>console.log</code> calls — the diff shows the exact HTML tree divergence.</p>`},
+        {type:'tip',title:'useEffect is the right tool — not suppressHydrationWarning',body:`<p>Beginners often reach for <code>suppressHydrationWarning</code> as a quick fix. Use it only for elements where a mismatch is genuinely intentional (like <code>&lt;html&gt;</code> when a theme script runs). For dynamic values like dates, counters, and window-dependent UI, use the <code>useEffect</code> + placeholder pattern — it also gives you better UX because the server sends meaningful content.</p>`},
+      ]
+    },
+
+    {
+      id:'debug-logs', group:'Phase 8 — Advanced Features', icon:'monitor', title:'Debugging: Where Are My Logs?',
+      sub:'Server Component logs go to the terminal, Client Component logs go to the browser console.',
+      content:`
+<div class="prose">
+  <p>One of the most disorienting beginner experiences in Next.js: you add a <code>console.log()</code> to debug a problem, but you cannot find the output anywhere. This happens because logs go to <strong>different places</strong> depending on which type of component they are in.</p>
+</div>
+
+<div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Where the code runs</th><th>Where to find console.log</th><th>How to identify it</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Server Component</strong></td><td>🖥️ <strong>VS Code terminal</strong> (the one running <code>npm run dev</code>)</td><td>No <code>'use client'</code> at top, component is <code>async</code></td></tr>
+      <tr><td><strong>Server Action</strong> (<code>'use server'</code>)</td><td>🖥️ <strong>VS Code terminal</strong></td><td>File or function has <code>'use server'</code> directive</td></tr>
+      <tr><td><strong>Route Handler</strong> (<code>route.ts</code>)</td><td>🖥️ <strong>VS Code terminal</strong></td><td>Inside <code>app/api/</code> files</td></tr>
+      <tr><td><strong>Client Component</strong> (<code>'use client'</code>)</td><td>🌐 <strong>Browser DevTools Console</strong></td><td>Has <code>'use client'</code> at top</td></tr>
+      <tr><td><strong>Client Component</strong> (during SSR)</td><td>Both terminal AND browser console</td><td>Client Components also run on the server for the first render</td></tr>
+      <tr><td><strong>middleware.ts / proxy.ts</strong></td><td>🖥️ <strong>VS Code terminal</strong></td><td>Root-level proxy/middleware file</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="cb"><div class="cb-hdr"><span class="cb-fname">Quick debug pattern</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>// In a SERVER COMPONENT — check your VS Code terminal, not the browser
+async function ServerComp() {
+  const data = await fetchData()
+  console.log('SERVER:', data)  // → appears in TERMINAL
+  return &lt;div&gt;...&lt;/div&gt;
+}
+
+// In a CLIENT COMPONENT — check browser DevTools (F12 → Console tab)
+'use client'
+function ClientComp() {
+  const [count, setCount] = useState(0)
+  console.log('CLIENT:', count)  // → appears in BROWSER CONSOLE
+  return &lt;button onClick={() =&gt; setCount(c =&gt; c + 1)}&gt;{count}&lt;/button&gt;
+}
+
+// Pro tip: prefix your logs to make them easy to scan
+console.log('[DB Query]', result)        // terminal
+console.log('[Action State]', prevState) // terminal (in Server Actions)
+console.log('[UI State]', { isOpen })    // browser</code></pre></div>`,
+      boxes:[
+        {type:'tip',title:'Quick identification tip',body:`<p>Not sure if your component is a Server or Client Component? Open it in your editor. If it has <code>'use client'</code> at the top → logs go to browser. If it's an <code>async function</code> with no <code>'use client'</code> → logs go to terminal. Middleware and Server Actions always go to terminal. When in doubt, look in both places.</p>`},
+        {type:'warn',title:'Client Components log to BOTH places on first load',body:`<p>Client Components are first rendered on the server (for SSR) and then hydrated in the browser. This means on the <strong>initial page load</strong>, a <code>console.log</code> inside a Client Component will appear in <strong>both</strong> your terminal and the browser console. After navigation (client-side), it only appears in the browser. This can be confusing — just remember that hydration involves the component running twice.</p>`},
       ]
     },
 
@@ -2578,6 +3670,7 @@ CMD ["node", "server.js"]</code></pre></div>
 export default config</code></pre></div>`,
       boxes:[
         {type:'tip',title:'Other hosting options',body:`<p><strong>Railway</strong> and <strong>Render</strong> support one-click Next.js deployment with Docker — simpler than managing raw VPS. <strong>AWS Amplify</strong>, <strong>Azure Static Web Apps</strong>, and <strong>Google Cloud Run</strong> all support containerized Next.js. <strong>Netlify</strong> supports Next.js via their official adapter but with some limitations around Server Actions.</p>`},
+        {type:'nxt',title:'vercel env pull — Stop Typing Variables Manually',body:`<p>After deploying to Vercel and adding your environment variables in the Vercel dashboard, you never have to manually copy them to <code>.env.local</code>. Run this once and Vercel pulls all your project's environment variables into a local file automatically:</p><pre style="background:#070a12;border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12.5px;margin:8px 0;">npx vercel env pull .env.local</pre><p>This saves hours of copy-paste and prevents mismatches between production secrets and local development. Run it any time a team member adds a new environment variable in Vercel to stay in sync.</p>`},
       ]
     },
 
@@ -3096,12 +4189,7 @@ export default async function DashboardPage() {
     document.getElementById('overlay').classList.remove('vis');
   });
 
-  // FAB – handled inline after fab-wrap HTML
-  // INIT
-  buildSidebar();
-  showSection(0);
-</script>
-<script>
+  // FAB
   (function(){
     var wrap=document.getElementById('fabWrap'),btn=document.getElementById('fabBtn'),menu=document.getElementById('fabMenu'),items=menu.querySelectorAll('.fab-item');
     var open=false,dragging=false,moved=false,ox=0,oy=0,sx=0,sy=0;
@@ -3118,8 +4206,11 @@ export default async function DashboardPage() {
     document.addEventListener('touchend',function(){endDrag();});
     btn.addEventListener('click',function(){if(moved)return;open?closeMenu():openMenu();});
     document.addEventListener('click',function(e){if(open&&!wrap.contains(e.target))closeMenu();});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&open)closeMenu();});
   })();
+
+  // INIT
+  buildSidebar();
+  showSection(0);
 </script>
 </body>
 </html>
