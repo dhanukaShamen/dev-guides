@@ -192,14 +192,17 @@
     .hl-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
 
     /* FILETREE */
-    .filetree{background:#070a12;border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:2;margin:18px 0;}
+    .filetree{background:#070a12;border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.9;margin:18px 0;overflow-x:auto;}
+    .ft-row{display:flex;align-items:baseline;white-space:nowrap;min-width:0;}
+    .ft-i{flex-shrink:0;color:var(--text3);}
+    .ft-comment{flex-shrink:0;margin-left:10px;}
     .ft-dir{color:var(--text2);}
     .ft-tsx{color:var(--accent);}
     .ft-ts{color:#a78bfa;}
     .ft-json{color:var(--warn);}
     .ft-css{color:#f472b6;}
     .ft-other{color:var(--text3);}
-    .ft-i{display:inline-block;width:18px;}
+    .ft-i{color:var(--text3);white-space:pre;flex-shrink:0;}
 
     /* MENTAL SHIFT BOX */
     .mental-shift{background:linear-gradient(135deg,rgba(6,182,212,0.06),rgba(167,139,250,0.04));border:1px solid rgba(6,182,212,0.22);border-radius:14px;padding:26px 30px;margin:24px 0;}
@@ -420,7 +423,14 @@
       content:`
 <div class="prose">
   <p><strong>Next.js</strong> is a full-stack React framework built by Vercel. While React itself is a UI library focused on building components and managing state, Next.js adds everything else you need to build a complete web application — routing, server-side rendering, API endpoints, caching, image optimization, and deployment tooling — all in one opinionated package.</p>
-  <p>Think of it this way: React is the engine, and Next.js is the entire car — steering wheel, brakes, GPS, and all. You can use React without Next.js, but you'll end up building many of these features yourself, or stitching together multiple libraries that may conflict.</p>
+  <p>Think of it this way: React is the <strong>engine</strong>, and Next.js is the entire <strong>car</strong> — steering wheel, brakes, GPS, and all. You can use React without Next.js, but you'll end up building many of these features yourself, or stitching together multiple libraries that may conflict.</p>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — React vs Next.js</div>
+  <div class="box-body"><p>Imagine you want to open a restaurant. <strong>React</strong> is like having a brilliant chef — she can cook incredible food, but that's <em>all</em> she does. You still need to find a building, set up tables, hire waiters, design a menu, handle payments, and organise the kitchen. Each of those is a separate decision.</p>
+<p style="margin-top:8px;"><strong>Next.js</strong> is the complete restaurant franchise package — it comes with a building, tables, a menu system, a payment process, a marketing plan, and the same great chef already installed. You skip straight to cooking great food.</p>
+<p style="margin-top:8px;">This is why most professional teams choose Next.js over plain React: the infrastructure decisions are already made for you, and they are made <em>well</em>.</p></div>
+</div>
   <p><strong>Next.js 16</strong>, released alongside <strong>React 19.2</strong>, is one of the most significant releases in the framework's history. It makes Turbopack the stable default bundler, introduces a new Cache Components model with Partial Pre-Rendering (PPR), replaces Middleware with a clearer <code>proxy.ts</code> primitive, and integrates deeply with React 19.2's new APIs including View Transitions and <code>&lt;Activity/&gt;</code>.</p>
 </div>
 <div class="g3" style="margin-top:22px;">
@@ -482,6 +492,17 @@
       </ul>
     </div>
   </div>
+</div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — The Four Rendering Strategies</div>
+  <div class="box-body"><p>Think of a newspaper vs a whiteboard vs a live news ticker:</p>
+<ul>
+  <li><strong>SSG (Static Generation)</strong> = a <em>printed newspaper</em>. The articles are written and printed at press time (build time). Everyone who picks up a copy gets the exact same pages instantly. Perfect for content that doesn't change often — blogs, docs, marketing sites.</li>
+  <li><strong>SSR (Server-Side Rendering)</strong> = a <em>personalised letter</em> printed on-demand. Each time you request a page, the server generates fresh HTML just for you at that moment. Slightly slower but always up-to-date and personalised — dashboards, user profiles, stock prices.</li>
+  <li><strong>ISR (Incremental Static Regen)</strong> = a <em>magazine with periodic reprints</em>. Start with a printed copy (fast!), but reprint it every N minutes when content changes. Best of both worlds — e-commerce product pages, news articles.</li>
+  <li><strong>CSR (Client-Side Rendering)</strong> = a <em>whiteboard in the room</em>. The page arrives blank and JavaScript draws the content live in the browser. Most flexible for highly interactive pieces — real-time charts, collaborative editors.</li>
+</ul></div>
 </div>
 
 <div class="tbl-wrap">
@@ -549,28 +570,40 @@ npm run dev</code></pre></div>
 <div class="prose">
   <p>A clean understanding of the project structure will save you hours of confusion. Every folder has a purpose, and Next.js treats some folders with special meaning.</p>
 </div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — A Well-Organised Wardrobe</div>
+  <div class="box-body"><p>Think of your project as a <strong>professionally organised wardrobe</strong>:</p>
+<ul>
+  <li><code>app/</code> = the main wardrobe section. Next.js has a strict system here — only certain item names are recognised (<code>page.tsx</code>, <code>layout.tsx</code>, <code>loading.tsx</code>). Anything else is ignored by the routing system.</li>
+  <li><code>components/</code> = the accessories drawer. Reusable buttons, cards, and inputs live here. Nothing magical — just organised.</li>
+  <li><code>lib/</code> = the locked jewellery box. Private server-side utilities: DB client, auth helpers, secrets. You would not leave these in the main section.</li>
+  <li><code>public/</code> = the front-facing display shelf. Images, fonts, and static files you want the world to see directly at a URL.</li>
+</ul>
+<p style="margin-top:8px;"><strong>The most important rule:</strong> <code>app/</code> is <em>special</em> to Next.js. The other folders (<code>components/</code>, <code>lib/</code>, <code>hooks/</code>, <code>utils/</code>) are <em>conventions</em> — you can name them whatever you like. Next.js only cares about what is inside <code>app/</code>.</p></div>
+</div>
 <div class="filetree">
-<span class="ft-dir">my-app/</span>
-<span class="ft-i">├── </span><span class="ft-dir">app/</span>                   <span class="ft-other">← App Router root (special)</span>
-<span class="ft-i">│   ├── </span><span class="ft-tsx">layout.tsx</span>         <span class="ft-other">← Root layout (wraps all pages)</span>
-<span class="ft-i">│   ├── </span><span class="ft-tsx">page.tsx</span>           <span class="ft-other">← Homepage ( / route)</span>
-<span class="ft-i">│   ├── </span><span class="ft-tsx">globals.css</span>        <span class="ft-other">← Global styles</span>
-<span class="ft-i">│   ├── </span><span class="ft-dir">about/</span>             <span class="ft-other">← /about route</span>
-<span class="ft-i">│   │   └── </span><span class="ft-tsx">page.tsx</span>
-<span class="ft-i">│   └── </span><span class="ft-dir">api/</span>               <span class="ft-other">← API routes</span>
-<span class="ft-i">│       └── </span><span class="ft-tsx">route.ts</span>
-<span class="ft-i">├── </span><span class="ft-dir">components/</span>            <span class="ft-other">← Reusable UI components</span>
-<span class="ft-i">│   ├── </span><span class="ft-tsx">Button.tsx</span>
-<span class="ft-i">│   └── </span><span class="ft-tsx">Navbar.tsx</span>
-<span class="ft-i">├── </span><span class="ft-dir">lib/</span>                   <span class="ft-other">← Utilities, DB helpers, auth</span>
-<span class="ft-i">│   ├── </span><span class="ft-ts">db.ts</span>
-<span class="ft-i">│   └── </span><span class="ft-ts">auth.ts</span>
-<span class="ft-i">├── </span><span class="ft-dir">public/</span>                <span class="ft-other">← Static files (images, fonts)</span>
-<span class="ft-i">│   └── </span><span class="ft-other">logo.svg</span>
-<span class="ft-i">├── </span><span class="ft-ts">middleware.ts</span>          <span class="ft-other">← Runs before every request</span>
-<span class="ft-i">├── </span><span class="ft-json">next.config.ts</span>         <span class="ft-other">← Next.js configuration</span>
-<span class="ft-i">├── </span><span class="ft-json">package.json</span>
-<span class="ft-i">└── </span><span class="ft-ts">tsconfig.json</span>
+<div class="ft-row"><span class="ft-dir">my-app/</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">app/</span>                   <span class="ft-other ft-comment">← App Router root (special)</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-tsx">layout.tsx</span>         <span class="ft-other ft-comment">← Root layout (wraps all pages)</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-tsx">page.tsx</span>           <span class="ft-other ft-comment">← Homepage ( / route)</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-tsx">globals.css</span>        <span class="ft-other ft-comment">← Global styles</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-dir">about/</span>             <span class="ft-other ft-comment">← /about route</span></div>
+<div class="ft-row"><span class="ft-i">│   │   └── </span><span class="ft-tsx">page.tsx</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-dir">api/</span>               <span class="ft-other ft-comment">← API routes</span></div>
+<div class="ft-row"><span class="ft-i">│       └── </span><span class="ft-tsx">route.ts</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">components/</span>            <span class="ft-other ft-comment">← Reusable UI components</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-tsx">Button.tsx</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-tsx">Navbar.tsx</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">lib/</span>                   <span class="ft-other ft-comment">← Utilities, DB helpers, auth</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-ts">db.ts</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-ts">auth.ts</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">public/</span>                <span class="ft-other ft-comment">← Static files (images, fonts)</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-other ft-comment">logo.svg</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-ts">middleware.ts</span>          <span class="ft-other ft-comment">← Runs before every request</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-json">next.config.ts</span>         <span class="ft-other ft-comment">← Next.js configuration</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-json">package.json</span></div>
+<div class="ft-row"><span class="ft-i">└── </span><span class="ft-ts">tsconfig.json</span></div>
 </div>
 <div class="g2" style="margin-top:20px;">
   <div class="card"><div class="card-t">app/ — The Router</div><div class="card-b">Everything inside <code>app/</code> is controlled by Next.js's file-based router. Only files named <code>page.tsx</code>, <code>layout.tsx</code>, <code>loading.tsx</code>, <code>error.tsx</code>, and <code>route.ts</code> have special meaning. Everything else (like shared components) should live outside <code>app/</code>.</div></div>
@@ -639,6 +672,7 @@ export default async function Page() {
   </table>
 </div>`,
       boxes:[
+        {type:'tip',title:'🌍 Real-World Analogy — Old vs New Headquarters',body:`<p>The Pages Router is like an <strong>old company headquarters</strong> that was built in 2016. It works fine, everyone knows their way around, but the layout was designed before modern requirements. Adding new features means retrofitting — awkward extensions bolted onto the original building.</p><p>The App Router is the <strong>new headquarters</strong> built from the ground up with modern needs in mind: open-plan collaboration between server and client, smart energy use (Server Components = zero JS budget), and flexible layouts (nested layouts). Everything your team asked for over the years is baked in. Existing staff (Pages Router tutorials) still know useful skills, but the new building has different rules and you shouldn't try to apply the old floor plan to the new one.</p>`},
         {type:'nxt',title:'Start with App Router',body:`<p>If you are starting a new project in 2026: use the <strong>App Router</strong>. It is the present and future of Next.js. All new features are App Router only. The Pages Router is maintained but will not receive new capabilities.</p>`},
         {type:'warn',title:'Learning App Router takes adjustment',body:`<p>The App Router introduces new mental models: Server Components, client/server boundaries, nested layouts. It feels different from traditional React. This guide is designed to teach these concepts from scratch — do not try to map App Router onto your Pages Router knowledge.</p>`},
       ]
@@ -655,23 +689,35 @@ export default async function Page() {
   <p>Next.js uses your <code>app/</code> folder as a router. The folder structure directly maps to your URL structure. There are no route configuration files — just create a folder and a <code>page.tsx</code> inside it.</p>
 </div>
 
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — Your Folder Structure IS Your URL Map</div>
+  <div class="box-body"><p>Imagine a company office building. The <strong>building address</strong> is your domain (<code>myapp.com</code>). Each <strong>floor</strong> is a folder. Each <strong>reception desk</strong> on that floor is a <code>page.tsx</code> file — the publicly visible entrance to that section.</p>
+<ul>
+  <li><code>app/page.tsx</code> = Ground floor reception → <code>/</code></li>
+  <li><code>app/about/page.tsx</code> = 2nd floor "About" dept → <code>/about</code></li>
+  <li><code>app/dashboard/page.tsx</code> = 5th floor dashboard → <code>/dashboard</code></li>
+  <li><code>app/dashboard/settings/page.tsx</code> = Room 501 settings → <code>/dashboard/settings</code></li>
+</ul>
+<p style="margin-top:8px;">Just like an office, you can have storage rooms (utility folders without <code>page.tsx</code>) that are never publicly accessible. Only floors with a reception desk (<code>page.tsx</code>) are open to visitors.</p></div>
+</div>
+
 <div class="g2">
   <div>
     <div class="prose"><h3>Folder Structure</h3></div>
     <div class="filetree">
-<span class="ft-dir">app/</span>
-<span class="ft-i">├── </span><span class="ft-tsx">page.tsx</span>        <span class="ft-other">→ /</span>
-<span class="ft-i">├── </span><span class="ft-tsx">layout.tsx</span>      <span class="ft-other">→ root layout</span>
-<span class="ft-i">├── </span><span class="ft-dir">about/</span>
-<span class="ft-i">│   └── </span><span class="ft-tsx">page.tsx</span>    <span class="ft-other">→ /about</span>
-<span class="ft-i">├── </span><span class="ft-dir">blog/</span>
-<span class="ft-i">│   ├── </span><span class="ft-tsx">page.tsx</span>    <span class="ft-other">→ /blog</span>
-<span class="ft-i">│   └── </span><span class="ft-dir">new/</span>
-<span class="ft-i">│       └── </span><span class="ft-tsx">page.tsx</span><span class="ft-other">→ /blog/new</span>
-<span class="ft-i">└── </span><span class="ft-dir">dashboard/</span>
-<span class="ft-i">    ├── </span><span class="ft-tsx">page.tsx</span>    <span class="ft-other">→ /dashboard</span>
-<span class="ft-i">    └── </span><span class="ft-tsx">layout.tsx</span>  <span class="ft-other">→ dashboard layout</span>
-    </div>
+<div class="ft-row"><span class="ft-dir">app/</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-tsx">page.tsx</span>        <span class="ft-other ft-comment">→ /</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-tsx">layout.tsx</span>      <span class="ft-other ft-comment">→ root layout</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">about/</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-tsx">page.tsx</span>    <span class="ft-other ft-comment">→ /about</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">blog/</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-tsx">page.tsx</span>    <span class="ft-other ft-comment">→ /blog</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-dir">new/</span></div>
+<div class="ft-row"><span class="ft-i">│       └── </span><span class="ft-tsx">page.tsx</span><span class="ft-other ft-comment">→ /blog/new</span></div>
+<div class="ft-row"><span class="ft-i">└── </span><span class="ft-dir">dashboard/</span></div>
+<div class="ft-row"><span class="ft-i">    ├── </span><span class="ft-tsx">page.tsx</span>    <span class="ft-other ft-comment">→ /dashboard</span></div>
+<div class="ft-row"><span class="ft-i">    └── </span><span class="ft-tsx">layout.tsx</span>  <span class="ft-other ft-comment">→ dashboard layout</span></div>
+</div>
   </div>
   <div>
     <div class="prose"><h3>Special File Names</h3></div>
@@ -705,6 +751,13 @@ export default function HomePage() {
       content:`
 <div class="prose">
   <p>Static routes cover fixed URLs, but real apps need <strong>dynamic routes</strong> — URLs that include variable segments like a blog post ID, a username, or a product slug. Next.js handles this with bracket syntax in folder names.</p>
+</div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — Hotel Room Numbers</div>
+  <div class="box-body"><p>A hotel doesn't build a separate corridor for every room number. Instead, it has one corridor template: <em>"go to floor 3, find room [number]"</em>. The <strong>[number]</strong> slot accepts any value — room 301, 302, 350 — and the same set of instructions applies to all of them.</p>
+<p style="margin-top:8px;"><code>app/rooms/[roomId]/page.tsx</code> is exactly this. The folder <code>[roomId]</code> is the template slot. It matches <code>/rooms/301</code>, <code>/rooms/302</code>, and <code>/rooms/penthouse</code> — all handled by the same component, which receives the specific value via the <code>params</code> prop.</p>
+<p style="margin-top:8px;">You only write the page <em>once</em> and it works for every possible room. Without dynamic routes, you would need a separate page file for every single post, product, or user in your database — which is obviously impossible.</p></div>
 </div>
 <div class="g3">
   <div class="card"><div class="card-t">[id] — Single Segment</div><div class="card-b"><code>app/posts/[id]/page.tsx</code> matches <code>/posts/1</code>, <code>/posts/abc</code>, <code>/posts/hello-world</code></div></div>
@@ -859,6 +912,14 @@ export default function LoginForm() {
 <div class="prose">
   <p>Layouts are the secret weapon of Next.js's App Router. A <code>layout.tsx</code> wraps all pages within its folder and all nested folders. It <strong>persists across navigation</strong> — meaning its component state, scroll position, and DOM are preserved when you navigate between routes that share the same layout.</p>
 </div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — Layouts are Like Picture Frames</div>
+  <div class="box-body"><p>Picture a set of <strong>nested picture frames</strong>. The outermost frame (<code>app/layout.tsx</code>) is always visible — it's the border that surrounds <em>every single page</em> in your app. It typically holds the navbar, global fonts, and the footer.</p>
+<p style="margin-top:8px;">Inside that is a second frame (<code>app/dashboard/layout.tsx</code>) — a more specific frame that only surrounds pages within the <code>/dashboard</code> section. It might hold a sidebar that's only relevant for the app's logged-in area.</p>
+<p style="margin-top:8px;">The page content (<code>page.tsx</code>) is the actual <em>artwork</em> that slides in and out of the frame. When you navigate from <code>/dashboard</code> to <code>/dashboard/settings</code>, the frames <strong>stay put</strong> — only the artwork changes. This is why your sidebar doesn't flash or lose its scroll position when navigating.</p>
+<p style="margin-top:8px;"><strong>Key insight:</strong> Unlike a regular component, a layout is <em>never unmounted</em> while you are navigating between routes it covers. A regular React component would re-render; the layout simply swaps out its <code>{children}</code>.</p></div>
+</div>
 <div class="cb"><div class="cb-hdr"><span class="cb-fname">app/layout.tsx</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 import './globals.css'
@@ -914,6 +975,14 @@ export default function DashboardLayout({
       content:`
 <div class="prose">
   <p>Next.js has a convention-based system for loading and error states. Instead of manually wrapping every page in Suspense or try-catch, you create special files that Next.js automatically uses as React Suspense boundaries and error boundaries.</p>
+</div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — Scaffolding and Safety Nets</div>
+  <div class="box-body"><p>When a building is under construction, engineers don't just leave an empty plot with a sign saying "Building coming soon." They put up <strong>scaffolding</strong> — a temporary structure that shows the building's shape and keeps things safe while the real structure goes up. When it's complete, the scaffolding comes down and the real building is revealed.</p>
+<p style="margin-top:8px;"><strong><code>loading.tsx</code> is your scaffolding.</strong> While the real page data is loading, Next.js shows your loading UI (typically skeleton screens that match the page's shape). The moment data arrives, the real content swaps in seamlessly.</p>
+<p style="margin-top:8px;"><strong><code>error.tsx</code> is your safety net.</strong> If something goes wrong during construction (a database error, a failed fetch), the safety net catches the fall. Instead of the whole app crashing, only the affected section shows your error UI, and users can hit "Try Again" without refreshing the page.</p>
+<p style="margin-top:8px;"><code>not-found.tsx</code> is the "This address doesn't exist" sign you put on an empty plot.</p></div>
 </div>
 <div class="cb"><div class="cb-hdr"><span class="cb-fname">app/dashboard/loading.tsx</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>// This component is shown while dashboard/page.tsx is loading
 // No need to add Suspense manually — Next.js does it for you
@@ -980,29 +1049,29 @@ export default function NotFound() {
   <div>
     <div class="cmp-lbl lbl-before">Without Route Groups</div>
     <div class="filetree">
-<span class="ft-dir">app/</span>
-<span class="ft-i">├── </span><span class="ft-tsx">layout.tsx</span>  <span class="ft-other">(one layout for all)</span>
-<span class="ft-i">├── </span><span class="ft-tsx">page.tsx</span>    <span class="ft-other">→ /</span>
-<span class="ft-i">├── </span><span class="ft-dir">about/</span>
-<span class="ft-i">│   └── </span><span class="ft-tsx">page.tsx</span>  <span class="ft-other">→ /about</span>
-<span class="ft-i">└── </span><span class="ft-dir">dashboard/</span>
-<span class="ft-i">    └── </span><span class="ft-tsx">page.tsx</span>  <span class="ft-other">→ /dashboard</span>
-    </div>
+<div class="ft-row"><span class="ft-dir">app/</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-tsx">layout.tsx</span>  <span class="ft-other ft-comment">(one layout for all)</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-tsx">page.tsx</span>    <span class="ft-other ft-comment">→ /</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">about/</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-tsx">page.tsx</span>  <span class="ft-other ft-comment">→ /about</span></div>
+<div class="ft-row"><span class="ft-i">└── </span><span class="ft-dir">dashboard/</span></div>
+<div class="ft-row"><span class="ft-i">    └── </span><span class="ft-tsx">page.tsx</span>  <span class="ft-other ft-comment">→ /dashboard</span></div>
+</div>
   </div>
   <div>
     <div class="cmp-lbl lbl-after">With Route Groups</div>
     <div class="filetree">
-<span class="ft-dir">app/</span>
-<span class="ft-i">├── </span><span class="ft-dir">(marketing)/</span>  <span class="ft-other">(ignored in URL)</span>
-<span class="ft-i">│   ├── </span><span class="ft-tsx">layout.tsx</span>  <span class="ft-other">(marketing layout)</span>
-<span class="ft-i">│   ├── </span><span class="ft-tsx">page.tsx</span>    <span class="ft-other">→ /</span>
-<span class="ft-i">│   └── </span><span class="ft-dir">about/</span>
-<span class="ft-i">│       └── </span><span class="ft-tsx">page.tsx</span>  <span class="ft-other">→ /about</span>
-<span class="ft-i">└── </span><span class="ft-dir">(dashboard)/</span>  <span class="ft-other">(ignored in URL)</span>
-<span class="ft-i">    ├── </span><span class="ft-tsx">layout.tsx</span>  <span class="ft-other">(dashboard layout)</span>
-<span class="ft-i">    └── </span><span class="ft-dir">dashboard/</span>
-<span class="ft-i">        └── </span><span class="ft-tsx">page.tsx</span>  <span class="ft-other">→ /dashboard</span>
-    </div>
+<div class="ft-row"><span class="ft-dir">app/</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">(marketing)/</span>  <span class="ft-other ft-comment">(ignored in URL)</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-tsx">layout.tsx</span>  <span class="ft-other ft-comment">(marketing layout)</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-tsx">page.tsx</span>    <span class="ft-other ft-comment">→ /</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-dir">about/</span></div>
+<div class="ft-row"><span class="ft-i">│       └── </span><span class="ft-tsx">page.tsx</span>  <span class="ft-other ft-comment">→ /about</span></div>
+<div class="ft-row"><span class="ft-i">└── </span><span class="ft-dir">(dashboard)/</span>  <span class="ft-other ft-comment">(ignored in URL)</span></div>
+<div class="ft-row"><span class="ft-i">    ├── </span><span class="ft-tsx">layout.tsx</span>  <span class="ft-other ft-comment">(dashboard layout)</span></div>
+<div class="ft-row"><span class="ft-i">    └── </span><span class="ft-dir">dashboard/</span></div>
+<div class="ft-row"><span class="ft-i">        └── </span><span class="ft-tsx">page.tsx</span>  <span class="ft-other ft-comment">→ /dashboard</span></div>
+</div>
   </div>
 </div>
 <div class="box box-tip">
@@ -1030,6 +1099,19 @@ export default function NotFound() {
       content:`
 <div class="prose">
   <p>This is the most important concept in the Next.js App Router. The App Router introduces two types of React components: <strong>Server Components</strong> and <strong>Client Components</strong>. Understanding the difference is fundamental to building performant Next.js apps.</p>
+  <p>If you only learn one concept from this entire guide, make it this one. Everything else — data fetching, caching, performance — flows naturally from understanding <em>where</em> your code runs.</p>
+</div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — The Kitchen vs The Dining Room</div>
+  <div class="box-body"><p>Think of your app as a <strong>restaurant</strong>:</p>
+<ul>
+  <li>The <strong>kitchen</strong> is the <strong>server</strong>. The chef (Server Component) has full access to the fridge (database), the storeroom (file system), and the safe with the secret recipes (environment secrets). Customers never go into the kitchen — they have no idea what equipment is back there or how it works.</li>
+  <li>The <strong>dining room</strong> is the <strong>browser</strong>. The waiter (Client Component) interacts directly with the customer — takes orders, reacts to what the customer says, hands over the food. The waiter cannot see inside the kitchen fridge; they only work with what the kitchen sends out.</li>
+</ul>
+<p style="margin-top:8px;"><strong>Server Component</strong> = works entirely in the kitchen. Can query the database directly. Zero JavaScript sent to the customer's browser. Cannot respond to button clicks (customers aren't in the kitchen).</p>
+<p style="margin-top:8px;"><strong>Client Component</strong> = works in the dining room. Has event handlers (can respond to the customer). Uses <code>useState</code> and <code>useEffect</code>. Does send JavaScript to the browser. Cannot directly touch the database (the customer can't walk into the kitchen).</p>
+<p style="margin-top:8px;"><strong>The golden rule:</strong> Start in the kitchen (Server Component). Only move something to the dining room (<code>'use client'</code>) when it needs to interact with the user directly.</p></div>
 </div>
 
 <div class="mental-shift">
@@ -1293,6 +1375,14 @@ export function LikeButton({ postId, initialLikes }: Props) {
   <p>Streaming allows Next.js to send parts of the UI to the browser as they become ready, rather than waiting for all data to load before sending anything. Slow parts of the page stream in progressively while fast parts are already interactive.</p>
   <p>You control streaming by placing React <code>&lt;Suspense&gt;</code> boundaries around components that fetch data. Next.js streams the fallback immediately, then streams the actual content when ready.</p>
 </div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — Turning On the Kitchen Taps, Not Waiting for the Water Tower</div>
+  <div class="box-body"><p>Imagine ordering a full meal at a restaurant. Without streaming, the kitchen would hold your soup, main course, and dessert until <em>everything</em> is ready — then bring it all out at once. If the dessert takes 30 extra minutes, your soup goes cold and you wait hungry.</p>
+<p style="margin-top:8px;">With streaming, the waiter brings each dish <strong>as it is ready</strong>: soup arrives first, main course when it's cooked, dessert last. You start eating immediately — the total wait feels much shorter.</p>
+<p style="margin-top:8px;"><strong>In Next.js:</strong> the page's fast parts (heading, navigation, quick actions) arrive at the browser instantly. Slow parts (database-heavy stats, personalised feeds) arrive when ready, smoothly replacing their skeleton placeholders. The user is never staring at a blank screen.</p>
+<p style="margin-top:8px;"><strong>The <code>&lt;Suspense&gt;</code> boundary</strong> is the individual dish: it says "stream this part independently." Without Suspense, the whole page waits for the slowest component.</p></div>
+</div>
 <div class="cb"><div class="cb-hdr"><span class="cb-fname">app/dashboard/page.tsx</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>import { Suspense } from 'react'
 import { StatsGrid, StatsGridSkeleton } from './StatsGrid'
 import { RecentActivity, ActivitySkeleton } from './RecentActivity'
@@ -1335,6 +1425,13 @@ export default function DashboardPage() {
       content:`
 <div class="prose">
   <p>One of the biggest quality-of-life improvements in Next.js is that Server Components can be <code>async</code>. You can fetch data directly at the top of your component with <code>await</code> — no <code>useEffect</code>, no loading state, no separate API routes for initial data.</p>
+</div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — Pre-Set Table vs. Ordering at the Table</div>
+  <div class="box-body"><p>The old way (client-side <code>useEffect</code>) is like sitting down at a restaurant where the table is completely empty. You have to call the waiter, wait for them to write down your order, walk to the kitchen, wait for it to be cooked, and walk back — all while you sit there staring at an empty table (loading spinner).</p>
+<p style="margin-top:8px;">The new way (Server Component <code>async/await</code>) is like arriving at a restaurant where your table is <strong>already set</strong> with your meal because the chef saw your reservation and prepared it in advance. You sit down and the food is already there — <em>zero wait, zero loading state</em>.</p>
+<p style="margin-top:8px;"><strong>In code terms:</strong> the server runs your <code>await fetch()</code> or database query <em>before</em> sending any HTML to the browser. The user receives a fully-populated page, not a skeleton that fills in later.</p></div>
 </div>
 <div class="cmp">
   <div>
@@ -1444,6 +1541,17 @@ const taggedData = await fetch('https://api.example.com/products', {
 <div class="prose">
   <p>Next.js has a layered caching system. Understanding all four layers helps you build fast apps while keeping data fresh. Each layer serves a different purpose and has different invalidation behavior.</p>
 </div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — The Four Layers of Caching = Your Restaurant Supply Chain</div>
+  <div class="box-body"><p>Think of data as <strong>ingredients</strong>. Getting them fresh every single time is expensive and slow. Caching is the art of storing them at the right level so you use fresh produce without making a farmer's market run for every single dish.</p>
+<ul>
+  <li><strong>Request Memoization</strong> = the <em>prep station</em>. If you need the same onion chopped multiple times during one meal service, you chop it once and leave it on the station. Within a single render pass, identical <code>fetch()</code> calls are deduplicated automatically.</li>
+  <li><strong>Data Cache</strong> = the <em>walk-in fridge</em>. Expensive fetch results (API calls, DB queries) stored persistently across many requests. Survives server restarts. You control freshness via <code>revalidate</code>.</li>
+  <li><strong>Full Route Cache</strong> = <em>pre-cooked dishes in warming trays</em>. At build time, static pages are fully rendered and stored. Served instantly to every user — no cooking needed.</li>
+  <li><strong>Router Cache</strong> = the <em>waiter's memory</em>. On the client side, recently visited pages are remembered in memory. Navigating back feels instant because the waiter already knows what you ordered last time.</li>
+</ul></div>
+</div>
 <div class="g2">
   <div class="card"><div class="card-t">Request Memoization</div><div class="card-b">Within a single request, identical <code>fetch()</code> calls to the same URL are automatically deduplicated. If 5 components all fetch the same user data, only one HTTP request is made. This is automatic — you don't configure it.</div></div>
   <div class="card"><div class="card-t">Data Cache</div><div class="card-b">Persists fetch responses on the server across multiple requests. Controlled by <code>cache</code> and <code>next.revalidate</code> options on fetch calls. Survives server restarts.</div></div>
@@ -1529,6 +1637,14 @@ export async function POST(request: Request) {
 <div class="prose">
   <p><strong>SWR</strong> is a React Hooks library for client-side data fetching, created by Vercel (the same team behind Next.js). The name stands for <strong>stale-while-revalidate</strong> — an HTTP caching strategy that says: show the user the cached (stale) data immediately, then quietly fetch fresh data in the background and update the UI when it arrives.</p>
   <p>Before SWR, client-side fetching in React meant writing the same boilerplate over and over: <code>useState</code> for the data, <code>useState</code> for loading, <code>useState</code> for errors, a <code>useEffect</code> to fetch, and manual cleanup. SWR replaces all of that with a single hook call — and adds automatic caching, deduplication, revalidation, and error retry on top.</p>
+</div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — The 'Stale-While-Revalidate' Strategy — Your Morning News Habit</div>
+  <div class="box-body"><p>Imagine you wake up and check yesterday's newspaper on your breakfast table (the <strong>stale cached data</strong>). You read it immediately — zero wait time. Meanwhile, the paperboy is already cycling over with today's edition (the <strong>background revalidation</strong>). The moment it arrives, you swap it for the fresh one.</p>
+<p style="margin-top:8px;">This is exactly what SWR does: it shows you what it already knows (<em>stale</em>) while quietly fetching the latest version in the background (<em>revalidate</em>). Users get an instant experience with no loading spinner, and the data updates automatically the moment fresh data arrives.</p>
+<p style="margin-top:8px;"><strong>Without SWR:</strong> the table is completely empty. You have to order the newspaper, wait for delivery, then read it. That's the loading spinner experience.</p>
+<p style="margin-top:8px;"><strong>With SWR + <code>fallbackData</code> from a Server Component:</strong> the newspaper was pre-delivered before you woke up (server fetch), AND the paperboy still brings the fresh one every few minutes automatically (<code>refreshInterval</code>).</p></div>
 </div>
 
 <div class="mental-shift">
@@ -1912,6 +2028,19 @@ export default function SearchResults({ initialQuery }: Props) {
   <div class="card"><div class="card-t">With Zod</div><div class="card-b">One schema definition captures all the rules. One <code>.safeParse()</code> call validates everything and returns typed, clean data or a structured list of errors. No conditionals needed.</div></div>
 </div>
 
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — The Bouncer at the Club Door</div>
+  <div class="box-body"><p>Imagine a nightclub with a strict door policy. A <strong>Zod schema</strong> is the bouncer. Before anyone (any data) enters the venue (your database), the bouncer checks their ID against a strict set of rules:</p>
+<ul>
+  <li>Must be over 18 (minimum age/value)</li>
+  <li>ID must not be expired (valid format)</li>
+  <li>Name on the ID must match the face (cross-field validation)</li>
+  <li>No weapons allowed (disallowed content)</li>
+</ul>
+<p style="margin-top:8px;">Without a bouncer, <em>anyone</em> gets in — a 10-year-old, someone with a fake name, someone carrying harmful items. Without Zod, <em>any data</em> reaches your database: empty strings where you expected names, negative prices, SQL injection attempts, or 50,000-character essays where you expected a 100-character title.</p>
+<p style="margin-top:8px;">Zod checks the data at the door, hands back a clean guest list (<code>result.data</code>), or a report of every violation (<code>result.error.flatten().fieldErrors</code>) — without ever letting the bad data near the venue.</p></div>
+</div>
+
 <div class="cb"><div class="cb-hdr"><span class="cb-fname">terminal — install</span><span class="cb-lang">bash</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-bash"><code>npm install zod</code></pre></div>
 
 <div class="cb"><div class="cb-hdr"><span class="cb-fname">lib/zod-basics.ts — core primitives</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>import { z } from 'zod'
@@ -2128,6 +2257,14 @@ export function FieldError({ errors }: FieldErrorProps) {
 <div class="prose">
   <p>Server Actions are async functions that run on the server but can be called from Client Components. They replace the need for separate API routes for form submissions and mutations. Marked with the <code>'use server'</code> directive, they are the primary way to mutate data in Next.js.</p>
 </div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — A Secure One-Way Mailbox</div>
+  <div class="box-body"><p>Before Server Actions, if a user filled out a form you had to: (1) send the form data to a Route Handler (<code>/api/posts</code>), (2) the Route Handler validates, saves to DB, and returns a response, (3) the client handles the response. Three separate concerns, three separate files.</p>
+<p style="margin-top:8px;">Think of a Server Action like a <strong>secure one-way mailbox</strong> built directly into the front door of your house (the component). The user drops their letter (form data) into the slot. The slot leads directly to your locked back room (the server). The back room processes the letter and optionally sends a reply slip back through the slot. The user never sees the back room — they just interact with the slot in the front door.</p>
+<p style="margin-top:8px;"><strong>In practice:</strong> your <code>&lt;form action={createPost}&gt;</code> calls the Server Action directly. No fetch, no API URL to remember, no CORS issue. The function runs on the server — it has access to the database, secrets, and cookies — and returns a result the component can display.</p>
+<p style="margin-top:8px;"><strong>Important:</strong> The slot (Server Action) is public. Anyone can drop something in. Always validate the letter (Zod), check the sender's identity (auth), and never trust the contents blindly.</p></div>
+</div>
 <div class="cb"><div class="cb-hdr"><span class="cb-fname">app/actions/post.ts</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>'use server'
 
 import { revalidatePath } from 'next/cache'
@@ -2290,6 +2427,18 @@ export default function TodoList({ todos }: { todos: Todo[] }) {
       content:`
 <div class="prose">
   <p>Next.js 16 introduces a new caching model built around two complementary features: <strong>Partial Pre-Rendering (PPR)</strong> and the <strong><code>'use cache'</code> directive</strong>. Together they give you fine-grained control over what is cached, when it expires, and how the page streams to the user — enabling instant navigation while keeping content fresh.</p>
+</div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — PPR = A Newspaper With a Personalised Insert</div>
+  <div class="box-body"><p>A printed newspaper is fast to distribute — it's pre-printed in bulk and delivered to your door instantly. But every copy is identical; there's no personalisation.</p>
+<p style="margin-top:8px;"><strong>Partial Pre-Rendering</strong> is like a newspaper that has a pre-printed main section (fast, identical for all readers, served from CDN) with a <em>personalised insert</em> slipped inside (your name, your local news, your recommendations — generated fresh just for you).</p>
+<p style="margin-top:8px;">In Next.js terms:</p>
+<ul>
+  <li>The <strong>static shell</strong> (navbar, product listing, article body) is pre-rendered at build time and served from the CDN edge in milliseconds</li>
+  <li>The <strong>dynamic holes</strong> (welcome back Alex!, your cart, personalised recommendations) stream in as server-rendered fragments immediately after</li>
+</ul>
+<p style="margin-top:8px;">The user sees the page frame instantly, then the personalised content fills in within milliseconds — the best of both worlds. Previously you had to choose: fully static (fast but identical for everyone) or fully dynamic (personalised but slower for everyone).</p></div>
 </div>
 
 <div class="mental-shift">
@@ -2507,6 +2656,20 @@ export default function Card({ title, description, featured }: CardProps) {
 <div class="prose">
   <p>Next.js provides two built-in optimization tools: <code>next/font</code> for fonts and <code>next/image</code> for images. Both handle performance optimizations automatically that would otherwise require significant manual configuration.</p>
 </div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — next/image — The Auto-Pilot for Images</div>
+  <div class="box-body"><p>A raw HTML <code>&lt;img&gt;</code> tag is like manually flying a plane. You have to think about: Will this image cause the page to jump when it loads (CLS)? Is it too large for mobile screens? Should I pre-load it? What format should it be — JPEG, WebP, AVIF?</p>
+<p style="margin-top:8px;"><code>next/image</code> is the auto-pilot. Give it a source image and it handles everything:</p>
+<ul>
+  <li><strong>Format conversion</strong>: serves WebP or AVIF automatically to browsers that support it (often 30–50% smaller)</li>
+  <li><strong>Responsive sizes</strong>: serves appropriately-sized images to mobile vs desktop</li>
+  <li><strong>Lazy loading</strong>: images below the fold don't load until the user scrolls near them</li>
+  <li><strong>No layout shift</strong>: reserves the correct space before the image loads (<code>width</code>/<code>height</code> props)</li>
+  <li><strong>Priority loading</strong>: add <code>priority</code> to tell the browser "start loading this image immediately" for above-the-fold content</li>
+</ul>
+<p style="margin-top:8px;">The trade-off: you <em>must</em> provide <code>width</code> and <code>height</code> so Next.js can reserve space. Use the <code>fill</code> prop with a positioned parent when the image should fill its container responsively.</p></div>
+</div>
 <div class="cb"><div class="cb-hdr"><span class="cb-fname">app/layout.tsx — Fonts</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>import { Geist, Geist_Mono } from 'next/font/google'
 // For local fonts:
 // import localFont from 'next/font/local'
@@ -2668,6 +2831,19 @@ export async function POST(request: NextRequest) {
   <p>Middleware runs before every request — before the page is rendered or the route handler is called. It's perfect for authentication checks, A/B testing, internationalization redirects, and request logging. Middleware runs at the Edge, making it extremely fast.</p>
   <p><strong>Next.js 16:</strong> <code>middleware.ts</code> is <strong>deprecated</strong> in Next.js 16 in favour of <code>proxy.ts</code>. The file still works for Edge runtime use cases but will be removed in a future version. See the <em>proxy.ts</em> section below for the migration — it is largely a rename. The examples on this page still apply; just use <code>proxy.ts</code> and rename the exported function to <code>proxy()</code> going forward.</p>
 </div>
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — The Security Checkpoint at the Building Entrance</div>
+  <div class="box-body"><p>Think of middleware as the <strong>security guard at the front door</strong> of your app. Before any visitor (request) can reach the offices (pages, API routes), they must pass through the checkpoint.</p>
+<ul>
+  <li>The guard checks their badge (<strong>auth token</strong>) — no badge, you get redirected to reception (<code>/login</code>).</li>
+  <li>The guard directs VIP visitors to the executive floor (<strong>redirects based on role</strong>).</li>
+  <li>The guard logs every entry in the visitor book (<strong>request logging</strong>).</li>
+  <li>The guard stamps a visitor's pass with today's date (<strong>adding custom headers</strong>).</li>
+</ul>
+<p style="margin-top:8px;">Crucially, the guard doesn't do the actual work of the office — they just control <em>who gets in and where they go</em>. Middleware should be fast and lightweight, not doing complex business logic. The heavy lifting happens inside the offices (Server Components, Route Handlers).</p>
+<p style="margin-top:8px;"><strong>The <code>config.matcher</code></strong> is the guard's instruction card: "Only check visitors going to floors 3 and 5 — let delivery people (static assets) skip the checkpoint."</p></div>
+</div>
+
 <div class="cb"><div class="cb-hdr"><span class="cb-fname">middleware.ts (root of project)</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
@@ -2775,6 +2951,17 @@ npx @next/codemod@latest upgrade</code></pre></div>`,
   <p>Environment variables let you store secrets (API keys, database URLs) outside your code. This is one of the most important concepts for real-world apps — almost every project needs them from day one. Next.js has a layered system for managing them across different environments.</p>
 </div>
 
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — The Office Safe vs. The Public Noticeboard</div>
+  <div class="box-body"><p>Imagine your office has two places to put information:</p>
+<ul>
+  <li><strong>The safe</strong> (server-only env vars, no prefix): Bank account numbers, the alarm code, the wifi password for the server room. Only trusted staff who work in the back office can access it. You would never paste these on the wall where clients can see them.</li>
+  <li><strong>The public noticeboard</strong> (<code>NEXT_PUBLIC_</code> prefix): Office hours, the public phone number, the website address. Fine to display publicly — everyone is allowed to know these.</li>
+</ul>
+<p style="margin-top:8px;"><strong>Critical rule:</strong> If you prefix a variable with <code>NEXT_PUBLIC_</code>, Next.js bakes it into the JavaScript bundle that gets sent to every user's browser. It is on the public noticeboard. Never put a password or secret key there — anyone can open DevTools and read it.</p>
+<p style="margin-top:8px;"><strong>Variables without the prefix</strong> stay in the safe — they exist only on the server and are never shipped to the browser. Even if someone tries to access <code>process.env.DATABASE_URL</code> in a Client Component, they get <code>undefined</code>.</p></div>
+</div>
+
 <div class="mental-shift">
   <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> The Critical Rule: Server vs Public Variables</h3>
   <div class="mental-shift-grid">
@@ -2805,10 +2992,10 @@ npx @next/codemod@latest upgrade</code></pre></div>`,
 </div>
 
 <div class="filetree">
-<span class="ft-other">.env                  </span><span class="ft-other">← Defaults for all environments (commit to git)</span>
-<span class="ft-other">.env.local            </span><span class="ft-other">← Local overrides (NEVER commit — add to .gitignore)</span>
-<span class="ft-other">.env.development      </span><span class="ft-other">← Development-only (commit ok)</span>
-<span class="ft-other">.env.production       </span><span class="ft-other">← Production-only (commit ok)</span>
+<div class="ft-row"><span class="ft-other ft-comment">.env                  </span><span class="ft-other ft-comment">← Defaults for all environments (commit to git)</span></div>
+<div class="ft-row"><span class="ft-other ft-comment">.env.local            </span><span class="ft-other ft-comment">← Local overrides (NEVER commit — add to .gitignore)</span></div>
+<div class="ft-row"><span class="ft-other ft-comment">.env.development      </span><span class="ft-other ft-comment">← Development-only (commit ok)</span></div>
+<div class="ft-row"><span class="ft-other ft-comment">.env.production       </span><span class="ft-other ft-comment">← Production-only (commit ok)</span></div>
 </div>
 <div class="cb"><div class="cb-hdr"><span class="cb-fname">.env.local</span><span class="cb-lang">bash</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-bash"><code># Server-only — NEVER sent to the browser
 DATABASE_URL="postgresql://localhost:5432/mydb"
@@ -2858,6 +3045,19 @@ export default {
       content:`
 <div class="prose">
   <p>Next.js Server Components can query databases directly — no API layer needed. The most popular ORMs are <strong>Prisma</strong> (TypeScript-first, great DX) and <strong>Drizzle ORM</strong> (lightweight, SQL-like API). Here's a practical Prisma setup.</p>
+</div>
+
+<div class="box box-tip">
+  <div class="box-hdr">${SVG.star} 🌍 Real-World Analogy — ORM = A Translator Between Your Code and Your Database</div>
+  <div class="box-body"><p>A database speaks SQL — a terse, declarative language full of <code>SELECT * FROM users WHERE id = 1</code>. Your TypeScript code speaks objects and arrays. An <strong>ORM (Object Relational Mapper)</strong> is a live translator sitting between the two.</p>
+<p style="margin-top:8px;">Instead of writing <code>SELECT id, name, email FROM users WHERE id = 'abc'</code>, with Prisma you write: <code>db.user.findUnique({ where: { id: 'abc' } })</code>. Prisma translates this to the correct SQL query, runs it, and hands back a fully-typed TypeScript object.</p>
+<p style="margin-top:8px;"><strong>Benefits for beginners:</strong></p>
+<ul>
+  <li>No SQL syntax to learn for basic CRUD operations</li>
+  <li>Full TypeScript autocomplete on query results</li>
+  <li>Schema changes tracked in migration files (like git for your database)</li>
+  <li><code>npx prisma studio</code> opens a visual database browser — like Excel for your DB</li>
+</ul></div>
 </div>
 <div class="steps">
   <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Install Prisma</div><div class="step-desc"><code>npm install prisma @prisma/client</code> then <code>npx prisma init --datasource-provider postgresql</code></div></div></div>
@@ -3188,15 +3388,15 @@ export default function NewPostPage() {
   <p>Parallel Routes let you render multiple pages simultaneously in the same layout. Each slot is an independent route that can navigate independently, have its own loading and error states, and be conditionally rendered. They're perfect for dashboards with multiple panes.</p>
 </div>
 <div class="filetree">
-<span class="ft-dir">app/dashboard/</span>
-<span class="ft-i">├── </span><span class="ft-tsx">layout.tsx</span>       <span class="ft-other">← Receives @team and @analytics as props</span>
-<span class="ft-i">├── </span><span class="ft-tsx">page.tsx</span>
-<span class="ft-i">├── </span><span class="ft-dir">@team/</span>            <span class="ft-other">← Slot named "team"</span>
-<span class="ft-i">│   ├── </span><span class="ft-tsx">page.tsx</span>
-<span class="ft-i">│   └── </span><span class="ft-tsx">loading.tsx</span>
-<span class="ft-i">└── </span><span class="ft-dir">@analytics/</span>       <span class="ft-other">← Slot named "analytics"</span>
-<span class="ft-i">    ├── </span><span class="ft-tsx">page.tsx</span>
-<span class="ft-i">    └── </span><span class="ft-tsx">error.tsx</span>
+<div class="ft-row"><span class="ft-dir">app/dashboard/</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-tsx">layout.tsx</span>       <span class="ft-other ft-comment">← Receives @team and @analytics as props</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-tsx">page.tsx</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">@team/</span>            <span class="ft-other ft-comment">← Slot named "team"</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-tsx">page.tsx</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-tsx">loading.tsx</span></div>
+<div class="ft-row"><span class="ft-i">└── </span><span class="ft-dir">@analytics/</span>       <span class="ft-other ft-comment">← Slot named "analytics"</span></div>
+<div class="ft-row"><span class="ft-i">    ├── </span><span class="ft-tsx">page.tsx</span></div>
+<div class="ft-row"><span class="ft-i">    └── </span><span class="ft-tsx">error.tsx</span></div>
 </div>
 <div class="cb"><div class="cb-hdr"><span class="cb-fname">app/dashboard/layout.tsx</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>interface DashboardLayoutProps {
   children: React.ReactNode
@@ -3230,16 +3430,16 @@ export default function DashboardLayout({
   <p>Intercepting Routes let you "intercept" a route and show it within a different context. The classic use case: clicking a photo in a feed shows it in a modal overlay (the URL updates to <code>/photos/123</code>), but refreshing the page or sharing the link shows the full photo page. Instagram's photo viewing works exactly this way.</p>
 </div>
 <div class="filetree">
-<span class="ft-dir">app/</span>
-<span class="ft-i">├── </span><span class="ft-dir">photos/</span>
-<span class="ft-i">│   └── </span><span class="ft-dir">[id]/</span>
-<span class="ft-i">│       └── </span><span class="ft-tsx">page.tsx</span>   <span class="ft-other">← Full photo page (direct URL / refresh)</span>
-<span class="ft-i">├── </span><span class="ft-dir">feed/</span>
-<span class="ft-i">│   ├── </span><span class="ft-tsx">page.tsx</span>       <span class="ft-other">← Photo feed</span>
-<span class="ft-i">│   └── </span><span class="ft-dir">(.)photos/</span>     <span class="ft-other">← Intercepts /photos when navigating from feed</span>
-<span class="ft-i">│       └── </span><span class="ft-dir">[id]/</span>
-<span class="ft-i">│           └── </span><span class="ft-tsx">page.tsx</span>  <span class="ft-other">← Modal content</span>
-<span class="ft-i">└── </span><span class="ft-tsx">layout.tsx</span>         <span class="ft-other">← Includes @modal parallel route slot</span>
+<div class="ft-row"><span class="ft-dir">app/</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">photos/</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-dir">[id]/</span></div>
+<div class="ft-row"><span class="ft-i">│       └── </span><span class="ft-tsx">page.tsx</span>   <span class="ft-other ft-comment">← Full photo page (direct URL / refresh)</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">feed/</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-tsx">page.tsx</span>       <span class="ft-other ft-comment">← Photo feed</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-dir">(.)photos/</span>     <span class="ft-other ft-comment">← Intercepts /photos when navigating from feed</span></div>
+<div class="ft-row"><span class="ft-i">│       └── </span><span class="ft-dir">[id]/</span></div>
+<div class="ft-row"><span class="ft-i">│           └── </span><span class="ft-tsx">page.tsx</span>  <span class="ft-other ft-comment">← Modal content</span></div>
+<div class="ft-row"><span class="ft-i">└── </span><span class="ft-tsx">layout.tsx</span>         <span class="ft-other ft-comment">← Includes @modal parallel route slot</span></div>
 </div>
 <div class="box box-nxt">
   <div class="box-hdr">${SVG.info} Intercept Syntax</div>
@@ -3530,16 +3730,16 @@ export async function POST(request: NextRequest) {
   <p>Next.js doesn't include built-in i18n in the App Router (it was a Pages Router feature). The community standard is <strong>next-intl</strong>, which provides routing, message loading, and React hooks that work natively with Server Components and Middleware.</p>
 </div>
 <div class="filetree">
-<span class="ft-dir">app/</span>
-<span class="ft-i">└── </span><span class="ft-dir">[locale]/</span>             <span class="ft-other">← Dynamic locale segment</span>
-<span class="ft-i">    ├── </span><span class="ft-tsx">layout.tsx</span>        <span class="ft-other">← Sets html lang attribute</span>
-<span class="ft-i">    ├── </span><span class="ft-tsx">page.tsx</span>          <span class="ft-other">→ /en, /fr, /ar</span>
-<span class="ft-i">    └── </span><span class="ft-dir">about/</span>
-<span class="ft-i">        └── </span><span class="ft-tsx">page.tsx</span>      <span class="ft-other">→ /en/about, /fr/about</span>
-<span class="ft-dir">messages/</span>
-<span class="ft-i">├── </span><span class="ft-json">en.json</span>
-<span class="ft-i">├── </span><span class="ft-json">fr.json</span>
-<span class="ft-i">└── </span><span class="ft-json">ar.json</span>               <span class="ft-other">← Arabic (RTL)</span>
+<div class="ft-row"><span class="ft-dir">app/</span></div>
+<div class="ft-row"><span class="ft-i">└── </span><span class="ft-dir">[locale]/</span>             <span class="ft-other ft-comment">← Dynamic locale segment</span></div>
+<div class="ft-row"><span class="ft-i">    ├── </span><span class="ft-tsx">layout.tsx</span>        <span class="ft-other ft-comment">← Sets html lang attribute</span></div>
+<div class="ft-row"><span class="ft-i">    ├── </span><span class="ft-tsx">page.tsx</span>          <span class="ft-other ft-comment">→ /en, /fr, /ar</span></div>
+<div class="ft-row"><span class="ft-i">    └── </span><span class="ft-dir">about/</span></div>
+<div class="ft-row"><span class="ft-i">        └── </span><span class="ft-tsx">page.tsx</span>      <span class="ft-other ft-comment">→ /en/about, /fr/about</span></div>
+<div class="ft-row"><span class="ft-dir">messages/</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-json">en.json</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-json">fr.json</span></div>
+<div class="ft-row"><span class="ft-i">└── </span><span class="ft-json">ar.json</span>               <span class="ft-other ft-comment">← Arabic (RTL)</span></div>
 </div>
 <div class="cb"><div class="cb-hdr"><span class="cb-fname">app/[locale]/page.tsx</span><span class="cb-lang">tsx</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre class="language-typescript"><code>import { useTranslations } from 'next-intl'
 
@@ -3779,27 +3979,27 @@ const ChartComponent = dynamic(() => import('@/components/Chart'), {
   <div class="card"><div class="card-ico-wrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="card-t">Real-time UI</div><div class="card-b">Optimistic updates, Server Actions, and useActionState for instant feedback.</div></div>
 </div>
 
-<div class="filetree" style="margin-top:20px;">
-<span class="ft-dir">task-manager/</span>
-<span class="ft-i">├── </span><span class="ft-dir">app/</span>
-<span class="ft-i">│   ├── </span><span class="ft-dir">(auth)/</span>              <span class="ft-other">← login / register pages</span>
-<span class="ft-i">│   │   ├── </span><span class="ft-tsx">layout.tsx</span>   <span class="ft-other">← centered auth layout</span>
-<span class="ft-i">│   │   ├── </span><span class="ft-dir">login/page.tsx</span>
-<span class="ft-i">│   │   └── </span><span class="ft-dir">register/page.tsx</span>
-<span class="ft-i">│   ├── </span><span class="ft-dir">(dashboard)/</span>         <span class="ft-other">← protected app area</span>
-<span class="ft-i">│   │   ├── </span><span class="ft-tsx">layout.tsx</span>   <span class="ft-other">← sidebar layout</span>
-<span class="ft-i">│   │   ├── </span><span class="ft-dir">dashboard/page.tsx</span>   <span class="ft-other">← overview stats</span>
-<span class="ft-i">│   │   └── </span><span class="ft-dir">tasks/</span>
-<span class="ft-i">│   │       ├── </span><span class="ft-tsx">page.tsx</span>  <span class="ft-other">← task list</span>
-<span class="ft-i">│   │       └── </span><span class="ft-dir">[id]/page.tsx</span>  <span class="ft-other">← task detail</span>
-<span class="ft-i">│   └── </span><span class="ft-dir">api/</span>
-<span class="ft-i">│       └── </span><span class="ft-dir">auth/[...nextauth]/route.ts</span>
-<span class="ft-i">├── </span><span class="ft-dir">actions/</span>             <span class="ft-other">← Server Actions</span>
-<span class="ft-i">│   ├── </span><span class="ft-ts">tasks.ts</span>         <span class="ft-other">← createTask, updateTask, deleteTask</span>
-<span class="ft-i">│   └── </span><span class="ft-ts">auth.ts</span>          <span class="ft-other">← login, register, logout</span>
-<span class="ft-i">├── </span><span class="ft-dir">prisma/</span>
-<span class="ft-i">│   └── </span><span class="ft-other">schema.prisma</span>    <span class="ft-other">← User, Task, Project models</span>
-<span class="ft-i">└── </span><span class="ft-ts">middleware.ts</span>        <span class="ft-other">← auth protection</span>
+<div class="filetree">
+<div class="ft-row"><span class="ft-dir">task-manager/</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">app/</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-dir">(auth)/</span>              <span class="ft-other ft-comment">← login / register pages</span></div>
+<div class="ft-row"><span class="ft-i">│   │   ├── </span><span class="ft-tsx">layout.tsx</span>   <span class="ft-other ft-comment">← centered auth layout</span></div>
+<div class="ft-row"><span class="ft-i">│   │   ├── </span><span class="ft-dir">login/page.tsx</span></div>
+<div class="ft-row"><span class="ft-i">│   │   └── </span><span class="ft-dir">register/page.tsx</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-dir">(dashboard)/</span>         <span class="ft-other ft-comment">← protected app area</span></div>
+<div class="ft-row"><span class="ft-i">│   │   ├── </span><span class="ft-tsx">layout.tsx</span>   <span class="ft-other ft-comment">← sidebar layout</span></div>
+<div class="ft-row"><span class="ft-i">│   │   ├── </span><span class="ft-dir">dashboard/page.tsx</span>   <span class="ft-other ft-comment">← overview stats</span></div>
+<div class="ft-row"><span class="ft-i">│   │   └── </span><span class="ft-dir">tasks/</span></div>
+<div class="ft-row"><span class="ft-i">│   │       ├── </span><span class="ft-tsx">page.tsx</span>  <span class="ft-other ft-comment">← task list</span></div>
+<div class="ft-row"><span class="ft-i">│   │       └── </span><span class="ft-dir">[id]/page.tsx</span>  <span class="ft-other ft-comment">← task detail</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-dir">api/</span></div>
+<div class="ft-row"><span class="ft-i">│       └── </span><span class="ft-dir">auth/[...nextauth]/route.ts</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">actions/</span>             <span class="ft-other ft-comment">← Server Actions</span></div>
+<div class="ft-row"><span class="ft-i">│   ├── </span><span class="ft-ts">tasks.ts</span>         <span class="ft-other ft-comment">← createTask, updateTask, deleteTask</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-ts">auth.ts</span>          <span class="ft-other ft-comment">← login, register, logout</span></div>
+<div class="ft-row"><span class="ft-i">├── </span><span class="ft-dir">prisma/</span></div>
+<div class="ft-row"><span class="ft-i">│   └── </span><span class="ft-other ft-comment">schema.prisma</span>    <span class="ft-other ft-comment">← User, Task, Project models</span></div>
+<div class="ft-row"><span class="ft-i">└── </span><span class="ft-ts">middleware.ts</span>        <span class="ft-other ft-comment">← auth protection</span></div>
 </div>`,
       boxes:[
         {type:'nxt',title:'Project Goal',body:`<p>By the end of Phase 10, you will have built and deployed a complete full-stack application — with real users, real data, real authentication, and real deployment. This is the project you'll put in your portfolio. All code examples in Phases 10.2–10.4 continue from this structure.</p>`},
